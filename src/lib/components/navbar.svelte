@@ -199,21 +199,21 @@
 						</h3>
 						<div class="flex gap-2">
 							<button class="btn btn-circle mt-2">
-								<UserCog />
+								<UserCog class="h-4 w-4" />
 							</button>
 							<button class="btn btn-circle mt-2">
-								<KeyRound />
+								<KeyRound class="h-4 w-4"/>
 							</button>
 						</div>
 						<div class="divider" />
 						<a class="btn btn-wide btn-ghost" href="/beheer">
-							Beheer <Lock />
+							Beheer <Lock class="h-4 w-4"/>
 						</a>
 						<a class="btn btn-wide btn-ghost" href="/vriendschapsnetwerk">
-							Vriendschapnetwerk <Heart />
+							Vriendschapnetwerk <Heart class="h-4 w-4" />
 						</a>
 						<form action="/logout" method="post">
-							<button class="btn btn-wide btn-ghost">Log uit <LogOut /> </button>
+							<button class="btn btn-wide btn-ghost">Log uit <LogOut class="h-4 w-4" /> </button>
 						</form>
 					</div>
 				</div>
