@@ -1,5 +1,7 @@
+import { serializeNonPOJOs } from '$lib/utils.js';
+
 export async function load({ request, locals }) {
-    const sorteer_door_functie = (a: string, b: string): number => {
+	const sorteer_door_functie = (a: string, b: string): number => {
 		return functie_rank(b) - functie_rank(a);
 	};
 
@@ -52,7 +54,7 @@ export async function load({ request, locals }) {
 		}
 	};
 
-	const academiejaar_query = (new URL(request.url)).searchParams.get('aj');
+	const academiejaar_query = new URL(request.url).searchParams.get('aj');
 
 	const huidig_academiejaar: string = (
 		await locals.pb
@@ -69,16 +71,22 @@ export async function load({ request, locals }) {
 			})
 		);
 
-	const praesidium_leden: any[] = (await locals.pb
-		.collection('praesidium_openbaar')
-		.getFirstListItem(`academiejaar = "${academiejaar_query ?? huidig_academiejaar}"`, {
-			expand: 'praesidium_leden, praesidium_leden.gebruiker'
-		})).expand.praesidium_leden;
+	let praesidium_leden: any[] = (
+		await locals.pb
+			.collection('praesidium_openbaar')
+			.getFirstListItem(`academiejaar = "${academiejaar_query ?? huidig_academiejaar}"`, {
+				expand: 'praesidium_leden, praesidium_leden.gebruiker'
+			})
+	).expand.praesidium_leden;
+
+	praesidium_leden = [].sort.call(praesidium_leden, (a, b) =>
+		sorteer_door_functie((a as any).functie, (b as any).functie)
+	);
 
 	return {
-		praesidium_leden: structuredClone(praesidium_leden.toSorted((a, b) => sorteer_door_functie(a.functie, b.functie))), 
-        huidig_academiejaar,
-		academiejaar_query: (new URL(request.url)).searchParams.get('aj'),
-        academiejaren
+		praesidium_leden: serializeNonPOJOs(praesidium_leden),
+		huidig_academiejaar,
+		academiejaar_query: new URL(request.url).searchParams.get('aj'),
+		academiejaren
 	};
 }

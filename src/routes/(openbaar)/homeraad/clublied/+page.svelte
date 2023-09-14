@@ -1,3 +1,7 @@
+<svelte:head>
+	<title>Clublied</title>
+</svelte:head>
+
 <div
 	class="min-h-[calc(100vh-64px)] overflow-hidden flex flex-col items-center w-full p-10 md:py-5"
 >

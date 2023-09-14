@@ -18,6 +18,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Activiteiten</title>
+</svelte:head>
+
 <div class="flex flex-col min-h-[calc(100vh-64px)] gap-2 items-center">
 	<h1 class="text-center text-3xl pt-4 font-bold mb-5 mt-5">Opkomende activiteiten</h1>
 	{#if opkomende_activiteiten.length != 0}
@@ -40,7 +44,7 @@
 					{/each}
 				</div>
 			{:else}
-				<h1>Er zijn voorlopig geen activiteiten gepland.</h1>
+				<h1>Niets om weer te geven.</h1>
 			{/if}
 		</div>
 	</div>

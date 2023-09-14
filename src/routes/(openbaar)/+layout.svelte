@@ -1,12 +1,13 @@
-<script>
+<script lang="ts">
 	import { Navbar } from '$lib/components';
 	import '../../app.postcss';
 	import { Facebook, Instagram, Linkedin, Music2 } from 'lucide-svelte';
 
 	export let data;
+	export let form: any;
 </script>
 
-<Navbar {data} />
+<Navbar bind:form {data} />
 
 <slot />
 

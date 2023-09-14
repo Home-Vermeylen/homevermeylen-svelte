@@ -1,53 +1,49 @@
 <script lang="ts">
-	import { Augustjerecord, Modal } from '$lib/components';
+	import { Augustjerecord, Augustjesmodal } from '$lib/components/index.js';
 	import { FilePlus } from 'lucide-svelte';
 
 	export let data: any;
+	export let form;
 
-	let geselecteerd_augustje: any;
-	let open: boolean;
+	let geselecteerd_augustje: any | null = null;
+	let dialog: HTMLDialogElement;
 
-	$: geselecteerd_augustje = undefined;
-	$: open = false;
-
-	const updateAugustje = (data: any) => {
-    geselecteerd_augustje = data.augustje;
-    open = true;
-  };
+	const open_modal = () => {
+		dialog.showModal();
+	};
 </script>
 
+<Augustjesmodal bind:form bind:dialog bind:geselecteerd_augustje gebruiker={data.gebruiker} />
 <div class="flex flex-col gap-10 items-center mt-5 overflow-x-auto w-full">
-	
-
-	<button
-		class="btn"
-		on:click={() => {
-			open = true;
-		}}
-	>
+	<button class="btn" on:click={open_modal}>
 		<FilePlus class="h-4 w-4" /> Nieuw Augustje
 	</button>
-	<table class="table w-full">
-		<thead>
-			<tr>
-				<th>Acties</th>
-				<th>Naam</th>
-				<th>Bestand</th>
-				<th>Publicatiedatum</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each data.augustjes as augustje (augustje.id)}
-				<Augustjerecord on:update={updateAugustje} {augustje} />
-			{/each}
-		</tbody>
-		<tfoot>
-			<tr>
-				<th>Acties</th>
-				<th>Naam</th>
-				<th>Bestand</th>
-				<th>Publicatiedatum</th>
-			</tr>
-		</tfoot>
-	</table>
+	{#if data.augustjes.length == 0}
+		<h1>Geen Augustjes om weer te geven</h1>
+	{:else}
+		<table class="table w-full">
+			<thead>
+				<tr>
+					<th>Acties</th>
+					<th>Naam</th>
+					<th>Bestand</th>
+					<th>Publicatiedatum</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each data.augustjes as augustje (augustje.id)}
+					<Augustjerecord bind:dialog bind:geselecteerd_augustje {augustje} />
+				{/each}
+			</tbody>
+
+			<tfoot>
+				<tr>
+					<th>Acties</th>
+					<th>Naam</th>
+					<th>Bestand</th>
+					<th>Publicatiedatum</th>
+				</tr>
+			</tfoot>
+		</table>
+	{/if}
 </div>

@@ -1,20 +1,26 @@
-import { error, redirect } from "@sveltejs/kit";
+import { LoginGebruikerSchema } from '$lib/schemas.js';
+import { valideerData } from '$lib/utils.js';
+import { error, redirect, fail } from '@sveltejs/kit';
 
 export const actions = {
-    login: async ({ request, locals }) => {
-        const data = await request.formData();
+	login: async ({ request, locals }) => {
+		const { formData, errors } = await valideerData(await request.formData(), LoginGebruikerSchema);
 
-        const gebruikersnaam = data.get('gebruikersnaam');
-        const wachtwoord = data.get('wachtwoord');
+		if (errors) {
+			return fail(400, {
+				data: formData,
+				errors: errors.fieldErrors
+			});
+		}
 
-        console.log(gebruikersnaam, wachtwoord);
-        try {
-            await locals.pb.collection('gebruikers').authWithPassword(gebruikersnaam, wachtwoord);
-        } catch (err) {
-            console.log('Error: ', err);
-            throw error(500, 'Er is een probleem opgetreden bij het inloggen')
-        }
+		try {
+			await locals.pb
+				.collection('gebruikers')
+				.authWithPassword(formData.gebruikersnaam, formData.wachtwoord);
+		} catch (err: any) {
+			throw error(err.status, err.message);
+		}
 
-        throw redirect(303, "/");
-    }
-}
+		throw redirect(303, '/');
+	}
+};

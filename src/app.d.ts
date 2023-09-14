@@ -5,8 +5,8 @@ import { PocketBase, Record } from 'pocketbase';
 declare global {
 	namespace App {
 		interface Locals {
-			pb: PocketBase,
-			user: Record | undefined
+			pb: PocketBase;
+			user: Record | undefined;
 		}
 		// interface Error {}
 		// interface Locals {}

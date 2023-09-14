@@ -1,5 +1,5 @@
-export async function load({request, locals}) {
-    const academiejaar_query = (new URL(request.url)).searchParams.get('aj');
+export async function load({ request, locals }) {
+	const academiejaar_query = new URL(request.url).searchParams.get('aj');
 
 	const huidig_academiejaar: string = (
 		await locals.pb
@@ -15,26 +15,28 @@ export async function load({request, locals}) {
 				return val.academiejaar;
 			})
 		);
-    
-    const verslagen =  locals.pb
-    .collection('verslagen')
-    .getList(undefined, undefined, {
-      filter: `praesidium.academiejaar =  "${academiejaar_query ?? huidig_academiejaar}"`,
-    })
-    .then((res: any) => {
-      return res.items.map((a: any) => {
-        return {
-            ...a,
-            created: new Date(a.created),
-            verslag: locals.pb.files.getUrl(a, a.verslag),
-          };
-        });
-    });
 
-    return {
-        huidig_academiejaar,
-        academiejaar_query,
-        academiejaren,
-        verslagen
-    }
+	const verslagen = locals.pb
+		.collection('verslagen')
+		.getList(undefined, undefined, {
+			filter: `praesidium.academiejaar =  "${academiejaar_query ?? huidig_academiejaar}"`
+		})
+		.then((res) => {
+			return [].slice.call(res.items.map((a: any) => {
+				return {
+					...a,
+					created: new Date(a.created),
+					verslag: locals.pb.files.getUrl(a, a.verslag)
+				};
+			})).sort((a: any, b: any) => {
+				return b.created - a.created;
+			});
+		});
+
+	return {
+		huidig_academiejaar,
+		academiejaar_query,
+		academiejaren,
+		verslagen
+	};
 }

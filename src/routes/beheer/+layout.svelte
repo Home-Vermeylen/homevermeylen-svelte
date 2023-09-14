@@ -9,6 +9,10 @@
 	let huidig_paneel: string;
 </script>
 
+<svelte:head>
+	<title>Beheer</title>
+</svelte:head>
+
 <div>
 	<div class="drawer lg:drawer-open">
 		<input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
@@ -45,14 +49,14 @@
 
 				<div class="flex flex-col justify-between align-center text-center mt-6 gap-2">
 					<a class={`btn ${huidig_paneel != 'DASH' ? 'btn-outline' : ''}`} href="/beheer">
-						<Home />
+						<Home class="h-4 w-4" />
 						Thuispagina
 					</a>
 					<a
 						class={`btn ${huidig_paneel != 'ACTIVITEITEN' ? 'btn-outline' : ''}`}
 						href="/beheer/activiteiten"
 					>
-						<Calendar />
+						<Calendar class="h-4 w-4" />
 						Activiteiten
 					</a>
 
@@ -60,7 +64,7 @@
 						class={`btn ${huidig_paneel != 'AUGUSTJE' ? 'btn-outline' : ''}`}
 						href="/beheer/augustje"
 					>
-						<Newspaper />
+						<Newspaper class="h-4 w-4" />
 						Augustjes
 					</a>
 
@@ -68,7 +72,7 @@
 						class={`btn ${huidig_paneel != 'VERSLAGEN' ? 'btn-outline' : ''}`}
 						href="/beheer/verslagen"
 					>
-						<ScrollText />
+						<ScrollText class="h-4 w-4" />
 						Verslagen & Statuten
 					</a>
 
@@ -76,7 +80,7 @@
 						class={`btn ${huidig_paneel != 'INSTELLINGEN' ? 'btn-outline' : ''}`}
 						href="/beheer/instellingen"
 					>
-						<Settings />
+						<Settings class="h-4 w-4" />
 						ICT
 					</a>
 				</div>

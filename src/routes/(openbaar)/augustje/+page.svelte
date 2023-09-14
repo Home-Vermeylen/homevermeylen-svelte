@@ -1,14 +1,13 @@
 <script lang="ts">
 	import { Augustje, Academiejaarselector } from '$lib/components';
+	import { navigating } from '$app/stores';
 
 	export let data;
-
-	let gesorteerd: any[] | undefined = undefined;
-
-	$: gesorteerd = data.augustjes.toSorted((a: any, b: any) => {
-		return b.created - a.created;
-	});
 </script>
+
+<svelte:head>
+	<title>Augustje</title>
+</svelte:head>
 
 <div class="flex flex-col gap-5 items-center min-h-[calc(100vh-64px)]">
 	<div class="flex flex-col items-center text-center">
@@ -20,18 +19,20 @@
 	</div>
 
 	<div class="flex flex-col items-center gap-5 mb-5 mt-5">
-		{#if gesorteerd}
-			{#if gesorteerd.length == 0}
+		{#if $navigating}
+			<span class="loading loading-spinner loading-md" />
+		{:else if data.augustjes}
+			{#if data.augustjes.length == 0}
 				<h2>Voor dit academiejaar zijn (nog) geen augustjes beschikbaar.</h2>
 			{:else}
 				<div class="text-center mb-5">
 					<div class="prose mb-5"><h2>Uitgelicht</h2></div>
-					<Augustje augustje={gesorteerd[0]} />
+					<Augustje augustje={data.augustjes[0]} />
 				</div>
-				{#if gesorteerd.length > 1}
+				{#if data.augustjes.length > 1}
 					<div class="flex flex-col items-center gap-5">
-						<div class="prose mb-5"><h2>Vorige publicaties</h2></div>
-						{#each gesorteerd.slice(1) as augustje (augustje.id)}
+						<div class="prose mb-5"><h2>Eerdere publicaties</h2></div>
+						{#each data.augustjes.slice(1) as augustje (augustje.id)}
 							<Augustje {augustje} />
 						{/each}
 					</div>

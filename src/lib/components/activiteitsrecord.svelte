@@ -1,46 +1,57 @@
 <script lang="ts">
-	import { CheckCircle2, Edit, Eye, EyeOff, MoreHorizontal, Trash, XCircle } from 'lucide-svelte';
+	import { enhance } from '$app/forms';
+	import { Edit, Trash } from 'lucide-svelte';
+	import toast from 'svelte-french-toast';
 
 	export let activiteit: any;
+	export let dialog: HTMLDialogElement;
+	export let geselecteerde_activiteit: any | undefined;
+	let loading = false;
 
-    const datum = new Date(activiteit.datum);
+	const bewerk_activiteit = () => {
+		geselecteerde_activiteit = activiteit;
+		dialog.showModal();
+	};
+
+	const verwijder_activiteit = () => {
+		loading = true;
+
+		return async ({ result, update }: { result: any; update: any }) => {
+			switch (result.type) {
+				case 'success':
+					toast.success('Verwijdering voltooid.');
+					await update();
+					break;
+				case 'invalid':
+					toast.error('Verwijdering mislukt.');
+					await update();
+					break;
+				case 'error':
+					toast.error('Verwijdering mislukt.');
+					break;
+				default:
+					await update();
+			}
+			loading = false;
+		};
+	};
 </script>
 
 <tr>
 	<td>
 		<div class="flex flex-row gap-2">
-			<div class="tooltip tooltip-primary tooltip-right" data-tip="Bewerk activiteit">
-				<!-- svelte-ignore a11y-label-has-associated-control -->
-				<label
-					class="btn btn-square h-7 w-7"
-				>
-					<Edit class="h-4 w-4"/>
-				</label>
-			</div>
-			<div
-				class="tooltip tooltip-primary"
-				data-tip={`${activiteit.gepubliceerd ? 'Maak onzichtbaar' : 'Maak zichtbaar'}`}
-			>
-				<form>
-					<input type="hidden" value={activiteit.id} />
-					<button type="submit" class="btn btn-square h-7 w-7">
-						{#if activiteit.gepubliceerd}
-							<EyeOff class="h-4 w-4" />
-						{:else}
-							<Eye class="h-4 w-4" />
-						{/if}
-					</button>
-				</form>
-			</div>
-            <form>
-                <input type="hidden" value={activiteit.id} />
-                <button
-				type="submit"
-				class="btn btn-square btn-error h-7 w-7"
-			>
-				<Trash class="h-4 w-4"/>
+			<button class="btn btn-square h-7 w-7" on:click={bewerk_activiteit}>
+				<Edit class="h-4 w-4" />
 			</button>
-            </form>
+			<form use:enhance={verwijder_activiteit} method="post" action="?/verwijder">
+				<input type="hidden" name="id" value={activiteit.id} />
+				<button
+					type="submit"
+					class={`btn btn-square btn-error h-7 w-7 ${loading ? 'loading-spinner loading' : ''}`}
+				>
+					<Trash class="h-4 w-4" />
+				</button>
+			</form>
 		</div>
 	</td>
 	<td>
@@ -62,27 +73,12 @@
 				</div>
 			</div>
 			<div>
-				<div class="font-bold">{activiteit.naam}</div>
+				<span>{activiteit.naam}</span>
 			</div>
 		</div>
 	</td>
+	<td title={activiteit.omschrijving}> Geef weer </td>
 	<td>
-		{#if activiteit.omschrijving}
-            <MoreHorizontal/>
-        {:else}
-        <strong>Geen Omschrijving</strong>
-        {/if}
-	</td>
-	<td>
-		{#if activiteit.gepubliceerd}
-            <CheckCircle2/>
-            {:else}
-            <XCircle/>
-        {/if}
-	</td>
-	<td>
-			{datum.toLocaleDateString() +
-				' ' +
-				datum.toLocaleTimeString()}
+		<div>{activiteit.datum}</div>
 	</td>
 </tr>

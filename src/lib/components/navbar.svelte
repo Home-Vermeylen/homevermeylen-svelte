@@ -1,11 +1,30 @@
 <script lang="ts">
 	import { getImageURL } from '$lib/utils';
-	import { Calendar, ChevronDown, Heart, Info, KeyRound, Lock, LogIn, LogOut, Newspaper, Pencil, UserCog, Users } from 'lucide-svelte';
+	import {
+		Calendar,
+		ChevronDown,
+		Heart,
+		Info,
+		KeyRound,
+		Lock,
+		LogIn,
+		LogOut,
+		Newspaper,
+		Pencil,
+		UserCog,
+		Users
+	} from 'lucide-svelte';
 	import Avatar from './avatar.svelte';
+	import Gebruikersmodal from './gebruikersmodal.svelte';
+	import Updatewachtwoordmodal from './updatewachtwoordmodal.svelte';
 
 	export let data: import('../../routes/(openbaar)/$types').LayoutData;
+	export let form: any;
 
-    const toonPreview = (event: Event) => {
+	let gebruikers_dialog: HTMLDialogElement;
+	let wachtwoord_dialog: HTMLDialogElement;
+
+	const toonPreview = (event: Event) => {
 		const target = event.target;
 		const files = (target as any).files;
 
@@ -15,7 +34,7 @@
 
 			preview.src = src;
 		}
-	}
+	};
 
 	const nav_items = [
 		{
@@ -43,6 +62,10 @@
 				{
 					naam: 'Clublied',
 					href: '/homeraad/clublied'
+				},
+				{
+					naam: 'Statuten',
+					href: '/statuten.pdf'
 				}
 			]
 		},
@@ -61,9 +84,10 @@
 			]
 		}
 	];
-
 </script>
 
+<Gebruikersmodal bind:form bind:dialog={gebruikers_dialog} bind:gebruiker={data.user} />
+<Updatewachtwoordmodal bind:form bind:dialog={wachtwoord_dialog} bind:gebruiker={data.user} />
 <div class="navbar bg-base-100">
 	<div class="navbar-start">
 		<div class="dropdown z-[1]">
@@ -101,7 +125,7 @@
 							</ul>
 						{:else}
 							<a href={nav_item.href} class="gap-2 flex flew-row items-center"
-								><svelte:component this={nav_item.icon} class="h-4 w-4"/> {nav_item.naam}</a
+								><svelte:component this={nav_item.icon} class="h-4 w-4" /> {nav_item.naam}</a
 							>
 						{/if}
 					</li>
@@ -151,7 +175,7 @@
 	<div class="navbar-end">
 		{#if !data.user}
 			<a href="/login" class="btn btn-outline">
-				Log In <LogIn />
+				Log In <LogIn class="h-4 w-4" />
 			</a>
 		{:else}
 			<div class="dropdown dropdown-left z-[1]">
@@ -159,7 +183,7 @@
 				<label tabIndex={0} class="btn btn-ghost">
 					<div class="avatar">
 						<div class="w-10 rounded-full ring-primary ring-1 ring-offset-1">
-							<Avatar {data}/>
+							<Avatar gebruiker={data.user} />
 						</div>
 					</div>
 				</label>
@@ -178,7 +202,7 @@
 											</span>
 										</label>
 										<div class="w-36 rounded-full ring-primary ring-1 ring-offset-1">
-											<Avatar {data}/>
+											<Avatar gebruiker={data.user} />
 										</div>
 									</div>
 								</label>
@@ -198,18 +222,23 @@
 							{data.user.familienaam}
 						</h3>
 						<div class="flex gap-2">
-							<button class="btn btn-circle mt-2">
+							<button
+								class="btn btn-circle mt-2"
+								on:click={() => {
+									gebruikers_dialog.showModal();
+								}}
+							>
 								<UserCog class="h-4 w-4" />
 							</button>
-							<button class="btn btn-circle mt-2">
-								<KeyRound class="h-4 w-4"/>
+							<button on:click={() => wachtwoord_dialog.showModal()} class="btn btn-circle mt-2">
+								<KeyRound class="h-4 w-4" />
 							</button>
 						</div>
 						<div class="divider" />
 						<a class="btn btn-wide btn-ghost" href="/beheer">
-							Beheer <Lock class="h-4 w-4"/>
+							Beheer <Lock class="h-4 w-4" />
 						</a>
-						<a class="btn btn-wide btn-ghost" href="/vriendschapsnetwerk">
+						<a class="btn btn-wide btn-ghost" href="/beheer/vriendschapsnetwerk">
 							Vriendschapnetwerk <Heart class="h-4 w-4" />
 						</a>
 						<form action="/logout" method="post">
