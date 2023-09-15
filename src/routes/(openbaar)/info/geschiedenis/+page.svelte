@@ -1,5 +1,6 @@
 <svelte:head>
 	<title>Geschiedenis</title>
+	<meta name="description" content="Een korte uiteenzetting over de geschiedenis van Home Vermeylen.">
 </svelte:head>
 
 <div class="min-h-[calc(100vh-64px)] overflow-hidden flex flex-col items-center w-full">

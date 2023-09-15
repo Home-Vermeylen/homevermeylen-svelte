@@ -1,5 +1,6 @@
 <svelte:head>
 	<title>Clublied</title>
+    <meta name="description" content="Het clublied van de vereniging Home Vermeylen.">
 </svelte:head>
 
 <div

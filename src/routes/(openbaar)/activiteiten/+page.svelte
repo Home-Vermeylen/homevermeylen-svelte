@@ -20,6 +20,7 @@
 
 <svelte:head>
 	<title>Activiteiten</title>
+	<meta name="description" content="Een lijst van de geplande en afgelopen activiteiten georganiseerd door de Homeraad Vermeylen.">
 </svelte:head>
 
 <div class="flex flex-col min-h-[calc(100vh-64px)] gap-2 items-center">

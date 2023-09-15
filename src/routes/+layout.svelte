@@ -6,6 +6,10 @@
 
 </script>
 
+<svelte:head>
+  <meta charset="utf8" />
+</svelte:head>
+
 <Toaster />
 
 {#key data.url}

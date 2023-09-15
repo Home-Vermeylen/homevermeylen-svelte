@@ -11,6 +11,7 @@
 
 <svelte:head>
 	<title>Beheer</title>
+	<meta name="robots" content="none, noarchive">
 </svelte:head>
 
 <div>

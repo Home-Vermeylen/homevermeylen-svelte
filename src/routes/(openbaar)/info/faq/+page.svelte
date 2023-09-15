@@ -1,5 +1,6 @@
 <svelte:head>
 	<title>Frequently Asked Questions</title>
+	<meta name="description" content="Een antwoord op vaak gestelde vragen met betrekking tot het homeleven.">
 </svelte:head>
 
 <div

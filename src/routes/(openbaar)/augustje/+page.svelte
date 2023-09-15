@@ -7,6 +7,7 @@
 
 <svelte:head>
 	<title>Augustje</title>
+	<meta name="description" content="De edities van Home Vermeylen haar eigen studentikoos tijdschrift: het Augustje.">
 </svelte:head>
 
 <div class="flex flex-col gap-5 items-center min-h-[calc(100vh-64px)]">

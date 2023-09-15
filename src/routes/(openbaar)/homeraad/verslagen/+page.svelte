@@ -7,6 +7,7 @@
 
 <svelte:head>
 	<title>Verslagen</title>
+	<meta name="description" content="De verslagen van de vergaderingen van de beperkte Homeraad van Home Vermeylen.">
 </svelte:head>
 
 <div class="flex flex-col gap-5 items-center min-h-[calc(100vh-64px)]">

@@ -8,6 +8,7 @@
 
 <svelte:head>
 	<title>Homeraad - Leden</title>
+	<meta name="description" content="De leden van de homeraad van Home Vermeylen.">
 </svelte:head>
 
 <div class="flex flex-col items-center">

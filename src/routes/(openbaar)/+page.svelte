@@ -2,6 +2,11 @@
 	import { ChevronRight, Euro, MapPin, Pin, Users } from 'lucide-svelte';
 </script>
 
+<svelte:head>
+	<title>Thuispagina</title>
+	<meta name="description" content="Thuispagina Website Home Vermeylen">
+</svelte:head>
+
 <div
 	class="overflow-hidden bg-no-repeat bg-cover min-h-[calc(100vh-64px)]"
 	style="
