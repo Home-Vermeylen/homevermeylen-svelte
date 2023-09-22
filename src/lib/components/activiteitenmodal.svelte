@@ -98,14 +98,8 @@
 			value={gebruiker?.expand?.praesidiumlid?.praesidium ?? ''}
 		/>
 
-		<form method="post">
 			<div class="form-control w-full max-w-lg">
-				<label for="banner" class="hover:cursor-pointer">
-					<label for="banner" class="absolute -bottom-0.5 -right-0.5">
-						<span class="btn btn-circle btn-sm btn-secondary">
-							<Pencil class="w-4 h-4" />
-						</span>
-					</label>
+				<label for="banner" class="hover:cursor-pointer flex flex-col gap-2 items-center">
 					<img
 						bind:this={banner}
 						loading="lazy"
@@ -113,8 +107,13 @@
 						width={250}
 						height={200}
 						alt="banner"
-						class="self-center rounded-lg border-2 border-spacing-1 object-contain border-base-300"
+						class="rounded-lg border-2 border-spacing-1 object-contain border-base-300"
 					/>
+					<label for="banner">
+						<span class="btn">
+							<Pencil class="w-4 h-4" /> Bewerk afbeelding
+						</span>
+					</label>
 				</label>
 				<input
 					type="file"
@@ -128,15 +127,6 @@
 					}}
 				/>
 			</div>
-		</form>
-
-		<input
-			accept=".png, .jpg"
-			class="file-input file-input-bordered"
-			type="file"
-			name="banner"
-			placeholder={geselecteerde_activiteit?.banner ?? ''}
-		/>
 		<Input
 			id="naam"
 			label="Naam"
@@ -216,7 +206,7 @@
 			<button type="submit" formnovalidate formmethod="dialog" class="btn btn-ghost"
 				>Annuleer</button
 			>
-			<button type="submit" class={`btn btn-outline ${loading ? 'loading loading-spinner' : ''}`}
+			<button type="submit" class={`btn ${loading ? 'loading loading-spinner' : ''}`}
 				>Opslaan</button
 			>
 		</div>
