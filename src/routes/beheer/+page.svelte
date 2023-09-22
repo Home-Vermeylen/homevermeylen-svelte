@@ -5,7 +5,7 @@
 	import type { Record } from 'pocketbase';
 
 	export let data: any;
-  export let form: any;
+  	export let form: any;
 
   let bakken_dialog: HTMLDialogElement;
   let fakkels_dialog: HTMLDialogElement;
@@ -15,8 +15,8 @@
 </script>
 
 <div class="flex flex-col md:flex-row justify-center items-center gap-5 mt-5">
-	<Fakkeldialog bind:form bind:fakkels={data.fakkels} bind:dialog={fakkels_dialog} gebruiker={data.gebruiker} {geselecteerde_fakkel} />
-	<Bakkendialog bind:form bind:bakken={data.bakken} bind:dialog={bakken_dialog} gebruiker={data.gebruiker} {geselecteerde_bak} />
+	<Fakkeldialog praesidium_leden={data.praesidium_leden} bind:form bind:fakkels={data.fakkels} bind:dialog={fakkels_dialog} gebruiker={data.gebruiker} {geselecteerde_fakkel} />
+	<Bakkendialog praesidium_leden={data.praesidium_leden} bind:form bind:bakken={data.bakken} bind:dialog={bakken_dialog} gebruiker={data.gebruiker} {geselecteerde_bak} />
 
 	<div class="flex">
 		<div class="card bg-base-200 shadow">

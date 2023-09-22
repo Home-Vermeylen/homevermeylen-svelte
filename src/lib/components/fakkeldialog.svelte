@@ -11,6 +11,7 @@
 	export let gebruiker: any;
 	export let fakkels: any;
 	export let form: any;
+	export let praesidium_leden: any;
 
 	let loading = false;
 
@@ -38,17 +39,6 @@
 		};
 	};
 
-	let praesidium_leden;
-	onMount(() => {
-		const pb = new PocketBase(process.env.VITE_PUBLIC_POCKETBASE_URL);
-		praesidium_leden = pb
-			.collection('praesidium')
-			.getOne(gebruiker.expand?.praesidiumlid?.praesidium, { expand: 'praesidium_leden, praesidium_leden.gebruiker' })
-			.then((p) => {
-				return p.expand.praesidium_leden;
-			});
-	});
-
 	const resetGeselecteerdeFakkel = () => {
 		dialog.close();
 		geselecteerde_fakkel = null;
@@ -72,18 +62,12 @@
 		{#if geselecteerde_fakkel}
 			<input type="hidden" name="id" value={geselecteerde_fakkel?.id} />
 		{:else if praesidium_leden}
-			{#await praesidium_leden}
-				<select class="select select-bordered w-full max-w-xs" disabled>
-					<option disabled selected>Gebruikers inladen...</option>
-				</select>
-			{:then leden}
 				<select name="gebruiker" class="select select-bordered w-full max-w-xs">
 					<option disabled selected>Selecteer een gebruiker.</option>
-					{#each [].slice.call(leden) as lid (lid.id)}
+					{#each [].slice.call(praesidium_leden) as lid (lid.id)}
 						<option value={lid?.expand?.gebruiker?.id}>{lid?.voornaam} {lid?.familienaam}</option>
 					{/each}
 				</select>
-			{/await}
 		{/if}
 
 		<input

@@ -11,6 +11,7 @@
 	export let gebruiker: any;
 	export let bakken: any;
 	export let form: any;
+	export let praesidium_leden: any;
 
 	let loading = false;
 
@@ -20,15 +21,21 @@
 		return async ({ result, update }: { result: any; update: any }) => {
 			switch (result.type) {
 				case 'success':
-					toast.success('Bakken aangepast.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
+					toast.success('Bakken aangepast.', {
+						style: 'border-radius: 200px; background: #333; color: #fff;'
+					});
 					await update();
 					break;
 				case 'invalid':
-					toast.error('Aanpassen bakken mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
+					toast.error('Aanpassen bakken mislukt.', {
+						style: 'border-radius: 200px; background: #333; color: #fff;'
+					});
 					await update();
 					break;
 				case 'error':
-					toast.error('Aanpassen bakken mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
+					toast.error('Aanpassen bakken mislukt.', {
+						style: 'border-radius: 200px; background: #333; color: #fff;'
+					});
 					break;
 				default:
 					await update();
@@ -37,17 +44,6 @@
 			resetGeselecteerdeBak();
 		};
 	};
-
-	let praesidium_leden;
-	onMount(() => {
-		const pb = new PocketBase(process.env.VITE_PUBLIC_POCKETBASE_URL);
-		praesidium_leden = pb
-			.collection('praesidium')
-			.getOne(gebruiker.expand?.praesidiumlid?.praesidium, { expand: 'praesidium_leden, praesidium_leden.gebruiker' })
-			.then((p) => {
-				return p.expand.praesidium_leden;
-			});
-	});
 
 	const resetGeselecteerdeBak = () => {
 		dialog.close();
@@ -72,18 +68,12 @@
 		{#if geselecteerde_bak}
 			<input type="hidden" name="id" value={geselecteerde_bak?.id} />
 		{:else if praesidium_leden}
-			{#await praesidium_leden}
-				<select class="select select-bordered w-full max-w-xs" disabled>
-					<option disabled selected>Gebruikers inladen...</option>
-				</select>
-			{:then leden}
-				<select name="gebruiker" class="select select-bordered w-full max-w-xs">
-					<option disabled selected>Selecteer een gebruiker.</option>
-					{#each [].slice.call(leden) as lid (lid.id)}
-						<option value={lid?.expand?.gebruiker?.id}>{lid?.voornaam} {lid?.familienaam}</option>
-					{/each}
-				</select>
-			{/await}
+			<select name="gebruiker" class="select select-bordered w-full max-w-xs">
+				<option disabled selected>Selecteer een gebruiker.</option>
+				{#each [].slice.call(praesidium_leden) as lid (lid.id)}
+					<option value={lid?.expand?.gebruiker?.id}>{lid?.voornaam} {lid?.familienaam}</option>
+				{/each}
+			</select>
 		{/if}
 
 		<input
@@ -96,9 +86,12 @@
 			id="aantal"
 			label="Aantal bakken"
 			type="number"
-			value={(bakken.find && bakken.find((val) => {
-				return val.gebruiker == geselecteerde_bak?.gebruiker;
-			}))?.aantal ?? 0}
+			value={(
+				bakken.find &&
+				bakken.find((val) => {
+					return val.gebruiker == geselecteerde_bak?.gebruiker;
+				})
+			)?.aantal ?? 0}
 			errors={form?.data?.bakken}
 		/>
 
