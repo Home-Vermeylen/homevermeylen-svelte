@@ -14,29 +14,11 @@
   let geselecteerde_fakkel: Record | null = null;
 </script>
 
-<div class="flex flex-col items-center gap-5">
+<div class="flex flex-col md:flex-row justify-center items-center gap-5 mt-5">
 	<Fakkeldialog bind:form bind:fakkels={data.fakkels} bind:dialog={fakkels_dialog} gebruiker={data.gebruiker} {geselecteerde_fakkel} />
 	<Bakkendialog bind:form bind:bakken={data.bakken} bind:dialog={bakken_dialog} gebruiker={data.gebruiker} {geselecteerde_bak} />
-	<div class="flex flex-row items-center mt-5">
-		<div class="stats stats-vertical md:stats-horizontal shadow bg-base-200">
-			<div class="stat">
-				<div class="stat-title">Aantal unieke bezoekers</div>
-				<div class="stat-value">89,400</div>
-				<div class="stat-desc">21% more than last month</div>
-			</div>
-			<div class="stat">
-				<div class="stat-title">Aantal gelezen augustjes</div>
-				<div class="stat-value">3</div>
-				<div class="stat-desc">21% more than last month</div>
-			</div>
-			<div class="stat">
-				<div class="stat-title">Aantal gelezen verslagen</div>
-				<div class="stat-value">3</div>
-				<div class="stat-desc">21% more than last month</div>
-			</div>
-		</div>
-	</div>
-	<div class="flex flex-col md:flex-row gap-5">
+
+	<div class="flex">
 		<div class="card bg-base-200 shadow">
 			<div class="card-body items-center">
 				<h2 class="card-title">
@@ -64,11 +46,11 @@
 			</div>
 
 			<div class="card-actions justify-center">
-				<button class="btn btn-primary"  on:click={() => { fakkels_dialog.showModal() }} >Voeg toe</button>
+				<button class="btn btn-primary mb-5"  on:click={() => { fakkels_dialog.showModal() }} >Voeg toe</button>
 			</div>
 		</div>
 	</div>
-	<div class="card bg-base-200 shadow">
+	<div class="card bg-base-200 shadow mb-5">
 		<div class="card-body items-center">
 			<h2 class="card-title">
 				<LucideBeer class="h-4 w-4" /> Bakken
@@ -95,7 +77,7 @@
 			</table>
 		</div>
 		<div class="card-actions justify-center">
-			<button class="btn btn-primary" on:click={() => bakken_dialog.showModal()}>Voeg toe</button>
+			<button class="btn btn-primary mb-5" on:click={() => bakken_dialog.showModal()}>Voeg toe</button>
 		</div>
 	</div>
 </div>

@@ -15,11 +15,11 @@
 					await update();
 					break;
 				case 'invalid':
-					toast.error('Inloggen mislukt.');
+					toast.error('Inloggen mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					await update();
 					break;
 				case 'error':
-					toast.error(result.error.message);
+					toast.error('Inloggen mislukt', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					break;
 				default:
 					await update();
@@ -58,7 +58,7 @@
 						disabled={loading}
 					/>
 					<div class="form-control mt-6 w-full max-w-lg">
-						<button type="submit" class="btn btn-primary">Login</button>
+						<button type="submit" class:loading class="btn btn-primary">Login</button>
 					</div>
 				</form>
 			</div>

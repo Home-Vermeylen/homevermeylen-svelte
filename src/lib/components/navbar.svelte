@@ -192,31 +192,12 @@
 					class="dropdown-content card card-compact bg-base-100 w-64 p-2 shadow flex flex-col justify-center align-middle"
 				>
 					<div class="card-body text-center items-center">
-						<form method="post">
-							<div class="form-control w-full max-w-lg">
-								<label for="avatar" class="hover:cursor-pointer">
-									<div class="avatar">
-										<label for="avatar" class="absolute -bottom-0.5 -right-0.5">
-											<span class="btn btn-circle btn-sm btn-secondary">
-												<Pencil class="w-4 h-4" />
-											</span>
-										</label>
-										<div class="w-36 rounded-full ring-primary ring-1 ring-offset-1">
-											<Avatar gebruiker={data.user} />
-										</div>
-									</div>
-								</label>
-								<input
-									type="file"
-									name="avatar"
-									id="avatar"
-									value=""
-									accept="image/*"
-									hidden
-									on:change={toonPreview}
-								/>
+						<div class="avatar">
+							<div class="w-36 rounded-full ring-primary ring-1 ring-offset-1">
+								<Avatar gebruiker={data.user} />
 							</div>
-						</form>
+						</div>
+
 						<h3 class="card-title">
 							{data.user.voornaam}
 							{data.user.familienaam}

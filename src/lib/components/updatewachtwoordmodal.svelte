@@ -28,15 +28,15 @@
 		return async ({ result, update }: { result: any; update: any }) => {
 			switch (result.type) {
 				case 'success':
-					toast.success('Wachtwoord succesvol aangepast.');
+					toast.success('Wachtwoord succesvol aangepast.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					await update();
 					break;
 				case 'invalid':
-					toast.error('Aanpassen wachtwoord mislukt.');
+					toast.error('Aanpassen wachtwoord mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					await update();
 					break;
 				case 'error':
-					toast.error('Aanpassen wachtwoord mislukt.');
+					toast.error('Aanpassen wachtwoord mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					break;
 				default:
 					await update();

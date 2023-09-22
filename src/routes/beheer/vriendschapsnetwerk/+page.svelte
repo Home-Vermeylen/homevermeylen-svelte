@@ -16,7 +16,7 @@
 		club: string | null;
 	};
 
-	if (browser) {
+	onMount(() => {
 		let div = document.getElementById('canvas');
 
 		if (div) {
@@ -28,8 +28,7 @@
 				});
 			});
 		}
-	}
-
+	})
 </script>
 
 <Netwerkverwijdermodal

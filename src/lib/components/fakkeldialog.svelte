@@ -20,15 +20,15 @@
 		return async ({ result, update }: { result: any; update: any }) => {
 			switch (result.type) {
 				case 'success':
-					toast.success('Fakkels aangepast.');
+					toast.success('Fakkels aangepast.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					await update();
 					break;
 				case 'invalid':
-					toast.error('Aanpassen fakkels mislukt.');
+					toast.error('Aanpassen fakkels mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					await update();
 					break;
 				case 'error':
-					toast.error('Aanpassen fakkels mislukt.');
+					toast.error('Aanpassen fakkels mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					break;
 				default:
 					await update();
@@ -40,7 +40,7 @@
 
 	let praesidium_leden;
 	onMount(() => {
-		const pb = new PocketBase('https://callous-application.pockethost.io');
+		const pb = new PocketBase(process.env.VITE_PUBLIC_POCKETBASE_URL);
 		praesidium_leden = pb
 			.collection('praesidium')
 			.getOne(gebruiker.expand?.praesidiumlid?.praesidium, { expand: 'praesidium_leden, praesidium_leden.gebruiker' })
@@ -61,7 +61,7 @@
 		method="post"
 		action="?/update_fakkels"
 		enctype="multipart/form-data"
-		class="modal-box flex flex-col space-y-5"
+		class="modal-box flex flex-col space-y-5 items-center"
 	>
 		<h3 class="text-center font-bold text-lg">
 			{geselecteerde_fakkel

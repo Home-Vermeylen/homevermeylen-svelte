@@ -17,26 +17,26 @@
 			switch (result.type) {
 				case 'success':
 					if (geselecteerd_verslag) {
-						toast.success('Verslag succesvol aangepast.');
+						toast.success('Verslag succesvol aangepast.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					} else {
-						toast.success('Verslag gepubliceerd.');
+						toast.success('Verslag gepubliceerd.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					}
 
 					await update();
 					break;
 				case 'invalid':
 					if (geselecteerd_verslag) {
-						toast.error('Aanpassen verslag mislukt.');
+						toast.error('Aanpassen verslag mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					} else {
-						toast.error('Publicatie verslag mislukt.');
+						toast.error('Publicatie verslag mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					}
 					await update();
 					break;
 				case 'error':
 					if (geselecteerd_verslag) {
-						toast.error('Aanpassen verslag mislukt.');
+						toast.error('Aanpassen verslag mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					} else {
-						toast.error('Publicatie verslag mislukt.');
+						toast.error('Publicatie verslag mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					}
 					break;
 				default:

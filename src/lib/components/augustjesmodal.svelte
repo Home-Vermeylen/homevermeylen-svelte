@@ -17,26 +17,26 @@
 			switch (result.type) {
 				case 'success':
 					if (geselecteerd_augustje) {
-						toast.success('Augustje succesvol aangepast.');
+						toast.success('Augustje succesvol aangepast.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					} else {
-						toast.success('Augustje gepubliceerd.');
+						toast.success('Augustje gepubliceerd.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					}
 
 					await update();
 					break;
 				case 'invalid':
 					if (geselecteerd_augustje) {
-						toast.error('Aanpassen Augustje mislukt.');
+						toast.error('Aanpassen Augustje mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					} else {
-						toast.error('Publicatie Augustje mislukt.');
+						toast.error('Publicatie Augustje mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					}
 					await update();
 					break;
 				case 'error':
 					if (geselecteerd_augustje) {
-						toast.error('Aanpassen Augustje mislukt.');
+						toast.error('Aanpassen Augustje mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					} else {
-						toast.error('Publicatie Augustje mislukt.');
+						toast.error('Publicatie Augustje mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					}
 					break;
 				default:

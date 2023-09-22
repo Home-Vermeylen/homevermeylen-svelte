@@ -20,15 +20,15 @@
 		return async ({ result, update }: { result: any; update: any }) => {
 			switch (result.type) {
 				case 'success':
-					toast.success('Profiel aangepast.');
+					toast.success('Profiel aangepast.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					await update();
 					break;
 				case 'invalid':
-					toast.error('Aanpassen profiel mislukt.');
+					toast.error('Aanpassen profiel mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					await update();
 					break;
 				case 'error':
-					toast.error('Aanpassen profiel mislukt.');
+					toast.error('Aanpassen profiel mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					break;
 				default:
 					await update();

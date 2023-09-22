@@ -17,15 +17,15 @@
 		return async ({ result, update }: { result: any; update: any }) => {
 			switch (result.type) {
 				case 'success':
-					toast.success('Netwerk aangepast.');
+					toast.success('Netwerk aangepast.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					await update();
 					break;
 				case 'invalid':
-					toast.error('Aanpassen netwerk mislukt.');
+					toast.error('Aanpassen netwerk mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					await update();
 					break;
 				case 'error':
-					toast.error('Aanpassen netwerk mislukt.');
+					toast.error('Aanpassen netwerk mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					break;
 				default:
 					await update();

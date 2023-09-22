@@ -101,6 +101,11 @@
 			functie: 'Peter',
 			color: 'badge-warning',
 			tekst: 'PETER'
+		},
+		{
+			functie: 'VM',
+			color: 'badge-ghost',
+			tekst: 'VM'
 		}
 	];
 </script>

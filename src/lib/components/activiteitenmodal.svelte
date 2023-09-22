@@ -20,26 +20,26 @@
 			switch (result.type) {
 				case 'success':
 					if (geselecteerde_activiteit) {
-						toast.success('Activiteit succesvol aangepast.');
+						toast.success('Activiteit succesvol aangepast.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					} else {
-						toast.success('Activiteit gepubliceerd.');
+						toast.success('Activiteit gepubliceerd.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					}
 
 					await update();
 					break;
 				case 'failure':
 					if (geselecteerde_activiteit) {
-						toast.error('Aanpassen activiteit mislukt.');
+						toast.error('Aanpassen activiteit mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					} else {
-						toast.error('Publicatie activiteit mislukt.');
+						toast.error('Publicatie activiteit mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					}
 					await update();
 					break;
 				case 'error':
 					if (geselecteerde_activiteit) {
-						toast.error('Aanpassen activiteit mislukt.');
+						toast.error('Aanpassen activiteit mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					} else {
-						toast.error('Publicatie activiteit mislukt.');
+						toast.error('Publicatie activiteit mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					}
 					break;
 				default:

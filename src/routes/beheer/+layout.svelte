@@ -1,12 +1,24 @@
 <script lang="ts">
 	import { Avatar } from '$lib/components';
 	import Praesidiumbadge from '$lib/components/praesidiumbadge.svelte';
-	import { Home, Users, Calendar, Newspaper, ScrollText, Settings } from 'lucide-svelte';
+	import { Home, Users, Calendar, Newspaper, ScrollText, Settings, LucideMenu, LucideX } from 'lucide-svelte';
 	import type { LayoutData } from './$types';
+	import { page } from '$app/stores';
 
 	export let data: any;
-
 	let huidig_paneel: string;
+
+	if ($page.url.pathname.includes('activiteiten')) {
+		huidig_paneel = "ACTIVITEITEN"
+	} else if ($page.url.pathname.includes('augustje')) {
+		huidig_paneel = "AUGUSTJE"
+	} else if ($page.url.pathname.includes('verslagen')) {
+		huidig_paneel = "VERSLAGEN"
+	} else if ($page.url.pathname.includes('instellingen')) {
+		huidig_paneel = "INSTELLINGEN"
+	} else {
+		huidig_paneel = "DASH"
+	}
 </script>
 
 <svelte:head>
@@ -18,6 +30,11 @@
 	<div class="drawer lg:drawer-open">
 		<input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
 		<div class="drawer-content">
+			<div class="navbar md:hidden bg-base-100 shadow">
+				<label for="my-drawer-2" class="btn btn-outline drawer-button lg:hidden">
+					<LucideMenu class="h-4 w-4" />
+				</label>
+			  </div>
 			<slot />
 		</div>
 		<div class="drawer-side">
@@ -49,37 +66,41 @@
 				</div>
 
 				<div class="flex flex-col justify-between align-center text-center mt-6 gap-2">
-					<a class={`btn ${huidig_paneel != 'DASH' ? 'btn-outline' : ''}`} href="/beheer">
+					<a class={`btn ${huidig_paneel != 'DASH' ? 'btn-neutral' : ''}`} href="/beheer" on:click={() => { huidig_paneel = 'DASH' }}>
 						<Home class="h-4 w-4" />
 						Thuispagina
 					</a>
 					<a
-						class={`btn ${huidig_paneel != 'ACTIVITEITEN' ? 'btn-outline' : ''}`}
+						class={`btn ${huidig_paneel != 'ACTIVITEITEN' ? 'btn-neutral' : ''}`}
 						href="/beheer/activiteiten"
+						on:click={() => { huidig_paneel = 'ACTIVITEITEN' }}
 					>
 						<Calendar class="h-4 w-4" />
 						Activiteiten
 					</a>
 
 					<a
-						class={`btn ${huidig_paneel != 'AUGUSTJE' ? 'btn-outline' : ''}`}
+						class={`btn ${huidig_paneel != 'AUGUSTJE' ? 'btn-neutral' : ''}`}
 						href="/beheer/augustje"
+						on:click={() => { huidig_paneel = 'AUGUSTJE' }}
 					>
 						<Newspaper class="h-4 w-4" />
 						Augustjes
 					</a>
 
 					<a
-						class={`btn ${huidig_paneel != 'VERSLAGEN' ? 'btn-outline' : ''}`}
+						class={`btn ${huidig_paneel != 'VERSLAGEN' ? 'btn-neutral' : ''}`}
 						href="/beheer/verslagen"
+						on:click={() => { huidig_paneel = 'VERSLAGEN' }}
 					>
 						<ScrollText class="h-4 w-4" />
 						Verslagen & Statuten
 					</a>
 
 					<a
-						class={`btn ${huidig_paneel != 'INSTELLINGEN' ? 'btn-outline' : ''}`}
+						class={`btn ${huidig_paneel != 'INSTELLINGEN' ? 'btn-neutral' : ''}`}
 						href="/beheer/instellingen"
+						on:click={() => { huidig_paneel = 'INSTELLINGEN' }}
 					>
 						<Settings class="h-4 w-4" />
 						ICT

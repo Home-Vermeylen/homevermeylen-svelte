@@ -19,15 +19,15 @@
 		return async ({ result, update }: { result: any; update: any }) => {
 			switch (result.type) {
 				case 'success':
-					toast.success('Verwijdering voltooid.');
+					toast.success('Verwijdering voltooid.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					await update();
 					break;
 				case 'invalid':
-					toast.error('Verwijdering mislukt.');
+					toast.error('Verwijdering mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					await update();
 					break;
 				case 'error':
-					toast.error('Verwijdering mislukt.');
+					toast.error('Verwijdering mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
 					break;
 				default:
 					await update();
