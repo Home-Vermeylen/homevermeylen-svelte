@@ -13,7 +13,7 @@
 			});
 			afgelopen_activiteiten = data.activiteiten.filter((a: any) => {
 				return new Date(a.datum).getTime() < new Date().getTime();
-			});
+			}).reverse();
 		}
 	}
 </script>
@@ -26,7 +26,7 @@
 <div class="flex flex-col min-h-[calc(100vh-64px)] gap-2 items-center">
 	<h1 class="text-center text-3xl pt-4 font-bold mb-5 mt-5">Opkomende activiteiten</h1>
 	{#if opkomende_activiteiten.length != 0}
-		<div class="flex flex-col md:flex-row flex-wrap">
+		<div class="flex flex-col gap-2 items-center md:flex-none md:grid md:grid-cols-2 md:items-baseline">
 			{#each opkomende_activiteiten as activiteit (activiteit.id)}
 				<Activiteit {activiteit} />
 			{/each}
@@ -34,12 +34,9 @@
 	{:else}
 		<h1>Er zijn voorlopig geen activiteiten gepland.</h1>
 	{/if}
-
-	<div class="flex flex-col items-center gap-2">
 		<h1 class="text-center text-3xl font-bold pt-4 mb-5">Afgelopen activiteiten</h1>
-		<div class="flex flex-col md:flex-row flex-wrap">
 			{#if afgelopen_activiteiten.length != 0}
-				<div class="flex flex-col md:flex-row flex-wrap">
+				<div class="flex flex-col gap-2 items-center md:flex-none md:grid md:grid-cols-2 md:items-baseline">
 					{#each afgelopen_activiteiten as activiteit (activiteit.id)}
 						<Activiteit {activiteit} />
 					{/each}
@@ -47,6 +44,4 @@
 			{:else}
 				<h1>Niets om weer te geven.</h1>
 			{/if}
-		</div>
-	</div>
 </div>

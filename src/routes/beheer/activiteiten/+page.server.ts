@@ -21,7 +21,9 @@ export async function load({ request, locals }: { request: any; locals: any }) {
 			});
 		});
 
-	return { activiteiten };
+	return { activiteiten: activiteiten.sort((a, b) => {
+		return new Date(b.datum).getTime() - new Date(a.datum).getTime();
+	}) };
 }
 
 export const actions = {
