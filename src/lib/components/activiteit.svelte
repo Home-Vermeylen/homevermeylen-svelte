@@ -5,6 +5,7 @@
 	export let activiteit: Record;
 
 	const datum = new Date(activiteit.datum);
+	const huidige_datum = new Date();
 </script>
 
 <div class="card w-[400px] bg-base-200 shadow-xl m-5">
@@ -31,7 +32,7 @@
 		<div class="divider" />
 		<div class="prose my-5 text-center">{activiteit.omschrijving}</div>
 		<div class="card-actions text-center self-center">
-			{#if activiteit.inschrijven}
+			{#if activiteit.inschrijven && datum.getTime() < huidige_datum.getTime() }
 				<a href={activiteit.formlink} class="btn btn-primary btn-wide">Schrijf je in!</a>
 			{/if}
 		</div>
