@@ -166,7 +166,7 @@
 				<option value="CULTUUR">Cultuur</option>
 				<option value="SPORT">Sport</option>
 				<option value="FEEST">Feest</option>
-				<option value="Cantus">Cantus</option>
+				<option value="CANTUS">Cantus</option>
 				<option value="ANDERE">Andere</option>
 			</select>
 		</div>
