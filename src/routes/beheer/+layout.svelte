@@ -66,12 +66,12 @@
 				</div>
 
 				<div class="flex flex-col justify-between align-center text-center mt-6 gap-2">
-					<a class={`btn ${huidig_paneel != 'DASH' ? 'btn-neutral' : ''}`} href="/beheer" on:click={() => { huidig_paneel = 'DASH' }}>
+					<a class={`btn ${huidig_paneel != 'DASH' ? 'btn-neutral' : 'btn-primary'}`} href="/beheer" on:click={() => { huidig_paneel = 'DASH' }}>
 						<Home class="h-4 w-4" />
 						Thuispagina
 					</a>
 					<a
-						class={`btn ${huidig_paneel != 'ACTIVITEITEN' ? 'btn-neutral' : ''}`}
+						class={`btn ${huidig_paneel != 'ACTIVITEITEN' ? 'btn-neutral' : 'btn-primary'}`}
 						href="/beheer/activiteiten"
 						on:click={() => { huidig_paneel = 'ACTIVITEITEN' }}
 					>
@@ -80,7 +80,7 @@
 					</a>
 
 					<a
-						class={`btn ${huidig_paneel != 'AUGUSTJE' ? 'btn-neutral' : ''}`}
+						class={`btn ${huidig_paneel != 'AUGUSTJE' ? 'btn-neutral' : 'btn-primary'}`}
 						href="/beheer/augustje"
 						on:click={() => { huidig_paneel = 'AUGUSTJE' }}
 					>
@@ -89,7 +89,7 @@
 					</a>
 
 					<a
-						class={`btn ${huidig_paneel != 'VERSLAGEN' ? 'btn-neutral' : ''}`}
+						class={`btn ${huidig_paneel != 'VERSLAGEN' ? 'btn-neutral' : 'btn-primary'}`}
 						href="/beheer/verslagen"
 						on:click={() => { huidig_paneel = 'VERSLAGEN' }}
 					>
@@ -98,7 +98,7 @@
 					</a>
 
 					<a
-						class={`btn ${huidig_paneel != 'INSTELLINGEN' ? 'btn-neutral' : ''}`}
+						class={`btn ${huidig_paneel != 'INSTELLINGEN' ? 'btn-neutral' : 'btn-primary'}`}
 						href="/beheer/instellingen"
 						on:click={() => { huidig_paneel = 'INSTELLINGEN' }}
 					>
