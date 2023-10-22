@@ -53,6 +53,9 @@
 		enctype="multipart/form-data"
 		class="modal-box flex flex-col space-y-5"
 	>
+	<form method="dialog">
+		<button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+	  </form>
 		<h3 class="text-center font-bold text-lg">Verwijder Persoon / Actie</h3>
 
 		{#each personen as persoon (persoon.id)}
