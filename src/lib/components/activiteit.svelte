@@ -32,7 +32,7 @@
 		<div class="divider" />
 		<div class="prose my-5 text-center">{activiteit.omschrijving}</div>
 		<div class="card-actions text-center self-center">
-			{#if activiteit.inschrijven && datum.getTime() < huidige_datum.getTime() }
+			{#if activiteit.inschrijven && datum.getTime() > huidige_datum.getTime() }
 				<a href={activiteit.formlink} class="btn btn-primary btn-wide">Schrijf je in!</a>
 			{/if}
 		</div>
