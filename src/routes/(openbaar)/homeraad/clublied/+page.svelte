@@ -8,36 +8,67 @@
 >
 	<div class="prose mt-5">
 		<h1 class="text-center">Clublied Home Vermeylen</h1>
-		<pre>
-            1. Blauw en wit, ja, dat zijn onze kleuren
-            Bij Vermeylen heerst onze clubgeest
-            Want hier valt er niets te betreuren
-            Ja, bij ons is het altijd dik feest
+		<div class="text-center">
+            <p>
+                <b>1.</b> Blauw en wit, ja, dat zijn onze kleuren
+                <br>
+                Bij Vermeylen heerst onze clubgeest
+                <br>
+                Want hier valt er niets te betreuren
+                <br>
+                Ja, bij ons is het altijd dik feest
+            </p>
 
-            R. Met een pint in de hand gaan we vieren
-            Op Vermeylen is 't leven apart
-            Maar dat geeft niet, er valt veel te plezieren
-            Home Vermeylen voor altijd in je hart
 
-            2. Home Vermeylen, de Home van mijn leven
-            Eens bij ons ga je zeker niet geen
-            't is de Home waar ik alles voor zou geven
-            Neen, bij ons ben je nooit meer alleen
+            <p>
+                <b>R.</b> Met een pint in de hand gaan we vieren
+                <br>
+                Op Vermeylen is 't leven apart
+                <br>
+                Maar dat geeft niet, er valt veel te plezieren
+                <br>
+                Home Vermeylen voor altijd in je hart
+            </p>
 
-            3. Onze feestjes zijn echt de beste
-            En op cantussen zijn wij heel luid
-            Dat gaat onze sfeer niet verpesten
-            En nadien gaan wij samen nog uit
+            <p>
+                <b>2.</b> Home Vermeylen, de Home van mijn leven
+                <br>
+                Eens bij ons ga je zeker niet geen
+                <br>
+                't is de Home waar ik alles voor zou geven
+                <br>
+                Neen, bij ons ben je nooit meer alleen
+            </p>
 
-            4. Al die jaren zijn hier verstreken
-            Nu met senior (naam praeses) aan het stuur
-            De proseniores mogen niet ontbreken
-            Home Vermeylen voor ieder door het vuur
+            <p>
+                <b>3.</b> Onze feestjes zijn echt de beste
+                <br>
+                En op cantussen zijn wij heel luid
+                <br>
+                Dat gaat onze sfeer niet verpesten
+                <br>
+                En nadien gaan wij samen nog uit
+            </p>
 
-            R. Met een een pint in de hand gaan we vieren
-            Op Vermeylen is 't leven apart
-            Maar dat geef niet, er valt veel te plezieren
-            Home Vermeylen de beste Home van 't stad!
-        </pre>
+            <p>
+                <b>4.</b> Al die jaren zijn hier verstreken
+                <br>
+                Nu met senior (naam praeses) aan het stuur
+                <br>
+                De proseniores mogen niet ontbreken
+                <br>
+                Home Vermeylen voor ieder door het vuur
+            </p>
+
+            <p>
+                <b>R.</b> Met een een pint in de hand gaan we vieren
+                <br>
+                Op Vermeylen is 't leven apart
+                <br>
+                Maar dat geef niet, er valt veel te plezieren
+                <br>
+                Home Vermeylen de beste Home van 't stad!
+            </p>
+        </div>
 	</div>
 </div>
