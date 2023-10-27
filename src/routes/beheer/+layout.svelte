@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Avatar } from '$lib/components';
 	import Praesidiumbadge from '$lib/components/praesidiumbadge.svelte';
-	import { Home, Users, Calendar, Newspaper, ScrollText, Settings, LucideMenu, LucideX } from 'lucide-svelte';
+	import { Home, Users, Calendar, Newspaper, ScrollText, Settings, LucideMenu, LucideX, Heart, LucideHome } from 'lucide-svelte';
 	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
 
@@ -16,6 +16,8 @@
 		huidig_paneel = "VERSLAGEN"
 	} else if ($page.url.pathname.includes('instellingen')) {
 		huidig_paneel = "INSTELLINGEN"
+	} else if ($page.url.pathname.includes('vriendschapsnetwerk')) {
+		huidig_paneel = "VRIENDSCHAPSNETWERK"
 	} else {
 		huidig_paneel = "DASH"
 	}
@@ -30,10 +32,14 @@
 	<div class="drawer lg:drawer-open">
 		<input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
 		<div class="drawer-content">
-			<div class="navbar md:hidden bg-base-100 shadow">
-				<label for="my-drawer-2" class="btn btn-outline drawer-button lg:hidden">
-					<LucideMenu class="h-4 w-4" />
+			<div class="navbar lg:hidden bg-base-100 shadow flex flex-row max-w-full justify-evenly">
+				<label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">
+					<LucideMenu class="h-4 w-4" /> Menu
 				</label>
+				<img width={50} height={50} class="w-auto h-8 sm:h-9" src="/logo.png" alt="" />
+				<a href="/" class="lg:hidden btn btn-primary">
+					<LucideHome class="h-4 w-4" /> Thuispagina
+				</a>
 			  </div>
 			<slot />
 		</div>
@@ -42,7 +48,7 @@
 			<aside
 				class="flex flex-col w-72 h-screen px-4 py-8 overflow-y-auto bg-base-200 shadow-2xl rounded-sm"
 			>
-				<a href="/" class="mx-auto">
+				<a href="/" class="mx-auto hidden lg:block">
 					<div
 						class="flex flex-row gap-4 text-center items-center font-bold tracking-tight text-xl hover:bg-base-300 p-2 rounded-lg"
 					>
@@ -98,12 +104,12 @@
 					</a>
 
 					<a
-						class={`btn ${huidig_paneel != 'INSTELLINGEN' ? 'btn-neutral' : 'btn-primary'}`}
-						href="/beheer/instellingen"
-						on:click={() => { huidig_paneel = 'INSTELLINGEN' }}
+						class={`btn ${huidig_paneel != 'VRIENDSCHAPSNETWERK' ? 'btn-neutral' : 'btn-primary'}`}
+						href="/beheer/vriendschapsnetwerk"
+						on:click={() => { huidig_paneel = 'VRIENDSCHAPSNETWERK' }}
 					>
-						<Settings class="h-4 w-4" />
-						ICT
+						<Heart class="h-4 w-4" />
+						Vriendschapsnetwerk
 					</a>
 				</div>
 			</aside>
