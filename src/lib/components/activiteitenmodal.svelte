@@ -98,35 +98,35 @@
 			value={gebruiker?.expand?.praesidiumlid?.praesidium ?? ''}
 		/>
 
-			<div class="form-control w-full max-w-lg">
-				<label for="banner" class="hover:cursor-pointer flex flex-col gap-2 items-center">
-					<img
-						bind:this={banner}
-						loading="lazy"
-						src={geselecteerde_activiteit?.banner ?? '/omslag.jpg'}
-						width={250}
-						height={200}
-						alt="banner"
-						class="rounded-lg border-2 border-spacing-1 object-contain border-base-300"
-					/>
-					<label for="banner">
-						<span class="btn">
-							<Pencil class="w-4 h-4" /> Bewerk afbeelding
-						</span>
-					</label>
-				</label>
-				<input
-					type="file"
-					name="banner"
-					id="banner"
-					value=""
-					accept=".png, .jpg"
-					hidden
-					on:change={(e) => {
-						banner.src = URL.createObjectURL(e.target?.files[0]);
-					}}
+		<div class="form-control w-full max-w-lg">
+			<label for="banner" class="hover:cursor-pointer flex flex-col gap-2 items-center">
+				<img
+					bind:this={banner}
+					loading="lazy"
+					src={geselecteerde_activiteit?.banner ?? '/omslag.jpg'}
+					width={250}
+					height={200}
+					alt="banner"
+					class="rounded-lg border-2 border-spacing-1 object-contain border-base-300"
 				/>
-			</div>
+				<label for="banner">
+					<span class="btn">
+						<Pencil class="w-4 h-4" /> Bewerk afbeelding
+					</span>
+				</label>
+			</label>
+			<input
+				type="file"
+				name="banner"
+				id="banner"
+				value=""
+				accept=".png, .jpg"
+				hidden
+				on:change={(e) => {
+					banner.src = URL.createObjectURL(e.target?.files[0]);
+				}}
+			/>
+		</div>
 		<Input
 			id="naam"
 			label="Naam"
@@ -206,9 +206,13 @@
 			<button type="submit" formnovalidate formmethod="dialog" class="btn btn-ghost"
 				>Annuleer</button
 			>
-			<button type="submit" class={`btn ${loading ? 'loading loading-spinner' : ''}`}
-				>Opslaan</button
-			>
+			{#if loading}
+				<button class="btn btn-square">
+					<span class="loading loading-spinner" />
+				</button>
+			{:else}
+				<button type="submit" class="btn btn-primary">Opslaan</button>
+			{/if}
 		</div>
 	</form>
 </dialog>

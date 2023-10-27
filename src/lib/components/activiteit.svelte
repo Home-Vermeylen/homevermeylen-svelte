@@ -8,7 +8,7 @@
 	const huidige_datum = new Date();
 </script>
 
-<div class="card w-[400px] bg-base-200 shadow-xl m-5">
+<div class="card w-[400px] bg-base-200 shadow-xl m-5 break-all">
 	<figure class="w-[400px] h-[200px] rounded">
 		<img
 			loading="lazy"
