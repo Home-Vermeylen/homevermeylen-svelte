@@ -1,20 +1,19 @@
 <script lang="ts">
-	import { Netwerkvoegtoemodal } from '$lib/components';
+	import { Netwerkdetailmodal, Netwerkvoegtoemodal } from '$lib/components';
 	import Netwerkverwijdermodal from '$lib/components/netwerkverwijdermodal.svelte';
 	import { Trash, UserPlus } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
+	import type { Network } from 'vis-network';
 
 	export let data;
 
-	let netwerk: any | null = null;
+	let netwerk: Network | null = null;
 	let netwerkverwijdermodal: HTMLDialogElement;
 	let netwerkvoegtoemodal: HTMLDialogElement;
+	let netwerkdetailmodal: HTMLDialogElement;
 
-	let geselecteerde_persoon: {
-		naam: string | null;
-		club: string | null;
-	};
+	let geselecteerde_node: any = null;
 
 	onMount(() => {
 		let div = document.getElementById('canvas');
@@ -23,14 +22,17 @@
 			import('vis-network').then((vis) => {
 				netwerk = new vis.Network(div!, data.netwerk_data, data.opties);
 
-				netwerk.on('selectNode', () => {
-
+				netwerk.on('selectNode', (t) => {
+					geselecteerde_node = data.netwerk_data.nodes[t.nodes[0]];
+					console.log(geselecteerde_node);
+					netwerkdetailmodal.showModal();
 				});
 			});
 		}
 	})
 </script>
 
+<Netwerkdetailmodal bind:geselecteerde_node bind:dialog={netwerkdetailmodal} personen={data.netwerk_data.nodes} connecties={data.netwerk_data.edges} />
 <Netwerkverwijdermodal
 	bind:dialog={netwerkverwijdermodal}
 	personen={data.netwerk_data.nodes}

@@ -1,3 +1,6 @@
+import type { Verslag } from '$lib/types.js';
+import type { ListResult } from 'pocketbase';
+
 export async function load({ request, locals }) {
 	const academiejaar_query = new URL(request.url).searchParams.get('aj');
 
@@ -21,15 +24,15 @@ export async function load({ request, locals }) {
 		.getList(undefined, undefined, {
 			filter: `praesidium.academiejaar =  "${academiejaar_query ?? huidig_academiejaar}"`
 		})
-		.then((res) => {
-			return [].slice.call(res.items.map((a: any) => {
+		.then((res: ListResult<Verslag>) => {
+			return [].slice.call(res.items.map((a) => {
 				return {
 					...a,
 					created: new Date(a.created),
-					verslag: locals.pb.files.getUrl(a, a.verslag)
+					bestand: locals.pb.files.getUrl(a, a.bestand)
 				};
-			})).sort((a: any, b: any) => {
-				return b.created - a.created;
+			})).sort((a: Verslag, b: Verslag) => {
+				return b.created.getTime() - a.created.getTime();
 			});
 		});
 

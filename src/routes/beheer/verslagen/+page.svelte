@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { VerslagModal, Verslagrecord } from '$lib/components';
+	import type { Verslag } from '$lib/types.js';
 	import { FilePlus } from 'lucide-svelte';
 
-	export let data: any;
+	export let data;
 	export let form;
 
-	let geselecteerd_verslag: any | null = null;
+	let geselecteerd_verslag: Verslag | null = null;
 	let dialog: HTMLDialogElement;
 
 	const open_modal = () => {

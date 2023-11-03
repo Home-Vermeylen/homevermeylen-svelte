@@ -2,8 +2,9 @@
 	import { enhance } from '$app/forms';
 	import toast from 'svelte-french-toast';
 	import Input from './input.svelte';
+	import type { Augustje } from '$lib/types';
 
-	export let geselecteerd_augustje: any | null;
+	export let geselecteerd_augustje: Augustje | null;
 	export let dialog: HTMLDialogElement;
 	export let gebruiker: any;
 	export let form: any;
@@ -77,8 +78,8 @@
 			accept=".pdf"
 			class="file-input file-input-bordered"
 			type="file"
-			name="augustje"
-			placeholder={geselecteerd_augustje?.augustje ?? ''}
+			name="bestand"
+			placeholder={geselecteerd_augustje?.bestand ?? ''}
 		/>
 		<Input
 			id="naam"

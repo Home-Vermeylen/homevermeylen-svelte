@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import type { Verslag } from '$lib/types';
 	import { Edit, Trash, File } from 'lucide-svelte';
 	import toast from 'svelte-french-toast';
 
-	export let verslag: any;
+	export let verslag: Verslag;
 	export let dialog: HTMLDialogElement;
-	export let geselecteerd_verslag: any | undefined;
+	export let geselecteerd_verslag: Verslag | null;
 	let loading = false;
 
 	const bewerk_verslag = () => {
@@ -58,7 +59,7 @@
 		<div class="font-bold">{verslag.naam}</div>
 	</td>
 	<td>
-		<a class="btn" href={verslag.verslag} target="_blank">
+		<a class="btn" href={verslag.bestand} target="_blank">
 			<File class="h-4 w-4" />
 		</a>
 	</td>

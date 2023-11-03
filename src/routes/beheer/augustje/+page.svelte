@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { Augustjerecord, Augustjesmodal } from '$lib/components/index.js';
+	import type { Augustje } from '$lib/types.js';
 	import { FilePlus } from 'lucide-svelte';
 
-	export let data: any;
+	export let data;
 	export let form;
 
-	let geselecteerd_augustje: any | null = null;
+	let geselecteerd_augustje: Augustje | null = null;
 	let dialog: HTMLDialogElement;
 
 	const open_modal = () => {

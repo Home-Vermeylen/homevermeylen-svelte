@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import type { Activiteit } from '$lib/types';
 	import { Edit, Trash } from 'lucide-svelte';
 	import toast from 'svelte-french-toast';
 
-	export let activiteit: any;
+	export let activiteit: Activiteit;
 	export let dialog: HTMLDialogElement;
-	export let geselecteerde_activiteit: any | undefined;
+	export let geselecteerde_activiteit: Activiteit | null;
 	let loading = false;
 
 	const bewerk_activiteit = () => {

@@ -1,6 +1,8 @@
 import { AugustjesSchema, VerslagSchema } from '$lib/schemas.js';
+import type { Augustje } from '$lib/types.js';
 import { serializeNonPOJOs, valideerData } from '$lib/utils';
 import { error, fail } from '@sveltejs/kit';
+import type { ListResult } from 'pocketbase';
 
 export async function load({ request, locals }: { request: any; locals: any }) {
 	const huidig_academiejaar: string = (
@@ -12,11 +14,11 @@ export async function load({ request, locals }: { request: any; locals: any }) {
 	const augustjes = await locals.pb
 		.collection('augustjes')
 		.getList(undefined, undefined, { filter: `praesidium.academiejaar = "${huidig_academiejaar}"` })
-		.then((res: any) => {
-			return res.items.map((a: any) => {
+		.then((res: ListResult<Augustje>) => {
+			return res.items.map((a) => {
 				return serializeNonPOJOs({
 					...a,
-					augustje: locals.pb.files.getUrl(a, a.augustje)
+					bestand: locals.pb.files.getUrl(a, a.bestand)
 				});
 			});
 		});
@@ -37,8 +39,8 @@ export const actions = {
 			});
 		}
 
-		if ((origineleData.get('augustje') as any).size == 0) {
-			origineleData.delete('augustje');
+		if ((origineleData.get('bestand') as any).size == 0) {
+			origineleData.delete('bestand');
 		}
 
 		try {

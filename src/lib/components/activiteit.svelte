@@ -1,10 +1,9 @@
 <script lang="ts">
+	import type { PubliekeActiviteit } from '$lib/types';
 	import { CalendarClock, CalendarDays } from 'lucide-svelte';
 	import type { Record } from 'pocketbase';
 
-	export let activiteit: Record;
-
-	const datum = new Date(activiteit.datum);
+	export let activiteit: PubliekeActiviteit;
 	const huidige_datum = new Date();
 </script>
 
@@ -23,16 +22,16 @@
 		<h2 class="card-title text-center text-3xl self-center mb-5">{activiteit.naam}</h2>
 		<h3 class="flex flex-row gap-2 self-center">
 			<CalendarDays className="h-4 w-4" />
-			{datum.toLocaleDateString()}
+			{activiteit.datum.toLocaleDateString()}
 		</h3>
 		<h3 class="flex flex-row gap-2 self-center">
 			<CalendarClock className="h-4 w-4" />
-			{datum.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+			{activiteit.datum.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
 		</h3>
 		<div class="divider" />
 		<div class="prose my-5 text-center">{activiteit.omschrijving}</div>
 		<div class="card-actions text-center self-center">
-			{#if activiteit.inschrijven && datum.getTime() > huidige_datum.getTime() }
+			{#if activiteit.inschrijven && activiteit.datum.getTime() > huidige_datum.getTime() }
 				<a href={activiteit.formlink} class="btn btn-primary btn-wide">Schrijf je in!</a>
 			{/if}
 		</div>

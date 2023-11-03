@@ -1,3 +1,4 @@
+import type { Activiteit } from '$lib/components/index.js';
 import { ActiviteitSchema, AugustjesSchema, VerslagSchema } from '$lib/schemas.js';
 import { serializeNonPOJOs, valideerData } from '$lib/utils';
 import { error, fail } from '@sveltejs/kit';
@@ -16,13 +17,15 @@ export async function load({ request, locals }: { request: any; locals: any }) {
 			return res.items.map((a: any) => {
 				return serializeNonPOJOs({
 					...a,
-					banner: locals.pb.files.getUrl(a, a.banner)
-				});
+					banner: locals.pb.files.getUrl(a, a.banner),
+					datum: new Date(a.datum)
+					
+				}) as Activiteit;
 			});
-		});
+		}) as Activiteit[];
 
 	return { activiteiten: activiteiten.sort((a, b) => {
-		return new Date(b.datum).getTime() - new Date(a.datum).getTime();
+		return b.datum.getTime() - a.datum.getTime();
 	}) };
 }
 

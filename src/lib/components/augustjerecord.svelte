@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import type { Augustje } from '$lib/types';
 	import { Edit, Trash, File } from 'lucide-svelte';
 	import toast from 'svelte-french-toast';
 
-	export let augustje: any;
+	export let augustje: Augustje;
 	export let dialog: HTMLDialogElement;
-	export let geselecteerd_augustje: any | undefined;
+	export let geselecteerd_augustje: Augustje | null;
 	let loading = false;
 
 	const bewerk_augustje = () => {
@@ -58,7 +59,7 @@
 		<div class="font-bold">{augustje.naam}</div>
 	</td>
 	<td>
-		<a class="btn" href={augustje.augustje} target="_blank">
+		<a class="btn" href={augustje.bestand} target="_blank">
 			<File class="h-4 w-4" />
 		</a>
 	</td>

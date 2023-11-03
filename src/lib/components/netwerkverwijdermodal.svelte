@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import toast from 'svelte-french-toast';
-	import Input from './input.svelte';
-	import { LogIn, Pencil, Trash } from 'lucide-svelte';
-	import { Avatar } from '.';
+	import { Trash } from 'lucide-svelte';
 
 	export let dialog: HTMLDialogElement;
 	export let personen: any;

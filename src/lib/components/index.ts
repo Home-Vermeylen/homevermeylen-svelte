@@ -15,6 +15,7 @@ import Augustjesmodal from './augustjesmodal.svelte';
 import Activiteitenmodal from './activiteitenmodal.svelte';
 import Netwerkverwijdermodal from './netwerkverwijdermodal.svelte';
 import Netwerkvoegtoemodal from './netwerkvoegtoemodal.svelte';
+import Netwerkdetailmodal from './netwerkdetailmodal.svelte';
 import Updatewachtwoordmodal from './updatewachtwoordmodal.svelte';
 
 export {
@@ -35,5 +36,6 @@ export {
 	Activiteitenmodal,
 	Netwerkverwijdermodal,
 	Netwerkvoegtoemodal,
+	Netwerkdetailmodal,
 	Updatewachtwoordmodal
 };

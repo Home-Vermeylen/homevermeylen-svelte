@@ -1,4 +1,5 @@
 import { serializeNonPOJOs } from '$lib/utils';
+import * as uuid from 'uuid';
 import { error } from '@sveltejs/kit';
 
 export async function load({ request, locals }: { request: any; locals: any }) {
@@ -109,7 +110,7 @@ export const actions = {
 		netwerk.gebruikers.push({
 			naam: data.get('naam'),
 			club: data.get('club'),
-			id: netwerk.gebruikers.length + 1
+			id: uuid.v4()
 		});
 
 		try {

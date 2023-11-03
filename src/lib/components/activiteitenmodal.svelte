@@ -5,8 +5,9 @@
 	import type { Record } from 'pocketbase';
 	import type { ActionResult } from '@sveltejs/kit';
 	import { Pencil } from 'lucide-svelte';
+	import type { Activiteit } from '$lib/types';
 
-	export let geselecteerde_activiteit: Record | null;
+	export let geselecteerde_activiteit: Activiteit | null;
 	export let dialog: HTMLDialogElement;
 	export let gebruiker: Record;
 	export let form;
@@ -177,8 +178,8 @@
 			label="Datum"
 			value={geselecteerde_activiteit?.datum
 				? new Date(
-						new Date(geselecteerde_activiteit?.datum).getTime() -
-							new Date(geselecteerde_activiteit?.datum).getTimezoneOffset() * 60000
+						geselecteerde_activiteit?.datum.getTime() -
+							geselecteerde_activiteit?.datum.getTimezoneOffset() * 60000
 				  )
 						.toISOString()
 						.slice(0, -1)

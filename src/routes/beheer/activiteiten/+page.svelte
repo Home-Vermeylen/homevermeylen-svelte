@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { Activiteitsrecord } from '$lib/components';
 	import Activiteitenmodal from '$lib/components/activiteitenmodal.svelte';
+	import type { Activiteit } from '$lib/types.js';
 	import { CalendarPlus, FilePlus } from 'lucide-svelte';
 
 	export let data: any;
 	export let form;
 
-	let geselecteerde_activiteit: any | null = null;
+	let geselecteerde_activiteit: Activiteit | null = null;
 	let dialog: HTMLDialogElement;
 
 	const open_modal = () => {
