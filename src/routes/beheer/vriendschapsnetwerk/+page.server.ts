@@ -11,7 +11,7 @@ export async function load({ request, locals }: { request: any; locals: any }) {
 
 	const data = {
 		nodes: gebruikers.map((v: any) => {
-			return { id: v.id, label: v.naam, group: v.club };
+			return { id: v.id, label: v.naam, group: v.club};
 		}),
 		edges: datamap.map((v: any, i: any) => {
 			let color = {};
@@ -31,7 +31,8 @@ export async function load({ request, locals }: { request: any; locals: any }) {
 				from: v.id1,
 				to: v.id2,
 				color,
-				arrows
+				arrows,
+				commentaar: v.commentaar, locatie: v.locatie 
 			};
 		})
 	};

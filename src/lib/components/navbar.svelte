@@ -174,7 +174,7 @@
 	</div>
 	<div class="navbar-end">
 		{#if !data.user}
-			<a href="/login" class="btn btn-outline">
+			<a href="/login" class="btn btn-primary">
 				Log In <LogIn class="h-4 w-4" />
 			</a>
 		{:else}

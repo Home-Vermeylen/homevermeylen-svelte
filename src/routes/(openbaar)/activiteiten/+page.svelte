@@ -11,12 +11,12 @@
 		if (data.activiteiten) {
 			opkomende_activiteiten = data.activiteiten.filter((a) => {
 				return a.datum.getTime() >= new Date().getTime();
-			});
+			}).sort((a, b) => a.datum.getTime() - b.datum.getTime());
 			afgelopen_activiteiten = data.activiteiten
 				.filter((a) => {
 					return a.datum.getTime() < new Date().getTime();
 				})
-				.reverse();
+				.sort((a, b) => b.datum.getTime() - a.datum.getTime());
 		}
 	}
 </script>

@@ -70,9 +70,8 @@
 										? 'Gemuild'
 										: connectie.color.color == '#05f9e2'
 										? 'Seks'
-										: 'Relatie'} met {personen[connectie.to - 1]?.label} ({personen[
-										connectie.to - 1
-									]?.group})
+										: 'Relatie'} met {personen.find((p) => p.id == connectie.to)?.label} ({personen.find((p) => p.id == connectie.to)
+							?.group})
 
 									<form method="post" use:enhance={updateNetwerk} action="?/verwijder_connectie">
 										<input
@@ -98,9 +97,8 @@
 										? 'Gemuild'
 										: connectie.color.color == '#05f9e2'
 										? 'Seks'
-										: 'Relatie'} met {personen[connectie.from - 1]?.label} ({personen[
-										connectie.from - 1
-									]?.group})
+										: 'Relatie'} met {personen.find((p) => p.id == connectie.from)?.label} ({personen.find((p) => p.id == connectie.from)
+							?.group})
 
 									<form method="post" use:enhance={updateNetwerk} action="?/verwijder_connectie">
 										<input

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Avatar } from '$lib/components';
 	import Praesidiumbadge from '$lib/components/praesidiumbadge.svelte';
-	import { Home, Users, Calendar, Newspaper, ScrollText, Settings, LucideMenu, LucideX, Heart, LucideHome } from 'lucide-svelte';
+	import { Home, Users, Calendar, Newspaper, ScrollText, Settings, LucideMenu, LucideX, Heart, LucideHome, Vote } from 'lucide-svelte';
 	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
 
@@ -18,7 +18,9 @@
 		huidig_paneel = "INSTELLINGEN"
 	} else if ($page.url.pathname.includes('vriendschapsnetwerk')) {
 		huidig_paneel = "VRIENDSCHAPSNETWERK"
-	} else {
+	} else if ($page.url.pathname.includes('verkiezingen')) {
+		huidig_paneel = "VERKIEZINGEN"
+	}else {
 		huidig_paneel = "DASH"
 	}
 </script>
@@ -110,6 +112,14 @@
 					>
 						<Heart class="h-4 w-4" />
 						Vriendschapsnetwerk
+					</a>
+					<a
+						class={`btn ${huidig_paneel != 'VERKIEZINGEN' ? 'btn-neutral' : 'btn-primary'}`}
+						href="/beheer/verkiezingen"
+						on:click={() => { huidig_paneel = 'VERKIEZINGDN' }}
+					>
+						<Vote class="h-4 w-4" />
+						Verkiezingen
 					</a>
 				</div>
 			</aside>

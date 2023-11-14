@@ -23,8 +23,7 @@
 				netwerk = new vis.Network(div!, data.netwerk_data, data.opties);
 
 				netwerk.on('selectNode', (t) => {
-					geselecteerde_node = data.netwerk_data.nodes[t.nodes[0]];
-					console.log(geselecteerde_node);
+					geselecteerde_node = (data.netwerk_data.nodes).find((val: any) => val.id == t.nodes[0]);
 					netwerkdetailmodal.showModal();
 				});
 			});
