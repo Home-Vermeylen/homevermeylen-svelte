@@ -102,7 +102,7 @@
 						on:click={() => { huidig_paneel = 'VERSLAGEN' }}
 					>
 						<ScrollText class="h-4 w-4" />
-						Verslagen & Statuten
+						Verslagen
 					</a>
 
 					<a

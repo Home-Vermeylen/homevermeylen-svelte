@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import toast from 'svelte-french-toast';
 	import Input from './input.svelte';
 	import type { Augustje } from '$lib/types';
@@ -8,45 +7,9 @@
 	export let dialog: HTMLDialogElement;
 	export let gebruiker: any;
 	export let form: any;
-
-	let loading = false;
-
-	const updateAugustje = () => {
-		loading = true;
-
-		return async ({ result, update }: { result: any; update: any }) => {
-			switch (result.type) {
-				case 'success':
-					if (geselecteerd_augustje) {
-						toast.success('Augustje succesvol aangepast.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					} else {
-						toast.success('Augustje gepubliceerd.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					}
-
-					await update();
-					break;
-				case 'invalid':
-					if (geselecteerd_augustje) {
-						toast.error('Aanpassen Augustje mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					} else {
-						toast.error('Publicatie Augustje mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					}
-					await update();
-					break;
-				case 'error':
-					if (geselecteerd_augustje) {
-						toast.error('Aanpassen Augustje mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					} else {
-						toast.error('Publicatie Augustje mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					}
-					break;
-				default:
-					await update();
-			}
-			loading = false;
-			resetGeselecteerdAugustje();
-		};
-	};
+	export let errors: any;
+	export let enhance: any;
+	export let delayed: any;
 
 	const resetGeselecteerdAugustje = () => {
 		dialog.close();
@@ -56,7 +19,7 @@
 
 <dialog bind:this={dialog} id="verslag_modal" class="modal" on:cancel={resetGeselecteerdAugustje}>
 	<form
-		use:enhance={updateAugustje}
+		use:enhance
 		method="post"
 		action="?/update"
 		enctype="multipart/form-data"
@@ -81,17 +44,27 @@
 			name="bestand"
 			placeholder={geselecteerd_augustje?.bestand ?? ''}
 		/>
-		<Input
-			id="naam"
-			label="Naam"
-			placeholder="Geef hier de naam voor het bestand in."
-			value={geselecteerd_augustje?.naam ?? ''}
-			errors={form?.data?.naam}
-		/>
+		<div class="form-control w-full max-w-lg mb-2">
+			<label for="naam" class="label font-medium pb-1">
+				<span class="label-text">Naam</span>
+			</label>
+			<input
+				type="text"
+				id="naam"
+				name="naam"
+				aria-invalid={$errors.naam ? 'true' : undefined}
+				value={geselecteerd_augustje?.naam ?? ''}
+				required
+				class={`input input-bordered`}
+			/>
+			{#if $errors.naam}<label for="naam" class="label py-0 pt-1">
+					<span class="label-text-alt text-error">{$errors.naam}</span>
+				</label>{/if}
+		</div>
 
 		<div class="modal-action">
 			<button type="submit" formmethod="dialog" class="btn btn-ghost">Annuleer</button>
-			<button type="submit" class={`btn btn-outline ${loading ? 'loading loading-spinner' : ''}`}
+			<button type="submit" class={`btn btn-outline ${$delayed ? 'loading loading-spinner' : ''}`}
 				>Opslaan</button
 			>
 		</div>
