@@ -10,34 +10,14 @@
 	export let dialog: HTMLDialogElement;
 	export let gebruiker: any;
 	export let fakkels: any;
-	export let form: any;
+	export let FakkelsForm: any;
+	export let FakkelsEnhance: any;
+	export let FakkelsMessage: any;
+	export let FakkelsDelayed: any;
+	export let FakkelsErrors: any;
 	export let praesidium_leden: any;
 
-	let loading = false;
 
-	const updateBakken = () => {
-		loading = true;
-
-		return async ({ result, update }: { result: any; update: any }) => {
-			switch (result.type) {
-				case 'success':
-					toast.success('Fakkels aangepast.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					await update();
-					break;
-				case 'invalid':
-					toast.error('Aanpassen fakkels mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					await update();
-					break;
-				case 'error':
-					toast.error('Aanpassen fakkels mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					break;
-				default:
-					await update();
-			}
-			loading = false;
-			resetGeselecteerdeFakkel();
-		};
-	};
 
 	const resetGeselecteerdeFakkel = () => {
 		dialog.close();
@@ -47,7 +27,7 @@
 
 <dialog bind:this={dialog} id="fakkels_modal" class="modal" on:cancel={resetGeselecteerdeFakkel}>
 	<form
-		use:enhance={updateBakken}
+		use:FakkelsEnhance
 		method="post"
 		action="?/update_fakkels"
 		enctype="multipart/form-data"
@@ -76,19 +56,33 @@
 			value={gebruiker?.expand?.praesidiumlid?.expand.praesidium.id ?? ''}
 		/>
 
-		<Input
-			id="aantal"
-			label="Aantal fakkels"
-			type="number"
-			value={(fakkels.find && fakkels.find((val) => {
-				return val.gebruiker == geselecteerde_fakkel?.gebruiker;
-			}))?.aantal ?? 0}
-			errors={form?.data?.fakkels}
-		/>
+		<div class="form-control w-full max-w-lg mb-2">
+			<label for="aantal" class="label font-medium pb-1">
+				<span class="label-text">Aantal fakkels</span>
+			</label>
+			<input
+				type="number"
+				id="aantal"
+				name="aantal"
+				aria-invalid={$FakkelsErrors.aantal ? 'true' : undefined}
+				value={(
+					fakkels.find &&
+					fakkels.find((val) => {
+						return val.gebruiker == geselecteerde_fakkel?.gebruiker;
+					})
+				)?.aantal ?? 0}
+				required
+				class={`input input-bordered`}
+			/>
+			{#if $FakkelsErrors.aantal}<label for="aantal" class="label py-0 pt-1">
+					<span class="label-text-alt text-error">{$FakkelsErrors.aantal}</span>
+				</label>{/if}
+		</div>
+
 
 		<div class="modal-action">
 			<button type="submit" formmethod="dialog" class="btn btn-ghost">Annuleer</button>
-			<button type="submit" class={`btn btn-outline ${loading ? 'loading loading-spinner' : ''}`}
+			<button type="submit" class={`btn btn-outline ${$FakkelsDelayed ? 'loading loading-spinner' : ''}`}
 				>Opslaan</button
 			>
 		</div>

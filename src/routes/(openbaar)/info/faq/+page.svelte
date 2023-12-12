@@ -8,9 +8,12 @@
 >
 	<div class="prose mt-5">
 		<h1 class="text-center">FAQ</h1>
-		<div>
-			<div tabIndex={0} class="collapse collapse-arrow bg-base-200 mb-2">
-				<div class="collapse-title text-xl font-medium">Hoe verbind ik met het internet?</div>
+		<div class="join join-vertical w-full">
+			<div class="collapse collapse-arrow join-item border border-base-300 bg-base-200">
+				<input type="checkbox" name="faq" />
+				<div class="collapse-title text-xl font-medium">
+					Hoe verbind ik met het internet?
+				</div>
 				<div class="collapse-content">
 					<p>
 						Op de homes kan je net zoals op alle UGent campussen en resto's gebruik maken van het
@@ -33,18 +36,28 @@
 						het Home helpen je graag verder :)
 					</p>
 				</div>
-			</div>
-			<div tabIndex={0} class="collapse collapse-arrow bg-base-200 mb-2">
-				<div class="collapse-title text-xl font-medium">Sleutel vergeten! Wat nu?</div>
+			  </div>
+			  <div class="collapse collapse-arrow join-item border border-base-300 bg-base-200">
+				<input type="checkbox" name="faq" />
+				<div class="collapse-title text-xl font-medium">
+					Sleutel vergeten! Wat nu?
+				</div>
 				<div class="collapse-content">
 					<p>
 						Aan het <a class="link link-hover underline" href="tel:092647100">onthaal</a> van de Home
 						kan je de reservesleutel van je kamer gaan opvragen.
 					</p>
+					<p>
+						Indien het onthaal gesloten is kan je aan de zijkant van de Home (aan de kant van Home Heymans) aanbellen bij de permanentiedienst (24/7).
+						Zij kunnen je dan verder helpen.
+					</p>
 				</div>
-			</div>
-			<div tabIndex={0} class="collapse collapse-arrow bg-base-200 mb-2">
-				<div class="collapse-title text-xl font-medium">Overlast</div>
+			  </div>
+			  <div class="collapse collapse-arrow join-item border border-base-300 bg-base-200">
+				<input type="checkbox" name="faq" />
+				<div class="collapse-title text-xl font-medium">
+					Overlast
+				</div>
 				<div class="collapse-content">
 					<p>
 						Bij overlast in het gebouw kan je 24/7 contact opnemen met het <a
@@ -53,7 +66,7 @@
 						> van de UGent.
 					</p>
 				</div>
-			</div>
+			  </div>
 		</div>
 	</div>
 </div>

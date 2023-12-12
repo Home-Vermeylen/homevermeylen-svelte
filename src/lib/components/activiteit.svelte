@@ -7,7 +7,7 @@
 	const huidige_datum = new Date();
 </script>
 
-<div class="card w-[400px] bg-base-200 shadow-xl m-5 break-all">
+<div class="card w-[400px] bg-base-200 shadow-xl m-5">
 	<figure class="w-[400px] h-[200px] rounded">
 		<img
 			loading="lazy"
@@ -19,7 +19,7 @@
 		/>
 	</figure>
 	<div class="card-body">
-		<h2 class="card-title text-center text-3xl self-center mb-5">{activiteit.naam}</h2>
+		<h2 class="card-title text-center text-3xl self-center mb-5 break-all">{activiteit.naam}</h2>
 		<h3 class="flex flex-row gap-2 self-center">
 			<CalendarDays className="h-4 w-4" />
 			{activiteit.datum.toLocaleDateString()}
@@ -29,7 +29,15 @@
 			{activiteit.datum.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
 		</h3>
 		<div class="divider" />
-		<div class="prose my-5 text-center">{activiteit.omschrijving}</div>
+		<div class="collapse collapse-arrow bg-base-300">
+			<input type="checkbox" name="omschrijving" /> 
+			<div class="collapse-title text-xl font-medium">
+			  Omschrijving
+			</div>
+			<div class="collapse-content"> 
+			  <p>{activiteit.omschrijving}</p>
+			</div>
+		  </div>
 		<div class="card-actions text-center self-center">
 			{#if activiteit.inschrijven && activiteit.datum.getTime() > huidige_datum.getTime() }
 				<a href={activiteit.formlink} class="btn btn-primary btn-wide">Schrijf je in!</a>

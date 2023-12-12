@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import toast from 'svelte-french-toast';
 	import Input from './input.svelte';
 	import type { Record } from 'pocketbase';
@@ -10,59 +9,13 @@
 	export let geselecteerde_activiteit: Activiteit | null;
 	export let dialog: HTMLDialogElement;
 	export let gebruiker: Record;
-	export let form;
+	export let form: any;
+	export let enhance: any;
+	export let message: any;
+	export let delayed: any;
+	export let errors: any;
 
-	let loading = false;
 	let banner: HTMLImageElement;
-
-	const updateActiviteit = () => {
-		loading = true;
-
-		return async ({ result, update }: { result: ActionResult; update: any }) => {
-			switch (result.type) {
-				case 'success':
-					if (geselecteerde_activiteit) {
-						toast.success('Activiteit succesvol aangepast.', {
-							style: 'border-radius: 200px; background: #333; color: #fff;'
-						});
-					} else {
-						toast.success('Activiteit gepubliceerd.', {
-							style: 'border-radius: 200px; background: #333; color: #fff;'
-						});
-					}
-
-					await update();
-					break;
-				case 'failure':
-					if (geselecteerde_activiteit) {
-						toast.error('Aanpassen activiteit mislukt.', {
-							style: 'border-radius: 200px; background: #333; color: #fff;'
-						});
-					} else {
-						toast.error('Publicatie activiteit mislukt.', {
-							style: 'border-radius: 200px; background: #333; color: #fff;'
-						});
-					}
-					await update();
-					break;
-				case 'error':
-					if (geselecteerde_activiteit) {
-						toast.error('Aanpassen activiteit mislukt.', {
-							style: 'border-radius: 200px; background: #333; color: #fff;'
-						});
-					} else {
-						toast.error('Publicatie activiteit mislukt.', {
-							style: 'border-radius: 200px; background: #333; color: #fff;'
-						});
-					}
-					break;
-				default:
-					await update();
-			}
-			loading = false;
-			resetGeselecteerdeActiviteit();
-		};
-	};
 
 	const resetGeselecteerdeActiviteit = () => {
 		dialog.close();
@@ -77,7 +30,7 @@
 	on:cancel={resetGeselecteerdeActiviteit}
 >
 	<form
-		use:enhance={updateActiviteit}
+		use:enhance
 		method="post"
 		action="?/update"
 		enctype="multipart/form-data"
@@ -101,15 +54,15 @@
 
 		<div class="form-control w-full max-w-lg">
 			<label for="banner" class="hover:cursor-pointer flex flex-col gap-2 items-center">
-				<img
-					bind:this={banner}
-					loading="lazy"
-					src={geselecteerde_activiteit?.banner ?? '/omslag.jpg'}
-					width={250}
-					height={200}
-					alt="banner"
-					class="rounded-lg border-2 border-spacing-1 object-contain border-base-300"
-				/>
+					<img
+						bind:this={banner}
+						loading="lazy"
+						src={geselecteerde_activiteit?.banner}
+						width={250}
+						height={200}
+						alt="banner"
+						class="rounded-lg border-2 border-spacing-1 object-contain border-base-300"
+					/>
 				<label for="banner">
 					<span class="btn">
 						<Pencil class="w-4 h-4" /> Bewerk afbeelding
@@ -128,37 +81,68 @@
 				}}
 			/>
 		</div>
-		<Input
-			id="naam"
-			label="Naam"
-			required
-			placeholder="Geef hier de naam voor de activiteit in."
-			value={geselecteerde_activiteit?.naam ?? ''}
-			errors={form?.data?.naam}
-		/>
-		<Input
-			id="omschrijving"
-			label="Omschrijving"
-			required
-			placeholder="Geef hier de omschrijving van de activiteit."
-			value={geselecteerde_activiteit?.omschrijving ?? ''}
-			errors={form?.data?.omschrijving}
-		/>
-		<Input
-			id="locatie"
-			label="Locatie"
-			placeholder="Geef hier de locatie van de activiteit in."
-			value={geselecteerde_activiteit?.locatie ?? ''}
-			errors={form?.data?.locatie}
-		/>
-		<div class="form-control w-full max-w-xs">
-			<!-- svelte-ignore a11y-label-has-associated-control -->
-			<label class="label">
+		<div class="form-control w-full max-w-lg mb-2">
+			<label for="naam" class="label font-medium pb-1">
+				<span class="label-text">Naam</span>
+			</label>
+			<input
+				type="text"
+				id="naam"
+				name="naam"
+				aria-invalid={$errors.naam ? 'true' : undefined}
+				value={geselecteerde_activiteit?.naam ?? ''}
+				required
+				class={`input input-bordered`}
+			/>
+			{#if $errors.naam}<label for="naam" class="label py-0 pt-1">
+					<span class="label-text-alt text-error">{$errors.naam}</span>
+				</label>{/if}
+		</div>
+		<div class="form-control w-full max-w-lg mb-2">
+			<label for="omschrijving" class="label font-medium pb-1">
+				<span class="label-text">Omschrijving</span>
+			</label>
+			<textarea
+				id="naam"
+				name="naam"
+				cols=55
+				aria-invalid={$errors.omschrijving ? 'true' : undefined}
+				value={geselecteerde_activiteit?.omschrijving ?? ''}
+				required
+				class={`textarea textarea-bordered`}
+			/>
+
+			{#if $errors.omschrijving}<label for="omschrijving" class="label py-0 pt-1">
+					<span class="label-text-alt text-error">{$errors.omschrijving}</span>
+				</label>{/if}
+		</div>
+
+		<div class="form-control w-full max-w-lg mb-2">
+			<label for="locatie" class="label font-medium pb-1">
+				<span class="label-text">Locatie</span>
+			</label>
+			<input
+				type="text"
+				id="locatie"
+				name="locatie"
+				aria-invalid={$errors.locatie ? 'true' : undefined}
+				value={geselecteerde_activiteit?.locatie ?? ''}
+				required
+				class={`input input-bordered`}
+			/>
+			{#if $errors.locatie}<label for="locatie" class="label py-0 pt-1">
+					<span class="label-text-alt text-error">{$errors.locatie}</span>
+				</label>{/if}
+		</div>
+		<div class="form-control max-w-lg mb-2">
+			<label for="activiteitstype" class="label font-medium pb-1">
 				<span class="label-text">Activiteitstype</span>
 			</label>
 			<select
 				required
+				id="activiteitstype"
 				name="activiteitstype"
+				aria-invalid={$errors.activiteitstype ? 'true' : undefined}
 				value={geselecteerde_activiteit?.activiteitstype ?? ''}
 				class="select select-bordered"
 			>
@@ -170,22 +154,36 @@
 				<option value="CANTUS">Cantus</option>
 				<option value="ANDERE">Andere</option>
 			</select>
+			{#if $errors.activiteitstype}<label for="locatie" class="label py-0 pt-1">
+					<span class="label-text-alt text-error">{$errors.locatie}</span>
+				</label>{/if}
 		</div>
-		<Input
-			type="datetime-local"
-			id="datum"
-			required
-			label="Datum"
-			value={geselecteerde_activiteit?.datum
-				? new Date(
-						geselecteerde_activiteit?.datum.getTime() -
-							geselecteerde_activiteit?.datum.getTimezoneOffset() * 60000
-				  )
-						.toISOString()
-						.slice(0, -1)
-				: ''}
-			errors={form?.data?.datum}
-		/>
+
+		<div class="form-control w-full max-w-lg mb-2">
+			<label for="datum" class="label font-medium pb-1">
+				<span class="label-text">Datum</span>
+			</label>
+			<input
+				type="datetime-local"
+				id="datum"
+				name="datum"
+				aria-invalid={$errors.datum ? 'true' : undefined}
+				value={geselecteerde_activiteit?.datum
+					? new Date(
+							geselecteerde_activiteit?.datum.getTime() -
+								geselecteerde_activiteit?.datum.getTimezoneOffset() * 60000
+					  )
+							.toISOString()
+							.slice(0, -1)
+					: ''}
+				required
+				class={`input input-bordered`}
+			/>
+			{#if $errors.datum}<label for="datum" class="label py-0 pt-1">
+					<span class="label-text-alt text-error">{$errors.datum}</span>
+				</label>{/if}
+		</div>
+
 		<div class="form-control">
 			<label class="label cursor-pointer">
 				<span class="label-text">Inschrijven</span>
@@ -197,23 +195,30 @@
 				/>
 			</label>
 		</div>
-		<Input
-			id="formlink"
-			label="Formlink"
-			value={geselecteerde_activiteit?.formlink ?? ''}
-			errors={form?.data?.formlink}
-		/>
+		<div class="form-control w-full max-w-lg mb-2">
+			<label for="formlink" class="label font-medium pb-1">
+				<span class="label-text">Inschrijvingslink</span>
+			</label>
+			<input
+				type="text"
+				id="formlink"
+				name="formlink"
+				aria-invalid={$errors.formlink ? 'true' : undefined}
+				value={geselecteerde_activiteit?.formlink ?? ''}
+				required
+				class={`input input-bordered`}
+			/>
+			{#if $errors.formlink}<label for="formlink" class="label py-0 pt-1">
+					<span class="label-text-alt text-error">{$errors.formlink}</span>
+				</label>{/if}
+		</div>
 		<div class="modal-action">
 			<button type="submit" formnovalidate formmethod="dialog" class="btn btn-ghost"
 				>Annuleer</button
 			>
-			{#if loading}
-				<button class="btn btn-square">
-					<span class="loading loading-spinner" />
-				</button>
-			{:else}
-				<button type="submit" class="btn btn-primary">Opslaan</button>
-			{/if}
+			<button type="submit" class={`btn btn-primary ${$delayed ? 'loading loading-spinner' : ''}`}
+				>Opslaan</button
+			>
 		</div>
 	</form>
 </dialog>
