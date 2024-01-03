@@ -14,7 +14,7 @@
 			><Calendar class="h-4 w-4" /> {datum.toLocaleDateString()}</span
 		>
 		<div class="card-actions justify-center mt-5">
-			<a class="btn btn-primary" target="_blank" href={augustje.bestand}> Lees nu </a>
+			<a class="btn btn-primary" target="_blank" href={augustje.bestand} data-umami-event="Augustje gelezen"> Lees nu </a>
 		</div>
 	</div>
 </div>

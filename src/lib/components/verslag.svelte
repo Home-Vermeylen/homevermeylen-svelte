@@ -12,7 +12,7 @@
 			><Calendar class="h-4 w-4" /> {verslag.created.toLocaleDateString()}</span
 		>
 		<div class="card-actions justify-center mt-5">
-			<a class="btn btn-primary" target="_blank" href={verslag.bestand}> Lees nu </a>
+			<a class="btn btn-primary" target="_blank" href={verslag.bestand} data-umami-event="Verslag gelezen"> Lees nu </a>
 		</div>
 	</div>
 </div>

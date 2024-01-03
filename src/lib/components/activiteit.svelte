@@ -40,7 +40,7 @@
 		  </div>
 		<div class="card-actions text-center self-center">
 			{#if activiteit.inschrijven && activiteit.datum.getTime() > huidige_datum.getTime() }
-				<a href={activiteit.formlink} class="btn btn-primary btn-wide">Schrijf je in!</a>
+				<a href={activiteit.formlink} class="btn btn-primary btn-wide" data-umami-event="Inschrijving activiteit">Schrijf je in!</a>
 			{/if}
 		</div>
 	</div>
