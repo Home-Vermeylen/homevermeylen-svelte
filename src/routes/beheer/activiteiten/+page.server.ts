@@ -25,7 +25,7 @@ export async function load({ request, locals }: { request: any; locals: any }) {
 			});
 		}) as Activiteit[];
 
-	const form = superValidate(ActiviteitSchema);
+	const form = await superValidate(ActiviteitSchema);
 
 	return { activiteiten: activiteiten.sort((a, b) => {
 		return b.datum.getTime() - a.datum.getTime();

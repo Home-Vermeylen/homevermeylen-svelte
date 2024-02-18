@@ -104,7 +104,7 @@
 			</label>
 			<textarea
 				id="naam"
-				name="naam"
+				name="omschrijving"
 				cols=55
 				aria-invalid={$errors.omschrijving ? 'true' : undefined}
 				value={geselecteerde_activiteit?.omschrijving ?? ''}
@@ -205,7 +205,6 @@
 				name="formlink"
 				aria-invalid={$errors.formlink ? 'true' : undefined}
 				value={geselecteerde_activiteit?.formlink ?? ''}
-				required
 				class={`input input-bordered`}
 			/>
 			{#if $errors.formlink}<label for="formlink" class="label py-0 pt-1">

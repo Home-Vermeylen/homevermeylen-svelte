@@ -33,8 +33,8 @@ export async function load({ request, locals }) {
 			expand: 'gebruiker'
 		});
 
-	const BakkenForm = superValidate(BakkenSchema, { id: "bakken" });
-	const FakkelsForm = superValidate(FakkelSchema, { id: "fakkels" });
+	const BakkenForm = await superValidate(BakkenSchema, { id: "bakken" });
+	const FakkelsForm = await superValidate(FakkelSchema, { id: "fakkels" });
 
 	return { bakken: serializeNonPOJOs(bakken.items), fakkels: serializeNonPOJOs(fakkels.items), praesidium_leden: serializeNonPOJOs(praesidium_leden), BakkenForm, FakkelsForm };
 }
