@@ -15,5 +15,5 @@ export async function load({ fetch, locals, url }) {
 			})
 		);
 
-	return { augustjes: fetch(api_url, {method: "GET"}).then(async (data) => { return data.json()}), academiejaar: locals.academiejaar, academiejaren, academiejaar_query }
+	return { augustjes: fetch("/api/augustjes", {method: "GET"}).then(async (data) => { return data.json()}), academiejaar: locals.academiejaar, academiejaren, academiejaar_query }
 }

@@ -2,8 +2,6 @@
 	import { Augustje, Academiejaarselector } from '$lib/components';
 
 	export let data;
-
-	data.augustjes.then((e) => console.log(e))
 </script>
 
 <svelte:head>

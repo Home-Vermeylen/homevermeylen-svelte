@@ -56,12 +56,6 @@ export async function load({ request, locals }) {
 
 	const academiejaar_query = new URL(request.url).searchParams.get('aj');
 
-	const huidig_academiejaar: string = (
-		await locals.pb
-			.collection('site_instellingen')
-			.getFirstListItem("sleutel = 'huidig_academiejaar'")
-	).waarde;
-
 	const academiejaren = await locals.pb
 		.collection('praesidium_openbaar')
 		.getFullList()
@@ -74,7 +68,7 @@ export async function load({ request, locals }) {
 	let praesidium_leden: any[] = (
 		await locals.pb
 			.collection('praesidium_openbaar')
-			.getFirstListItem(`academiejaar = "${academiejaar_query ?? huidig_academiejaar}"`, {
+			.getFirstListItem(`academiejaar = "${academiejaar_query ?? locals.academiejaar}"`, {
 				expand: 'praesidium_leden, praesidium_leden.gebruiker'
 			})
 	).expand.praesidium_leden;
@@ -85,7 +79,7 @@ export async function load({ request, locals }) {
 
 	return {
 		praesidium_leden: serializeNonPOJOs(praesidium_leden),
-		huidig_academiejaar,
+		huidig_academiejaar: locals.academiejaar,
 		academiejaar_query: new URL(request.url).searchParams.get('aj'),
 		academiejaren
 	};

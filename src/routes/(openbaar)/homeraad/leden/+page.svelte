@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
-
 	import { Academiejaarselector, Praesidiumlid } from '$lib/components';
 
 	export let data: any;
@@ -16,7 +14,7 @@
 		<h1 class="py-5 text-3xl font-bold italic tracking-wider">Academiejaar</h1>
 		<Academiejaarselector
 			academiejaren={data.academiejaren}
-			huidig_academiejaar={data.academiejaar_query ?? data.huidig_academiejaar}
+			geselecteerd_academiejaar={data.academiejaar_query ?? data.huidig_academiejaar}
 		/>
 	</div>
 	<div class="grid gap-x-10 gap-y-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
