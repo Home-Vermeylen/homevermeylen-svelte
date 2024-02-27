@@ -16,7 +16,7 @@ export interface Augustje {
 }
 
 export async function GET({ locals, url }) {
-	const academiejaar_query = undefined;
+	const academiejaar_query = new URL(url).searchParams.get('aj');
 
 	const augustjes = await locals.pb
 		.collection('augustjes')
@@ -25,12 +25,12 @@ export async function GET({ locals, url }) {
 		})
 		.then((r) => {
             return r.map((a) => {
-                return {
+                return serializeNonPOJOs({
                     ...a,
                     created: new Date(a.created),
                     bestand: locals.pb.files.getUrl(a, a.bestand)
-                } as any as Augustje
-            }).toSorted((a, b) => {
+                }) as Augustje
+            }).sort((a, b) => {
 				return b.created.getTime() - a.created.getTime();
 			})
 		});
