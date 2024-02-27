@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 
 	export let academiejaren: string[];
-	export let huidig_academiejaar: string;
+	export let geselecteerd_academiejaar: string;
 
 	const nav = (academiejaar: string) => {
 		let query = new URLSearchParams($page.url.searchParams.toString());
@@ -13,10 +13,10 @@
 </script>
 
 <select on:change={(e) => nav(e.target.value)} class="select select-bordered">
-	<option selected>{huidig_academiejaar}</option>
+	<option selected>{geselecteerd_academiejaar}</option>
 
 	{#each academiejaren as academiejaar (academiejaar)}
-		{#if academiejaar != huidig_academiejaar}
+		{#if academiejaar != geselecteerd_academiejaar}
 			<option value={academiejaar}>{academiejaar}</option>
 		{/if}
 	{/each}

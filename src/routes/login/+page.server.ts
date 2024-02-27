@@ -18,9 +18,9 @@ export const actions = {
 				.collection('gebruikers')
 				.authWithPassword(formData.gebruikersnaam, formData.wachtwoord);
 		} catch (err: any) {
-			throw error(err.status, err.message);
+			error(err.status, err.message);
 		}
 
-		throw redirect(303, '/');
+		redirect(303, '/');
 	}
 };

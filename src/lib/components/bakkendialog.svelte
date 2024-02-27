@@ -26,7 +26,7 @@
 	<form
 		use:enhance
 		method="post"
-		action="?/update_bakken"
+		action="/api/bakken"
 		enctype="multipart/form-data"
 		class="modal-box flex flex-col space-y-5 items-center"
 	>

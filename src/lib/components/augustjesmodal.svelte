@@ -1,12 +1,9 @@
 <script lang="ts">
-	import toast from 'svelte-french-toast';
-	import Input from './input.svelte';
-	import type { Augustje } from '$lib/types';
+	import type { Augustje } from '../../routes/api/augustjes/+server';
 
 	export let geselecteerd_augustje: Augustje | null;
 	export let dialog: HTMLDialogElement;
 	export let gebruiker: any;
-	export let form: any;
 	export let errors: any;
 	export let enhance: any;
 	export let delayed: any;
@@ -21,7 +18,7 @@
 	<form
 		use:enhance
 		method="post"
-		action="?/update"
+		action="/api/augustjes"
 		enctype="multipart/form-data"
 		class="modal-box flex flex-col space-y-5"
 	>

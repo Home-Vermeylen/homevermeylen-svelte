@@ -1,28 +1,34 @@
-import PocketBase, { Record } from 'pocketbase';
+import PocketBase, { type AuthModel } from 'pocketbase';
 import { serializeNonPOJOs } from '$lib/utils';
 import { redirect } from '@sveltejs/kit';
 
 export const handle = async ({ event, resolve }) => {
 	event.locals.pb = new PocketBase(import.meta.env.VITE_PUBLIC_POCKETBASE_URL);
+	event.locals.academiejaar = (
+		await event.locals.pb
+			.collection('site_instellingen')
+			.getFirstListItem("sleutel = 'huidig_academiejaar'")
+	).waarde;
+
 	event.locals.pb.authStore.loadFromCookie(event.request.headers.get('cookie') || '');
 
 	try {
 		await event.locals.pb
 			.collection('gebruikers')
-			.authRefresh({}, { expand: 'praesidiumlid, pro_praesidiumlid, praesidiumlid.praesidium' });
+			.authRefresh({ expand: 'praesidiumlid, pro_praesidiumlid, praesidiumlid.praesidium' });
 	} catch (_) {
 		event.locals.pb.authStore.clear();
 	}
 
 	if (event.locals.pb.authStore.isValid) {
-		event.locals.user = serializeNonPOJOs(event.locals.pb.authStore.model) as Record;
+		event.locals.user = serializeNonPOJOs(event.locals.pb.authStore.model) as AuthModel;
 	} else {
 		event.locals.user = undefined;
 	}
 
 	if (event.url.pathname.startsWith('/beheer')) {
 		if (!event.locals.user?.praesidiumlid) {
-			throw redirect(303, '/login');
+			redirect(303, '/login');
 		}
 	}
 

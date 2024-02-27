@@ -1,12 +1,15 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { Augustje } from '$lib/types';
+	import type { Augustje } from '../../routes/api/augustjes/+server';
 	import { Edit, Trash, File } from 'lucide-svelte';
 	import toast from 'svelte-french-toast';
 
 	export let augustje: Augustje;
 	export let dialog: HTMLDialogElement;
 	export let geselecteerd_augustje: Augustje | null;
+
+	let datum = new Date(augustje.created)
+
 	let loading = false;
 
 	const bewerk_augustje = () => {
@@ -14,27 +17,25 @@
 		dialog.showModal();
 	};
 
-	const verwijder_augustje = () => {
+	const verwijder_augustje = async () => {
 		loading = true;
 
-		return async ({ result, update }: { result: any; update: any }) => {
-			switch (result.type) {
-				case 'success':
-					toast.success('Verwijdering voltooid.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					await update();
-					break;
-				case 'invalid':
-					toast.error('Verwijdering mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					await update();
-					break;
-				case 'error':
-					toast.error('Verwijdering mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					break;
-				default:
-					await update();
-			}
-			loading = false;
-		};
+		const res = await fetch('/api/augustjes', { method: 'DELETE', body: JSON.stringify({ id: augustje.id }) })
+
+		switch (res.status) {
+			case 200:
+				toast.success('Verwijdering voltooid.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
+				break;
+			case 403:
+				toast.error('Verwijdering mislukt: geen toegang.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
+				break;
+			case 500:
+				toast.error('Verwijdering mislukt: serverfout.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
+				break;
+
+		}
+
+		loading = false;
 	};
 </script>
 
@@ -44,15 +45,13 @@
 			<button class="btn btn-square h-7 w-7" on:click={bewerk_augustje}>
 				<Edit class="h-4 w-4" />
 			</button>
-			<form use:enhance={verwijder_augustje} method="post" action="?/verwijder">
-				<input type="hidden" name="id" value={augustje.id} />
 				<button
 					type="submit"
+					on:click={verwijder_augustje}
 					class={`btn btn-square btn-error h-7 w-7 ${loading ? 'loading-spinner loading' : ''}`}
 				>
 					<Trash class="h-4 w-4" />
 				</button>
-			</form>
 		</div>
 	</td>
 	<td>
@@ -64,6 +63,6 @@
 		</a>
 	</td>
 	<td>
-		<div>{augustje.created}</div>
+		{datum.toLocaleDateString()}
 	</td>
 </tr>

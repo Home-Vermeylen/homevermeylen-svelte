@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import type { Activiteit } from '$lib/types';
+	import type { Activiteit } from '../../routes/api/activiteiten/+server'
 	import { Edit, Trash } from 'lucide-svelte';
 	import toast from 'svelte-french-toast';
 
 	export let activiteit: Activiteit;
 	export let dialog: HTMLDialogElement;
 	export let geselecteerde_activiteit: Activiteit | null;
+
+	const datum = new Date(activiteit.datum);
 	let loading = false;
 
 	const bewerk_activiteit = () => {
@@ -14,27 +15,34 @@
 		dialog.showModal();
 	};
 
-	const verwijder_activiteit = () => {
+	const verwijder_activiteit = async (id: string) => {
 		loading = true;
 
-		return async ({ result, update }: { result: any; update: any }) => {
-			switch (result.type) {
-				case 'success':
-					toast.success('Verwijdering voltooid.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					await update();
-					break;
-				case 'invalid':
-					toast.error('Verwijdering mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					await update();
-					break;
-				case 'error':
-					toast.error('Verwijdering mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					break;
-				default:
-					await update();
-			}
-			loading = false;
-		};
+		const res = await fetch('/api/activiteiten', {
+			method: 'DELETE',
+			body: JSON.stringify({
+				id
+			})
+		});
+
+		switch (res.status) {
+			case 200:
+				toast.success('Verwijdering voltooid.', {
+					style: 'border-radius: 200px; background: #333; color: #fff;'
+				});
+				break;
+			case 403:
+				toast.error('Verwijdering mislukt: geen toegang', {
+					style: 'border-radius: 200px; background: #333; color: #fff;'
+				});
+				break;
+			case 500:
+				toast.error('Verwijdering mislukt: serverfout', {
+					style: 'border-radius: 200px; background: #333; color: #fff;'
+				});
+				break;
+		}
+		loading = false;
 	};
 </script>
 
@@ -44,15 +52,13 @@
 			<button class="btn btn-square h-7 w-7" on:click={bewerk_activiteit}>
 				<Edit class="h-4 w-4" />
 			</button>
-			<form use:enhance={verwijder_activiteit} method="post" action="?/verwijder">
-				<input type="hidden" name="id" value={activiteit.id} />
-				<button
-					type="submit"
-					class={`btn btn-square btn-error h-7 w-7 ${loading ? 'loading-spinner loading' : ''}`}
-				>
-					<Trash class="h-4 w-4" />
-				</button>
-			</form>
+			<button
+				type="submit"
+				on:click={() => verwijder_activiteit(activiteit.id)}
+				class={`btn btn-square btn-error h-7 w-7 ${loading ? 'loading-spinner loading' : ''}`}
+			>
+				<Trash class="h-4 w-4" />
+			</button>
 		</div>
 	</td>
 	<td>
@@ -78,8 +84,7 @@
 			</div>
 		</div>
 	</td>
-	<td title={activiteit.omschrijving}> Geef weer </td>
 	<td>
-		<div>{activiteit.datum}</div>
+		<div>{datum.toLocaleString()}</div>
 	</td>
 </tr>

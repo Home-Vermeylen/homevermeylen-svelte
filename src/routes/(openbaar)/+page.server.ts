@@ -26,7 +26,7 @@ export const actions = {
 				await locals.pb.collection('gebruikers').create(origineleData);
 			}
 		} catch (err) {
-			throw error(500, 'Er is een probleem opgetreden bij het opladen van het profiel.');
+			error(500, 'Er is een probleem opgetreden bij het opladen van het profiel.');
 		}
 	},
 	update_wachtwoord: async ({ request, locals }) => {
@@ -44,7 +44,7 @@ export const actions = {
 		try {
 			await locals.pb.collection('gebruikers').update(formData.id, origineleData);
 		} catch (err) {
-			throw error(500, 'Er is een probleem opgetreden bij het updaten van het wachtwoord.');
+			error(500, 'Er is een probleem opgetreden bij het updaten van het wachtwoord.');
 		}
 	}
 };

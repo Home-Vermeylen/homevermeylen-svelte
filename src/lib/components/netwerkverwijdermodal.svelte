@@ -73,7 +73,7 @@
 										: 'Relatie'} met {personen.find((p) => p.id == connectie.to)?.label} ({personen.find((p) => p.id == connectie.to)
 							?.group})
 
-									<form method="post" use:enhance={updateNetwerk} action="?/verwijder_connectie">
+									<form method="post" use:enhance={updateNetwerk} action="/api/vriendschapsnetwerk/verwijder_connectie">
 										<input
 											type="hidden"
 											name="type"
@@ -100,7 +100,7 @@
 										: 'Relatie'} met {personen.find((p) => p.id == connectie.from)?.label} ({personen.find((p) => p.id == connectie.from)
 							?.group})
 
-									<form method="post" use:enhance={updateNetwerk} action="?/verwijder_connectie">
+									<form method="post" use:enhance={updateNetwerk} action="/api/vriendschapsnetwerk/verwijder_connectie">
 										<input
 											type="hidden"
 											name="type"
@@ -119,7 +119,7 @@
 						</ol>
 					</div>
 					<div>
-						<form method="post" use:enhance={updateNetwerk} action="?/verwijder_persoon">
+						<form method="post" use:enhance={updateNetwerk} action="/api/vriendschapsnetwerk/verwijder_persoon">
 							<input type="hidden" name="id" value={persoon.id} />
 							<button type="submit" class="btn btn-square btn-error"
 								><Trash class="h-4 w-4" /></button

@@ -1,17 +1,12 @@
 <script lang="ts">
-	import toast from 'svelte-french-toast';
-	import Input from './input.svelte';
-	import type { Record } from 'pocketbase';
-	import type { ActionResult } from '@sveltejs/kit';
+	import type { RecordModel } from 'pocketbase';
 	import { Pencil } from 'lucide-svelte';
-	import type { Activiteit } from '$lib/types';
+	import type { Activiteit } from '../../routes/api/activiteiten/+server';
 
 	export let geselecteerde_activiteit: Activiteit | null;
 	export let dialog: HTMLDialogElement;
-	export let gebruiker: Record;
-	export let form: any;
+	export let gebruiker: RecordModel;
 	export let enhance: any;
-	export let message: any;
 	export let delayed: any;
 	export let errors: any;
 
@@ -32,7 +27,7 @@
 	<form
 		use:enhance
 		method="post"
-		action="?/update"
+		action="/api/activiteiten"
 		enctype="multipart/form-data"
 		class="modal-box flex flex-col space-y-5 text-center"
 	>

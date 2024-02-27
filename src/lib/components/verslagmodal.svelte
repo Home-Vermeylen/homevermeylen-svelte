@@ -20,7 +20,7 @@
 	<form
 		use:enhance
 		method="post"
-		action="?/update"
+		action="/api/verslagen"
 		enctype="multipart/form-data"
 		class="modal-box flex flex-col space-y-5"
 	>

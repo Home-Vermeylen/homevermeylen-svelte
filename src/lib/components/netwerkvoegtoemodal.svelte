@@ -62,7 +62,7 @@
 			<form
 				method="post"
 				use:enhance={updateNetwerk}
-				action="?/nieuwe_connectie"
+				action="/api/vriendschapsnetwerk/nieuwe_connectie"
 				class="flex flex-col gap-5 items-center"
 			>
 				<div class="flex flex-row items-center">
@@ -107,7 +107,7 @@
 				</div>
 			</form>
 		{:else}
-			<form method="post" use:enhance={updateNetwerk} action="?/nieuwe_persoon">
+			<form method="post" use:enhance={updateNetwerk} action="/api/vriendschapsnetwerk/nieuwe_persoon">
 				<Input
 					id="naam"
 					label="Naam"

@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import toast from 'svelte-french-toast';
 	import Input from './input.svelte';
-	import type { Record } from 'pocketbase';
+	import type { RecordModel } from 'pocketbase';
 	import PocketBase from 'pocketbase';
 	import { onMount } from 'svelte';
 
@@ -29,7 +29,7 @@
 	<form
 		use:FakkelsEnhance
 		method="post"
-		action="?/update_fakkels"
+		action="/api/fakkels"
 		enctype="multipart/form-data"
 		class="modal-box flex flex-col space-y-5 items-center"
 	>

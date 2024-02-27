@@ -3,7 +3,6 @@
 	import Netwerkverwijdermodal from '$lib/components/netwerkverwijdermodal.svelte';
 	import { Trash, UserPlus } from 'lucide-svelte';
 	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
 	import type { Network } from 'vis-network';
 
 	export let data;
@@ -19,25 +18,36 @@
 		let div = document.getElementById('canvas');
 
 		if (div) {
-			import('vis-network').then((vis) => {
-				netwerk = new vis.Network(div!, data.netwerk_data, data.opties);
+			data.netwerk.then((res) => {
+				import('vis-network').then((vis) => {
+					netwerk = new vis.Network(div!, res.netwerk_data, res.opties);
 
-				netwerk.on('selectNode', (t) => {
-					geselecteerde_node = (data.netwerk_data.nodes).find((val: any) => val.id == t.nodes[0]);
-					netwerkdetailmodal.showModal();
+					netwerk.on('selectNode', (t: any) => {
+						geselecteerde_node = res.netwerk_data.nodes.find(
+							(val: any) => val.id == t.nodes[0]
+						);
+						netwerkdetailmodal.showModal();
+					});
 				});
 			});
 		}
-	})
+	});
 </script>
 
-<Netwerkdetailmodal bind:geselecteerde_node bind:dialog={netwerkdetailmodal} personen={data.netwerk_data.nodes} connecties={data.netwerk_data.edges} />
-<Netwerkverwijdermodal
-	bind:dialog={netwerkverwijdermodal}
-	personen={data.netwerk_data.nodes}
-	connecties={data.netwerk_data.edges}
-/>
-<Netwerkvoegtoemodal bind:dialog={netwerkvoegtoemodal} personen={data.netwerk_data.nodes} />
+{#await data.netwerk then netwerk}
+	<Netwerkdetailmodal
+		bind:geselecteerde_node
+		bind:dialog={netwerkdetailmodal}
+		personen={netwerk.netwerk_data.nodes}
+		connecties={netwerk.netwerk_data.edges}
+	/>
+	<Netwerkverwijdermodal
+		bind:dialog={netwerkverwijdermodal}
+		personen={netwerk.netwerk_data.nodes}
+		connecties={netwerk.netwerk_data.edges}
+	/>
+	<Netwerkvoegtoemodal bind:dialog={netwerkvoegtoemodal} personen={netwerk.netwerk_data.nodes} />
+{/await}
 <div class="w-full h-screen flex flex-col items-center gap-10 mt-5 overflow-clip cursor-crosshair">
 	<div class="flex flex-row gap-4 self-center">
 		<button
