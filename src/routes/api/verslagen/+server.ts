@@ -29,7 +29,7 @@ export async function GET({ locals, url }) {
                     created: new Date(a.created),
                     bestand: locals.pb.files.getUrl(a, a.bestand)
                 }) as Verslag
-            }).toSorted((a, b) => {
+            }).sort((a, b) => {
 				return b.created.getTime() - a.created.getTime();
 			})
 		});
