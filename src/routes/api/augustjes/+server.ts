@@ -16,7 +16,7 @@ export interface Augustje {
 }
 
 export async function GET({ locals, url }) {
-	const academiejaar_query = new URL(url).searchParams.get('aj');
+	const academiejaar_query = undefined;
 
 	const augustjes = await locals.pb
 		.collection('augustjes')
