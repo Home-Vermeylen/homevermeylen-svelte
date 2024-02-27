@@ -25,11 +25,11 @@ export async function GET({ locals, url }) {
 		})
 		.then((r) => {
             return r.map((a) => {
-                return serializeNonPOJOs({
+                return {
                     ...a,
                     created: new Date(a.created),
                     bestand: locals.pb.files.getUrl(a, a.bestand)
-                }) as Augustje
+                } as any as Augustje
             }).toSorted((a, b) => {
 				return b.created.getTime() - a.created.getTime();
 			})
