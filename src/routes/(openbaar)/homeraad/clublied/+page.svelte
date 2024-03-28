@@ -65,7 +65,7 @@
                 <br>
                 Op Vermeylen is 't leven apart
                 <br>
-                Maar dat geef niet, er valt veel te plezieren
+                Maar dat geeft niet, er valt veel te plezieren
                 <br>
                 Home Vermeylen de beste Home van 't stad!
             </p>
