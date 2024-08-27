@@ -1,9 +1,5 @@
 <script lang="ts">
-	import toast from 'svelte-french-toast';
-	import Input from './input.svelte';
 	import type { Record } from 'pocketbase';
-	import PocketBase from 'pocketbase';
-	import { onMount } from 'svelte';
 
 	export let geselecteerde_bak: Record | null;
 	export let dialog: HTMLDialogElement;

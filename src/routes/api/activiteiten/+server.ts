@@ -1,95 +1,62 @@
 import { ActiviteitSchema } from '$lib/schemas';
 import { error, fail, json } from '@sveltejs/kit';
-import type { RecordModel } from 'pocketbase';
+import { zod } from 'sveltekit-superforms/adapters';
 import { actionResult, superValidate } from 'sveltekit-superforms/server';
 
-export type ACTIVITEITSTYPE = 'BAR' | 'CANTUS' | 'SPORT' | 'CULTUUR' | 'FEEST' | 'ANDERE';
-
-/// Mapping met ´activiteiten_openbaar´ in de database
-export interface PubliekeActiviteit {
-	id: string;
-	naam: string;
-	omschrijving: string;
-	locatie: string;
-	datum: Date;
-	activiteitstype: ACTIVITEITSTYPE;
-	banner: string;
-	inschrijven: boolean;
-	formlink: string;
-}
-
-/// Mapping met ´activiteiten´ in de database
-export interface Activiteit {
-	id: string;
-	naam: string;
-	omschrijving: string;
-	locatie: string;
-	datum: Date;
-	activiteitstype: ACTIVITEITSTYPE;
-	banner: string;
-	inschrijven: boolean;
-	formlink: string;
-	praesidium: PRAESIDIUM;
-	gepubliceerd: boolean;
-	created: Date;
-	updated: Date;
-}
 
 export async function GET({ locals }) {
 	const a = await locals.pb
-		.collection('activiteiten_openbaar')
-		.getFullList()
-		.then((r: RecordModel[]) => {
-			return r.map((a: RecordModel) => {
-				return {
-					...a,
-					banner: locals.pb.files.getUrl(a, a.banner),
-					datum: new Date(a.datum)
-				} as any as PubliekeActiviteit;
-			});
-		});
+		.collection('activiteiten')
+		.getFullList({ filter: `praesidium.academiejaar = '${locals.praesidium?.academiejaar}'`, sort: '-datum' })
+		.then(r => r.map(a => ({...a, banner: locals.pb.files.getUrl(a, a.banner), datum: new Date(a.datum)})));
 
 	const opkomende_activiteiten = a
-		.filter((a: Activiteit) => {
-			return a.datum.getTime() >= new Date().getTime();
+		.filter((a) => {
+			return a.datum.getTime() >= (new Date()).getTime();
 		})
-		.sort((a: Activiteit, b: Activiteit) => a.datum.getTime() - b.datum.getTime());
+		.sort((a, b) => a.datum.getTime() - b.datum.getTime())
 	const afgelopen_activiteiten = a
-		.filter((a: Activiteit) => {
-			return a.datum.getTime() < new Date().getTime();
+		.filter((a) => {
+			return a.datum.getTime() < (new Date()).getTime();
 		})
-		.sort((a: Activiteit, b: Activiteit) => b.datum.getTime() - a.datum.getTime());
+		.sort((a, b) => b.datum.getTime() - a.datum.getTime());
+
 	return json({ opkomende_activiteiten, afgelopen_activiteiten });
 }
 
-export async function POST({ locals, request }) {
-	const origineleData = await request.clone().formData();
+export async function POST(event) {
+	const origineleData = await event.request.clone().formData();
 
-	const form = await superValidate(request, ActiviteitSchema);
+	if ((origineleData.get('banner') as File).size == 0) {
+		origineleData.delete('banner');
+	}
 
-    if (!locals.pb.authStore.isValid) {
-        return actionResult('failure', {form}, 403)
-    }
+	const lokale_datum = new Date(origineleData.get('datum') as string);
+
+	origineleData.set('datum', (new Date(Date.UTC(lokale_datum.getUTCFullYear(), lokale_datum.getUTCMonth(),
+	lokale_datum.getUTCDate(), lokale_datum.getUTCHours(),
+	lokale_datum.getUTCMinutes(), lokale_datum.getUTCSeconds()))).toISOString());
+
+	const form = await superValidate(event, zod(ActiviteitSchema));
+	form.data.banner = undefined;
 
 	if (!form.valid) {
 		return actionResult('failure', { form }, 400);
 	}
 
-	if ((origineleData.get('banner') as any).size == 0) {
-		origineleData.delete('banner');
-	}
-
-	origineleData.set('inschrijven', origineleData.get('inschrijven') ? 'true' : 'false');
-	origineleData.set('datum', new Date(origineleData.get('datum') as string).toISOString());
-
-	try {
-		if (form.data.id) {
-			await locals.pb.collection('activiteiten').update(form.data.id, origineleData);
-		} else {
-			await locals.pb.collection('activiteiten').create(origineleData);
+	if(form.data.id) {
+		try {
+			await event.locals.pb.collection('activiteiten').update(form.data.id, origineleData);
+		} catch (err) {
+			return actionResult('error', { form }, 500);
 		}
-	} catch (err) {
-		return actionResult('error', { form }, 500);
+	} else {
+		origineleData.set('praesidium', event.locals.praesidium?.id ?? '')
+		try {
+			await event.locals.pb.collection('activiteiten').create(origineleData);
+		} catch (err) {
+			return actionResult('error', { form }, 500);
+		}
 	}
 
 	return actionResult('success', { form }, 200);

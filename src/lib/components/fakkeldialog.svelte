@@ -1,11 +1,5 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import toast from 'svelte-french-toast';
-	import Input from './input.svelte';
-	import type { RecordModel } from 'pocketbase';
-	import PocketBase from 'pocketbase';
-	import { onMount } from 'svelte';
-
+	
 	export let geselecteerde_fakkel: Record | null;
 	export let dialog: HTMLDialogElement;
 	export let gebruiker: any;

@@ -1,13 +1,12 @@
-import type PocketBase from 'pocketbase';
+import { PraesidiaResponse, type TypedPocketBase } from '../types/pocketbase-types.ts';
 
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 declare global {
 	namespace App {
 		interface Locals {
-			pb: PocketBase;
-			user: Record | undefined;
-			academiejaar: string ;
+			pb: TypedPocketBase;
+			praesidium: PraesidiaResponse?
 		}
 		// interface Error {}
 		// interface Locals {}
@@ -16,4 +15,4 @@ declare global {
 	}
 }
 
-export {};
+export { };

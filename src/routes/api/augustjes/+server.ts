@@ -1,18 +1,17 @@
 import { AugustjesSchema } from '$lib/schemas';
 import type { PRAESIDIUM } from '$lib/types';
-import { serializeNonPOJOs } from '$lib/utils.js';
 import { error, fail, json } from '@sveltejs/kit';
-import type { RecordModel } from 'pocketbase';
+import { zod } from 'sveltekit-superforms/adapters';
 import { actionResult, superValidate } from 'sveltekit-superforms/server';
 
 /// Mapping met ´augustjes´ in de database
 export interface Augustje {
-    id: string,
-    naam: string,
-    bestand: string,
-    praesidium: PRAESIDIUM,
-    created: Date,
-    updated: Date
+	id: string,
+	naam: string,
+	bestand: string,
+	praesidium: PRAESIDIUM,
+	created: Date,
+	updated: Date
 }
 
 export async function GET({ locals, url }) {
@@ -21,60 +20,51 @@ export async function GET({ locals, url }) {
 	const augustjes = await locals.pb
 		.collection('augustjes')
 		.getFullList({
-			filter: `praesidium.academiejaar = "${academiejaar_query ?? locals.academiejaar}"`
+			filter: `praesidium.academiejaar = "${academiejaar_query ?? locals.praesidium?.academiejaar}"`, sort: '-created'
 		})
-		.then((r) => {
-            return r.map((a) => {
-                return serializeNonPOJOs({
-                    ...a,
-                    created: new Date(a.created),
-                    bestand: locals.pb.files.getUrl(a, a.bestand)
-                }) as Augustje
-            }).sort((a, b) => {
-				return b.created.getTime() - a.created.getTime();
-			})
-		});
+		.then(r => r.map(a => ({ ...a, created: new Date(a.created), pdf: locals.pb.files.getUrl(a, a.pdf) })))
 
 	return json(augustjes);
 }
 
-export async function POST({ locals, request }) {
-    const origineleData = await request.clone().formData();
+export async function POST(event) {
+	const origineleData = await event.request.clone().formData();
 
-		const form = await superValidate(origineleData, AugustjesSchema);
+	if ((origineleData.get('pdf') as File).size == 0) {
+		origineleData.delete('pdf');
+	}
 
-		if (!locals.pb.authStore.isValid) {
-            return actionResult('failure', {form}, 403)
-        }
-    
-        if (!form.valid) {
-            return actionResult('failure', { form }, 400);
-        }
+	const form = await superValidate(event, zod(AugustjesSchema));
+	form.data.pdf = undefined;
 
-		if ((origineleData.get('bestand') as any).size == 0) {
-			origineleData.delete('bestand');
-		}
+	if (!form.valid) {
+		return actionResult('failure', { form }, 400);
+	}
 
-
+	if (form.data.id) {
 		try {
-			if (form.data.id) {
-				await locals.pb.collection('augustjes').update(form.data.id, origineleData);
-			} else {
-				await locals.pb.collection('augustjes').create(origineleData);
-			}
+			await event.locals.pb.collection('augustjes').update(form.data.id, origineleData);
 		} catch (err) {
-			return actionResult('error', {form}, 500);
+			return actionResult('error', { form }, 500);
 		}
+	} else {
+		origineleData.set('praesidium', event.locals.praesidium?.id ?? '')
+		try {
+			await event.locals.pb.collection('augustjes').create(origineleData);
+		} catch (err) {
+			return actionResult('error', { form }, 500);
+		}
+	}
 
-		return actionResult('success', {form}, 200);
+	return actionResult('success', { form }, 200);
 }
 
 export async function DELETE({ locals, request }) {
 	const data = await request.json();
 
-    if (!locals.pb.authStore.isValid) {
-        fail(403);
-    }
+	if (!locals.pb.authStore.isValid) {
+		fail(403);
+	}
 
 	try {
 		await locals.pb.collection('augustjes').delete(data.id);
@@ -82,5 +72,5 @@ export async function DELETE({ locals, request }) {
 		error(500, 'Er is een probleem opgetreden bij het verwijderen van het augustje.');
 	}
 
-    return new Response(undefined, { status: 200 });
+	return new Response(undefined, { status: 200 });
 }

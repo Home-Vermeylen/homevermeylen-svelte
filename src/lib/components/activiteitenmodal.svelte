@@ -1,218 +1,169 @@
 <script lang="ts">
-	import type { RecordModel } from 'pocketbase';
-	import { Pencil } from 'lucide-svelte';
-	import type { Activiteit } from '../../routes/api/activiteiten/+server';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import * as Form from '$lib/components/ui/form';
+	import * as Select from '$lib/components/ui/select';
+	import { ActiviteitSchema } from '$lib/schemas';
+	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
+	import { zod } from 'sveltekit-superforms/adapters';
+	import { Input } from './ui/input';
+	import { Textarea } from './ui/textarea';
 
-	export let geselecteerde_activiteit: Activiteit | null;
-	export let dialog: HTMLDialogElement;
-	export let gebruiker: RecordModel;
-	export let enhance: any;
-	export let delayed: any;
-	export let errors: any;
+	export let data: SuperValidated<Infer<typeof ActiviteitSchema>>;
+	export let geselecteerde_activiteit:
+		| {
+				id: string;
+				naam: string;
+				omschrijving: string;
+				datum: Date;
+				activiteitstype: string;
+				locatie: string;
+				formlink: string;
+				banner: string;
+		  }
+		| undefined;
+	export let modal_open: boolean;
+	export let id: string;
 
-	let banner: HTMLImageElement;
+	const form = superForm(data, {
+		id,
+		validators: zod(ActiviteitSchema),
+		async onUpdated(event) {
+			modal_open = false;
+			geselecteerde_activiteit = undefined;
+		}
+	});
 
-	const resetGeselecteerdeActiviteit = () => {
-		dialog.close();
-		geselecteerde_activiteit = null;
-	};
+	let banner_url: string | null = null;
+
+	const { form: formData, enhance } = form;
+
+	$: {
+		if (geselecteerde_activiteit) {
+			$formData.naam = geselecteerde_activiteit.naam;
+			$formData.omschrijving = geselecteerde_activiteit.omschrijving;
+			$formData.activiteitstype = geselecteerde_activiteit.activiteitstype;
+			$formData.datum = (new Date(
+				geselecteerde_activiteit.datum.getTime() -
+					geselecteerde_activiteit.datum.getTimezoneOffset() * 60000
+			))
+				.toISOString()
+				.slice(0, -1);
+			$formData.formlink = geselecteerde_activiteit.formlink;
+			$formData.id = geselecteerde_activiteit.id;
+			$formData.locatie = geselecteerde_activiteit.locatie;
+		}
+	}
 </script>
 
-<dialog
-	bind:this={dialog}
-	id="verslag_modal"
-	class="modal modal-scroll h-max"
-	on:cancel={resetGeselecteerdeActiviteit}
->
-	<form
-		use:enhance
-		method="post"
-		action="/api/activiteiten"
-		enctype="multipart/form-data"
-		class="modal-box flex flex-col space-y-5 text-center"
-	>
-		<h3 class="text-center font-bold text-lg">
-			{geselecteerde_activiteit?.naam ?? 'Nieuwe Activiteit'}
-		</h3>
-
-		{#if geselecteerde_activiteit}
-			<input type="hidden" name="id" value={geselecteerde_activiteit?.id} />
-		{/if}
-
-		<input type="hidden" name="gepubliceerd" value={true} />
-
-		<input
-			type="hidden"
-			name="praesidium"
-			value={gebruiker?.expand?.praesidiumlid?.praesidium ?? ''}
-		/>
-
-		<div class="form-control w-full max-w-lg">
-			<label for="banner" class="hover:cursor-pointer flex flex-col gap-2 items-center">
-					<img
-						bind:this={banner}
-						loading="lazy"
-						src={geselecteerde_activiteit?.banner}
-						width={250}
-						height={200}
-						alt="banner"
-						class="rounded-lg border-2 border-spacing-1 object-contain border-base-300"
-					/>
-				<label for="banner">
-					<span class="btn">
-						<Pencil class="w-4 h-4" /> Bewerk afbeelding
-					</span>
-				</label>
-			</label>
-			<input
-				type="file"
-				name="banner"
-				id="banner"
-				value=""
-				accept=".png, .jpg"
-				hidden
-				on:change={(e) => {
-					banner.src = URL.createObjectURL(e.target?.files[0]);
-				}}
-			/>
-		</div>
-		<div class="form-control w-full max-w-lg mb-2">
-			<label for="naam" class="label font-medium pb-1">
-				<span class="label-text">Naam</span>
-			</label>
-			<input
-				type="text"
-				id="naam"
-				name="naam"
-				aria-invalid={$errors.naam ? 'true' : undefined}
-				value={geselecteerde_activiteit?.naam ?? ''}
-				required
-				class={`input input-bordered`}
-			/>
-			{#if $errors.naam}<label for="naam" class="label py-0 pt-1">
-					<span class="label-text-alt text-error">{$errors.naam}</span>
-				</label>{/if}
-		</div>
-		<div class="form-control w-full max-w-lg mb-2">
-			<label for="omschrijving" class="label font-medium pb-1">
-				<span class="label-text">Omschrijving</span>
-			</label>
-			<textarea
-				id="naam"
-				name="omschrijving"
-				cols=55
-				aria-invalid={$errors.omschrijving ? 'true' : undefined}
-				value={geselecteerde_activiteit?.omschrijving ?? ''}
-				required
-				class={`textarea textarea-bordered`}
-			/>
-
-			{#if $errors.omschrijving}<label for="omschrijving" class="label py-0 pt-1">
-					<span class="label-text-alt text-error">{$errors.omschrijving}</span>
-				</label>{/if}
-		</div>
-
-		<div class="form-control w-full max-w-lg mb-2">
-			<label for="locatie" class="label font-medium pb-1">
-				<span class="label-text">Locatie</span>
-			</label>
-			<input
-				type="text"
-				id="locatie"
-				name="locatie"
-				aria-invalid={$errors.locatie ? 'true' : undefined}
-				value={geselecteerde_activiteit?.locatie ?? ''}
-				required
-				class={`input input-bordered`}
-			/>
-			{#if $errors.locatie}<label for="locatie" class="label py-0 pt-1">
-					<span class="label-text-alt text-error">{$errors.locatie}</span>
-				</label>{/if}
-		</div>
-		<div class="form-control max-w-lg mb-2">
-			<label for="activiteitstype" class="label font-medium pb-1">
-				<span class="label-text">Activiteitstype</span>
-			</label>
-			<select
-				required
-				id="activiteitstype"
-				name="activiteitstype"
-				aria-invalid={$errors.activiteitstype ? 'true' : undefined}
-				value={geselecteerde_activiteit?.activiteitstype ?? ''}
-				class="select select-bordered"
-			>
-				<option disabled selected>Pick one</option>
-				<option value="BAR">Bar</option>
-				<option value="CULTUUR">Cultuur</option>
-				<option value="SPORT">Sport</option>
-				<option value="FEEST">Feest</option>
-				<option value="CANTUS">Cantus</option>
-				<option value="ANDERE">Andere</option>
-			</select>
-			{#if $errors.activiteitstype}<label for="locatie" class="label py-0 pt-1">
-					<span class="label-text-alt text-error">{$errors.locatie}</span>
-				</label>{/if}
-		</div>
-
-		<div class="form-control w-full max-w-lg mb-2">
-			<label for="datum" class="label font-medium pb-1">
-				<span class="label-text">Datum</span>
-			</label>
-			<input
-				type="datetime-local"
-				id="datum"
-				name="datum"
-				aria-invalid={$errors.datum ? 'true' : undefined}
-				value={geselecteerde_activiteit?.datum
-					? new Date(
-							geselecteerde_activiteit?.datum.getTime() -
-								geselecteerde_activiteit?.datum.getTimezoneOffset() * 60000
-					  )
-							.toISOString()
-							.slice(0, -1)
-					: ''}
-				required
-				class={`input input-bordered`}
-			/>
-			{#if $errors.datum}<label for="datum" class="label py-0 pt-1">
-					<span class="label-text-alt text-error">{$errors.datum}</span>
-				</label>{/if}
-		</div>
-
-		<div class="form-control">
-			<label class="label cursor-pointer">
-				<span class="label-text">Inschrijven</span>
-				<input
-					name="inschrijven"
-					type="checkbox"
-					class="toggle"
-					checked={geselecteerde_activiteit?.inschrijven ?? false}
+<Dialog.Root bind:open={modal_open}>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>
+				{#if geselecteerde_activiteit}
+					<strong>{geselecteerde_activiteit?.naam}</strong> bewerken
+				{:else}
+					Nieuwe activiteit
+				{/if}
+			</Dialog.Title>
+		</Dialog.Header>
+		<form method="POST" use:enhance enctype="multipart/form-data" action="/api/activiteiten">
+			<div class="flex flex-col items-center gap-2">
+				<img
+					loading="lazy"
+					src={banner_url ?? geselecteerde_activiteit?.banner}
+					class="object-scale-down rounded-md border-2"
+					height={200}
+					width={400}
+					alt="Banner"
 				/>
-			</label>
-		</div>
-		<div class="form-control w-full max-w-lg mb-2">
-			<label for="formlink" class="label font-medium pb-1">
-				<span class="label-text">Inschrijvingslink</span>
-			</label>
-			<input
-				type="text"
-				id="formlink"
-				name="formlink"
-				aria-invalid={$errors.formlink ? 'true' : undefined}
-				value={geselecteerde_activiteit?.formlink ?? ''}
-				class={`input input-bordered`}
-			/>
-			{#if $errors.formlink}<label for="formlink" class="label py-0 pt-1">
-					<span class="label-text-alt text-error">{$errors.formlink}</span>
-				</label>{/if}
-		</div>
-		<div class="modal-action">
-			<button type="submit" formnovalidate formmethod="dialog" class="btn btn-ghost"
-				>Annuleer</button
-			>
-			<button type="submit" class={`btn btn-primary ${$delayed ? 'loading loading-spinner' : ''}`}
-				>Opslaan</button
-			>
-		</div>
-	</form>
-</dialog>
+				<Form.Field {form} name="banner">
+					<Form.Control let:attrs>
+						<Input
+							{...attrs}
+							type="file"
+							on:input={(e) => {
+								$formData.banner = e.currentTarget.files?.item(0) ?? undefined;
+								banner_url =
+									$formData.banner != undefined ? URL.createObjectURL($formData.banner) : null;
+							}}
+							accept="image/png, image/jpeg, image/jpg"
+						/>
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+			</div>
+			<Form.Field {form} name="id">
+				<Form.Control let:attrs>
+					<Input {...attrs} type="hidden" bind:value={$formData.id} />
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Field {form} name="naam">
+				<Form.Control let:attrs>
+					<Form.Label>Naam</Form.Label>
+					<Input {...attrs} bind:value={$formData.naam} />
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Field {form} name="activiteitstype">
+				<Form.Control let:attrs>
+					<Form.Label>Activiteitstype</Form.Label>
+					<Select.Root
+						onSelectedChange={(v) => {
+							v && ($formData.activiteitstype = v.value);
+						}}
+					>
+						<Select.Trigger {...attrs}>
+							<Select.Value placeholder="Selecteer een activiteitstype" />
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Item value="BAR" label="Baravond" />
+							<Select.Item value="CANTUS" label="Cantus" />
+							<Select.Item value="CULTUUR" label="Cultuuractiviteit" />
+							<Select.Item value="FEEST" label="Fuif" />
+							<Select.Item value="SPORT" label="Sportactiviteit" />
+							<Select.Item value="ANDERE" label="Diverse activiteit" />
+						</Select.Content>
+					</Select.Root>
+					<input hidden bind:value={$formData.activiteitstype} name={attrs.name} />
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Field {form} name="omschrijving">
+				<Form.Control let:attrs>
+					<Form.Label>Omschrijving</Form.Label>
+					<Textarea
+						{...attrs}
+						placeholder="Geef wat informatie over de activiteit"
+						class="resize-none"
+						bind:value={$formData.omschrijving}
+					/>
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Field {form} name="locatie">
+				<Form.Control let:attrs>
+					<Form.Label>Locatie</Form.Label>
+					<Input {...attrs} bind:value={$formData.locatie} />
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Field {form} name="datum">
+				<Form.Control let:attrs>
+					<Form.Label>Datum</Form.Label>
+					<Input {...attrs} type="datetime-local" bind:value={$formData.datum} />
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Field {form} name="formlink">
+				<Form.Control let:attrs>
+					<Form.Label>Formlink</Form.Label>
+					<Input {...attrs} bind:value={$formData.formlink} />
+				</Form.Control>
+				<Form.Description>Wanneer een Google Forms URL wordt toegevoegd zullen gebruikers kunnen inschrijven via de website</Form.Description>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Button>Opslaan</Form.Button>
+		</form>
+	</Dialog.Content>
+</Dialog.Root>

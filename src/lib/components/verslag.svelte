@@ -1,15 +1,27 @@
 <script lang="ts">
-	import type { Verslag } from '../../routes/api/verslagen/+server';
-	import { Calendar } from 'lucide-svelte';
+	import * as Card from '$lib/components/ui/card';
+	import { Button } from './ui/button';
+	import { Scroll, ScrollText } from 'lucide-svelte';
 
-	export let verslag: Verslag;
+	export let verslag;
+
+	const gelezen = window.localStorage.getItem(verslag.id) != null;
+
+	const setGelezen = () => window.localStorage.setItem(verslag.id, 'gelezen');
 </script>
 
-<div class="card bg-base-200">
-	<div class="card-body items-center">
-		<h2 class="card-title">{verslag.naam}</h2>
-		<div class="card-actions justify-center mt-5">
-			<a class="btn btn-primary" target="_blank" href={verslag.bestand} data-umami-event="Verslag gelezen"> Lees nu </a>
-		</div>
-	</div>
-</div>
+<Card.Root class="w-[350px]">
+	<Card.Header class="text-center">
+		<Card.Title>{verslag.naam}</Card.Title>
+	</Card.Header>
+	<Card.Footer class="flex justify-center">
+		<Button on:click={setGelezen} href={verslag.pdf} variant={gelezen ? 'outline' : 'default'} class="flex items-center gap-1">
+			{#if gelezen}
+				<ScrollText class="h-4 w-4" /> Gelezen
+			{:else}
+				<Scroll class="h-4 w-4" />
+				Lezen
+			{/if}
+		</Button>
+	</Card.Footer>
+</Card.Root>

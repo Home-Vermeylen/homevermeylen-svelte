@@ -1,37 +1,21 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import toast from 'svelte-french-toast';
-	import { Trash } from 'lucide-svelte';
+	import * as Dialog from '$lib/components/ui/dialog';
 
-	export let dialog: HTMLDialogElement;
+	export let modal_open: boolean;
 	export let geselecteerde_node: any;
 	export let personen: any;
 	export let connecties: any;
-
-	const sluit_modal = () => {
-		dialog.close();
-	};
 </script>
 
-<dialog
-	bind:this={dialog}
-	id="verslag_modal"
-	class="modal"
-	on:cancel={sluit_modal}
->
-	<div class="modal-box flex flex-col space-y-5">
-		<form method="dialog">
-			<button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-		  </form>
+<Dialog.Root bind:open={modal_open}>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>{#if geselecteerde_node} <b>{geselecteerde_node.label}</b> <i>({geselecteerde_node.group})</i> {/if}</Dialog.Title>
+		</Dialog.Header>
+
 		{#if geselecteerde_node}
-			<h3 class="font-bold text-lg">
-				<b>{geselecteerde_node.label}</b> <i>({geselecteerde_node.group})</i>
-			</h3>
 			<ul>
 				{#each connecties.filter((c) => {
-					if (geselecteerde_node.id == 17 && (c.from == geselecteerde_node.id || c.to == geselecteerde_node.id) ) {
-						console.log(c)
-					}
 					return c.from == geselecteerde_node.id;
 				}) as connectie (connectie.id)}
 					<li class="flex flex-col">
@@ -63,5 +47,5 @@
 				{/each}
 			</ul>
 		{/if}
-	</div>
-</dialog>
+	</Dialog.Content>
+</Dialog.Root>
