@@ -1,35 +1,26 @@
-import PocketBase, { type AuthModel } from 'pocketbase';
-import { serializeNonPOJOs } from '$lib/utils';
 import { redirect } from '@sveltejs/kit';
+import PocketBase from 'pocketbase';
+import type { TypedPocketBase } from '../types/pocketbase-types';
 
 export const handle = async ({ event, resolve }) => {
-	event.locals.pb = new PocketBase(import.meta.env.VITE_PUBLIC_POCKETBASE_URL);
-	event.locals.academiejaar = (
-		await event.locals.pb
-			.collection('site_instellingen')
-			.getFirstListItem("sleutel = 'huidig_academiejaar'")
-	).waarde;
+	event.locals.pb = (new PocketBase(import.meta.env.VITE_PUBLIC_POCKETBASE_URL)) as TypedPocketBase;
+
+	event.locals.pb.autoCancellation(false);
+
+	event.locals.praesidium = (
+		await event.locals.pb.collection('praesidia').getList(1,1, { sort: '-academiejaar' }).then(r => r.items[0])
+	);
 
 	event.locals.pb.authStore.loadFromCookie(event.request.headers.get('cookie') || '');
 
 	try {
-		await event.locals.pb
-			.collection('gebruikers')
-			.authRefresh({ expand: 'praesidiumlid, pro_praesidiumlid, praesidiumlid.praesidium' });
+		event.locals.pb.authStore.isValid && await event.locals.pb.collection('functies').authRefresh({ expand: 'praesidiumleden_via_functies'});
 	} catch (_) {
 		event.locals.pb.authStore.clear();
 	}
 
-	if (event.locals.pb.authStore.isValid) {
-		event.locals.user = serializeNonPOJOs(event.locals.pb.authStore.model) as AuthModel;
-	} else {
-		event.locals.user = undefined;
-	}
-
-	if (event.url.pathname.startsWith('/beheer')) {
-		if (!event.locals.user?.praesidiumlid) {
-			redirect(303, '/login');
-		}
+	if (event.url.pathname.startsWith('/beheer') && !event.locals.pb.authStore.isValid) {
+		redirect(303, '/login');
 	}
 
 	const response = await resolve(event);

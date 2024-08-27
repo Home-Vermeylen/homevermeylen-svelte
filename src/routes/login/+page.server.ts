@@ -1,6 +1,7 @@
 import { LoginGebruikerSchema } from '$lib/schemas.js';
 import { valideerData } from '$lib/utils.js';
-import { error, redirect, fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
+import { actionResult } from 'sveltekit-superforms';
 
 export const actions = {
 	login: async ({ request, locals }) => {
@@ -17,8 +18,8 @@ export const actions = {
 			await locals.pb
 				.collection('gebruikers')
 				.authWithPassword(formData.gebruikersnaam, formData.wachtwoord);
-		} catch (err: any) {
-			error(err.status, err.message);
+		} catch (_) {
+			return actionResult("error");
 		}
 
 		redirect(303, '/');

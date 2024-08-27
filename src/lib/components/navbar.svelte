@@ -1,233 +1,194 @@
 <script lang="ts">
-	import { getImageURL } from '$lib/utils';
+	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import * as Drawer from '$lib/components/ui/drawer/index.js';
+	import { LoginGebruikerSchema, ProfielSchema } from '$lib/schemas';
 	import {
 		Calendar,
 		ChevronDown,
-		Heart,
+		ChevronUp,
 		Info,
-		KeyRound,
-		Lock,
-		LogIn,
-		LogOut,
+		LucideEarthLock,
+		LucideLogOut,
 		Newspaper,
-		Pencil,
 		UserCog,
-		Users
+		UsersRound
 	} from 'lucide-svelte';
-	import Avatar from './avatar.svelte';
-	import Gebruikersmodal from './gebruikersmodal.svelte';
-	import Updatewachtwoordmodal from './updatewachtwoordmodal.svelte';
+	import { mediaQuery } from 'svelte-legos';
+	import { toast } from 'svelte-sonner';
+	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import type { PraesidiumLedenRecord } from '../../../types/pocketbase-types';
+	import Loginform from './loginform.svelte';
+	import Profielform from './profielform.svelte';
+	import * as Avatar from './ui/avatar';
+	import { Button } from './ui/button';
+	import * as DropdownMenu from './ui/dropdown-menu';
 
-	export let data: import('../../routes/(openbaar)/$types').LayoutData;
-	export let form: any;
+	let login_open = false;
+	let profiel_open = false;
+	const isDesktop = mediaQuery('(min-width: 768px)');
 
-	let gebruikers_dialog: HTMLDialogElement;
-	let wachtwoord_dialog: HTMLDialogElement;
+	export let functie_id: string;
+	export let login_data: SuperValidated<Infer<typeof LoginGebruikerSchema>>;
+	export let profiel_form: SuperValidated<Infer<typeof ProfielSchema>>;
+	export let praesidium_leden: PraesidiumLedenRecord[] | undefined;
 
-	const toonPreview = (event: Event) => {
-		const target = event.target;
-		const files = (target as any).files;
+	$: ingelogd_lid = praesidium_leden?.find((v) => v.functie == functie_id);
 
-		if (files.length > 0) {
-			const src = URL.createObjectURL(files[0]);
-			const preview = document.getElementById('avatar-preview') as HTMLImageElement;
-
-			preview.src = src;
-		}
-	};
-
-	const nav_items = [
-		{
-			naam: 'Activiteiten',
-			href: '/activiteiten',
-			icon: Calendar
-		},
-		{
-			naam: 'Augustje',
-			href: '/augustje',
-			icon: Newspaper
-		},
-		{
-			naam: 'Homeraad',
-			icon: Users,
-			sub: [
-				{
-					naam: 'Leden',
-					href: '/homeraad/leden'
-				},
-				{
-					naam: 'Verslagen',
-					href: '/homeraad/verslagen'
-				},
-				{
-					naam: 'Clublied',
-					href: '/homeraad/clublied'
-				},
-				{
-					naam: 'Statuten',
-					href: '/statuten.pdf'
+	const login_form = superForm(login_data, {
+		validators: zodClient(LoginGebruikerSchema),
+		async onUpdated({ form }) {
+			if (form.message) {
+				if (form.message.status == 'error') {
+					toast.error(form.message.text);
 				}
-			]
-		},
-		{
-			naam: 'Info',
-			icon: Info,
-			sub: [
-				{
-					naam: 'Geschiedenis',
-					href: '/info/geschiedenis'
-				},
-				{
-					naam: 'FAQ',
-					href: '/info/faq'
-				}
-			]
+			} else {
+				toast.success('Ingelogd.');
+				login_open = false;
+			}
 		}
-	];
+	});
+
+	const { form: login_formData, enhance: login_enhance } = login_form;
+
+	let homeraad_dropdown_open = false;
+	let info_dropdown_open = false;
 </script>
 
-<Gebruikersmodal bind:form bind:dialog={gebruikers_dialog} bind:gebruiker={data.user} />
-<Updatewachtwoordmodal bind:form bind:dialog={wachtwoord_dialog} bind:gebruiker={data.user} />
-<div class="navbar bg-base-100">
-	<div class="navbar-start">
-		<div class="dropdown z-[1]">
-			<!-- svelte-ignore a11y-label-has-associated-control -->
-			<label tabIndex={0} class="btn btn-ghost lg:hidden">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-5 w-5"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M4 6h16M4 12h8m-8 6h16"
-					/>
-				</svg>
-			</label>
-			<ul
-				tabIndex={0}
-				class="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 z-[1]"
-			>
-				{#each nav_items as nav_item}
-					<li>
-						{#if nav_item.sub}
-							<span><svelte:component this={nav_item.icon} class="h-4 w-4" /> {nav_item.naam}</span>
-							<ul class="pt-2">
-								{#each nav_item.sub as sub}
-									<li>
-										<a href={sub.href}>{sub.naam}</a>
-									</li>
-								{/each}
-							</ul>
-						{:else}
-							<a href={nav_item.href} class="gap-2 flex flew-row items-center"
-								><svelte:component this={nav_item.icon} class="h-4 w-4" /> {nav_item.naam}</a
-							>
-						{/if}
-					</li>
-				{/each}
-			</ul>
-		</div>
-		<a href="/" class="btn btn-ghost normal-case text-xl">
-			<img
-				alt="Logo Home Vermeylen"
-				class="h-10 w-10 object-scale-down"
-				height={901}
-				width={1080}
-				src="/logo.png"
-			/>
-		</a>
-	</div>
-	<div class="navbar-center hidden lg:flex">
-		<ul class="menu menu-horizontal px-1">
-			{#each nav_items as nav_item}
-				{#if nav_item.sub}
-					<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-					<li tabindex="0">
-						<details>
-							<summary>
-								<svelte:component this={nav_item.icon} class="h-4 w-4" />
-								{nav_item.naam}
-							</summary>
-							<ul class="pt-2">
-								{#each nav_item.sub as sub}
-									<li>
-										<a href={sub.href}>{sub.naam}</a>
-									</li>
-								{/each}
-							</ul>
-						</details>
-					</li>
-				{:else}
-					<li>
-						<a href={nav_item.href} class="gap-2 flex flew-row items-center"
-							><svelte:component this={nav_item.icon} class="h-4 w-4" /> {nav_item.naam}</a
-						>
-					</li>
-				{/if}
-			{/each}
-		</ul>
-	</div>
-	<div class="navbar-end">
-		{#if !data.user}
-			<a href="/login" class="btn btn-primary">
-				Log In <LogIn class="h-4 w-4" />
+<nav class="fixed z-50 h-[64px] w-full bg-background shadow-sm dark:bg-gray-950/90">
+	<Dialog.Root bind:open={profiel_open}>
+		<Dialog.Content>
+			<Dialog.Header>
+				<Dialog.Title>Profiel bewerken</Dialog.Title>
+			</Dialog.Header>
+			<Profielform bind:profiel_open data={profiel_form} {ingelogd_lid} />
+		</Dialog.Content>
+	</Dialog.Root>
+	<div class="w-full max-w-7xl mx-auto px-4">
+		<div class="flex justify-between h-14 items-center">
+			<a href="/" class="flex items-center">
+				<img src="/logo.png" alt="Home Vermeylen" class="h-10 w-10 object-contain" />
+				<span class="sr-only">Home Vermeylen</span>
 			</a>
-		{:else}
-			<div class="dropdown dropdown-left z-[1]">
-				<!-- svelte-ignore a11y-label-has-associated-control -->
-				<label tabIndex={0} class="btn btn-ghost">
-					<div class="avatar">
-						<div class="w-10 rounded-full ring-primary ring-1 ring-offset-1">
-							<Avatar gebruiker={data.user} />
-						</div>
-					</div>
-				</label>
-				<div
-					tabIndex={0}
-					class="dropdown-content card card-compact bg-base-100 w-64 p-2 shadow flex flex-col justify-center align-middle"
+			<nav class="hidden md:flex gap-4">
+				<Button href="/activiteiten" variant="ghost" class="flex gap-2 items-center"
+					><Calendar class="h-4 w-4" /> Activiteiten</Button
 				>
-					<div class="card-body text-center items-center">
-						<div class="avatar">
-							<div class="w-36 rounded-full ring-primary ring-1 ring-offset-1">
-								<Avatar gebruiker={data.user} />
-							</div>
-						</div>
-
-						<h3 class="card-title">
-							{data.user.voornaam}
-							{data.user.familienaam}
-						</h3>
-						<div class="flex gap-2">
-							<button
-								class="btn btn-circle mt-2"
-								on:click={() => {
-									gebruikers_dialog.showModal();
-								}}
+				<Button href="/augustjes" variant="ghost" class="flex gap-2 items-center"
+					><Newspaper class="h-4 w-4" /> Augustjes</Button
+				>
+				<DropdownMenu.Root bind:open={homeraad_dropdown_open}>
+					<DropdownMenu.Trigger
+						><Button variant="ghost" class="flex gap-2 items-center"
+							><UsersRound class="h-4 w-4" /> Homeraad {#if homeraad_dropdown_open}
+								<ChevronUp class="h-4 w-4 transition-transform" />
+							{:else}<ChevronDown class="h-4 w-4" />{/if}</Button
+						></DropdownMenu.Trigger
+					>
+					<DropdownMenu.Content>
+						<DropdownMenu.Group>
+							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/leden"
+								>Homeraadsleden</DropdownMenu.Item
 							>
-								<UserCog class="h-4 w-4" />
-							</button>
-							<button on:click={() => wachtwoord_dialog.showModal()} class="btn btn-circle mt-2">
-								<KeyRound class="h-4 w-4" />
-							</button>
-						</div>
-						<div class="divider" />
-						<a class="btn btn-wide btn-ghost" href="/beheer">
-							Beheer <Lock class="h-4 w-4" />
-						</a>
-						<a class="btn btn-wide btn-ghost" href="/beheer/vriendschapsnetwerk">
-							Vriendschapnetwerk <Heart class="h-4 w-4" />
-						</a>
-						<form action="/logout" method="post">
-							<button class="btn btn-wide btn-ghost">Log uit <LogOut class="h-4 w-4" /> </button>
-						</form>
-					</div>
-				</div>
+							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/verslagen"
+								>Verslagen</DropdownMenu.Item
+							>
+							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/clublied"
+								>Clublied</DropdownMenu.Item
+							>
+						</DropdownMenu.Group>
+					</DropdownMenu.Content>
+				</DropdownMenu.Root>
+				<DropdownMenu.Root bind:open={info_dropdown_open}>
+					<DropdownMenu.Trigger
+						><Button variant="ghost" class="flex gap-2 items-center"
+							><Info class="h-4 w-4" /> Info {#if info_dropdown_open}
+								<ChevronUp class="h-4 w-4" />
+							{:else}<ChevronDown class="h-4 w-4" />{/if}</Button
+						></DropdownMenu.Trigger
+					>
+					<DropdownMenu.Content>
+						<DropdownMenu.Group>
+							<DropdownMenu.Label>Info</DropdownMenu.Label>
+							<DropdownMenu.Separator />
+							<DropdownMenu.Item data-sveltekit-reload href="/info/faq"
+								>Veelgestelde Vragen</DropdownMenu.Item
+							>
+							<DropdownMenu.Item data-sveltekit-reload href="/info/geschiedenis"
+								>Geschiedenis</DropdownMenu.Item
+							>
+						</DropdownMenu.Group>
+					</DropdownMenu.Content>
+				</DropdownMenu.Root>
+			</nav>
+			<div class="flex items-center gap-4">
+				{#if ingelogd_lid}
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger
+							><Avatar.Root>
+								<Avatar.Image
+									class="object-cover"
+									src={ingelogd_lid.avatar}
+									alt={`${ingelogd_lid?.voornaam} ${ingelogd_lid?.familienaam}`}
+								/>
+								<Avatar.Fallback
+									>{ingelogd_lid?.voornaam?.at(0)}{ingelogd_lid?.familienaam?.at(
+										0
+									)}</Avatar.Fallback
+								>
+							</Avatar.Root>
+						</DropdownMenu.Trigger>
+						<DropdownMenu.Content>
+							<DropdownMenu.Group>
+								<DropdownMenu.Label
+									>{ingelogd_lid?.voornaam} {ingelogd_lid?.familienaam}</DropdownMenu.Label
+								>
+								<DropdownMenu.Separator />
+								<DropdownMenu.Item
+									class="flex gap-1 items-center"
+									href="/beheer"
+									data-sveltekit-reload
+									><LucideEarthLock class="h-4 w-4" /> Beheerspagina</DropdownMenu.Item
+								>
+								<DropdownMenu.Item
+									class="flex gap-1 items-center"
+									on:click={() => (profiel_open = true)}
+									><UserCog class="h-4 w-4" /> Profiel</DropdownMenu.Item
+								>
+								<DropdownMenu.Item class="flex gap-1 items-center" href="/logout"
+									><LucideLogOut class="h-4 w-4" /> Uitloggen</DropdownMenu.Item
+								>
+							</DropdownMenu.Group>
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
+				{:else if $isDesktop}
+					<Dialog.Root bind:open={login_open}>
+						<Dialog.Trigger asChild let:builder>
+							<Button builders={[builder]}>Inloggen</Button>
+						</Dialog.Trigger>
+						<Dialog.Content class="sm:max-w-[425px]">
+							<Dialog.Header>
+								<Dialog.Title>Inloggen</Dialog.Title>
+								<Dialog.Description>Log in als Homeraadslid</Dialog.Description>
+							</Dialog.Header>
+							<Loginform {login_enhance} {login_form} {login_formData} {praesidium_leden} />
+						</Dialog.Content>
+					</Dialog.Root>
+				{:else}
+					<Drawer.Root bind:open={login_open}>
+						<Drawer.Trigger asChild let:builder>
+							<Button builders={[builder]}>Inloggen</Button>
+						</Drawer.Trigger>
+						<Drawer.Content>
+							<Drawer.Header class="text-left">
+								<Drawer.Title>Inloggen</Drawer.Title>
+								<Drawer.Description>Log in als Homeraadslid</Drawer.Description>
+							</Drawer.Header>
+							<Loginform {login_enhance} {login_form} {login_formData} {praesidium_leden} />
+						</Drawer.Content>
+					</Drawer.Root>
+				{/if}
 			</div>
-		{/if}
+		</div>
 	</div>
-</div>
+</nav>

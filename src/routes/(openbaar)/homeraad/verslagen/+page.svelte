@@ -1,6 +1,9 @@
 <script lang="ts">
-	import { Verslag, Academiejaarselector, Augustje } from '$lib/components';
-	import { navigating } from '$app/stores';
+	import Academiejaarselector from '$lib/components/academiejaarselector.svelte';
+	import * as Alert from '$lib/components/ui/alert';
+	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
+	import Verslag from '$lib/components/verslag.svelte';
+	import { LucideAlertCircle, LucideLoader, Squirrel } from 'lucide-svelte';
 
 	export let data;
 </script>
@@ -13,42 +16,54 @@
 	/>
 </svelte:head>
 
-<div class="flex flex-col gap-5 items-center min-h-[calc(100vh-64px)]">
+<div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center">
 	<div class="flex flex-col items-center text-center">
-		<h1 class="py-5 text-3xl font-bold italic tracking-wider">Verslagen</h1>
+		<h1
+			class="scroll-m-20 border-b text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center pt-24 mb-8"
+		>
+			Verslagen
+		</h1>
 		{#await data.academiejaren}
-			<select class="select select-bordered disabled">
-				<option selected>laden...</option>
-			</select>
+			<Alert.Root>
+				<LucideLoader class="h-4 w-4 animate-spin" />
+				<Alert.Title>Academiejaren laden...</Alert.Title>
+			</Alert.Root>
 		{:then academiejaren}
 			<Academiejaarselector
 				{academiejaren}
 				geselecteerd_academiejaar={data.academiejaar_query ?? data.academiejaar}
 			/>
 		{:catch}
-			<h1>error</h1>
+			<Alert.Root variant="destructive">
+				<LucideAlertCircle class="h-4 w-4" />
+				<Alert.Title>Academiejaren laden...</Alert.Title>
+			</Alert.Root>
 		{/await}
 	</div>
 
-	<div class="flex flex-col items-center gap-5 mb-10 mt-5">
+	<div class="flex flex-col items-center gap-5 mb-5 mt-5">
 		{#await data.verslagen}
-			<div class="flex flex-col gap-4 w-52">
-				<div class="skeleton h-32 w-full" />
-				<div class="skeleton h-4 w-28" />
-				<div class="skeleton h-4 w-full" />
-				<div class="skeleton h-4 w-full" />
+			<div class="flex items-center space-x-4">
+				<Skeleton class="h-12 w-12 rounded-full" />
+				<div class="space-y-2">
+					<Skeleton class="h-4 w-[250px]" />
+					<Skeleton class="h-4 w-[200px]" />
+				</div>
 			</div>
 		{:then verslagen}
 			{#if verslagen.length == 0}
-				<h2>Voor dit academiejaar zijn (nog) geen verslagen beschikbaar.</h2>
+				<Alert.Root class="w-80">
+					<Squirrel class="h-4 w-4" />
+					<Alert.Title>Het is hier nogal stil...</Alert.Title>
+				</Alert.Root>
 			{:else}
-				<div class="text-center mb-5">
-					<div class="prose mb-5"><h2>Vers van de pers.</h2></div>
+				<div class="flex flex-col items-center gap-5">
+					<h3 class="scroll-m-20 text-2xl font-semibold tracking-tight">Vers van de pers.</h3>
 					<Verslag verslag={verslagen[0]} />
 				</div>
 				{#if verslagen.length > 1}
 					<div class="flex flex-col items-center gap-5">
-						<div class="prose mb-5"><h2>Eerdere publicaties.</h2></div>
+						<h3 class="scroll-m-20 text-2xl font-semibold tracking-tight">Eerdere publicaties.</h3>
 						{#each verslagen.slice(1) as verslag (verslag.id)}
 							<Verslag {verslag} />
 						{/each}
@@ -60,3 +75,4 @@
 		{/await}
 	</div>
 </div>
+

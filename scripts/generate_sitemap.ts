@@ -1,9 +1,9 @@
 import dirTree from 'directory-tree';
 import * as fs from "fs";
 
-let baseRoute = "/";
-let routes: string[] = [baseRoute]
-let date = new Date().toISOString().split('T')[0]
+const baseRoute = "/";
+const routes: string[] = [baseRoute]
+const date = new Date().toISOString().split('T')[0]
 
 function getSitemapXML(domain: string, routes: string[]) {
     let sitemap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -16,7 +16,7 @@ function getSitemapXML(domain: string, routes: string[]) {
 }
 
 function getSitemapUrl(location: string) {
-    let url =
+    const url =
         "<url>\n" +
         `<loc>${location}</loc>\n` +
         `<lastmod>${date}</lastmod>\n` +
@@ -25,9 +25,9 @@ function getSitemapUrl(location: string) {
 }
 
 function getEndpoints(tree: dirTree.DirectoryTree, route: string) {
-    tree.children!.forEach(child => {
+    tree.children?.forEach(child => {
         if (child.children != undefined && child.children.length != 0) {
-            let childRoute = route + child.name;
+            const childRoute = route + child.name;
             if (child.children.some(e => e.name === '+page.svelte')) {
                 routes.push(childRoute)
             }

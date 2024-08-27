@@ -1,14 +1,14 @@
-import { json } from '@sveltejs/kit';
+import { actionResult } from 'sveltekit-superforms/client';
 
 export async function POST({ request, locals }) {
-    if (!locals.pb.authStore.isValid || !locals.user) {
-		return json(undefined, { status: 403 });
+    if (!locals.pb.authStore.isValid) {
+		return actionResult('failure');
 	}
 
 	const data = await request.formData();
 	const netwerk = await locals.pb
 		.collection('vriendschapsnetwerk')
-		.getFirstListItem(`praesidium = "${locals.user?.expand?.praesidiumlid?.praesidium}"`);
+		.getFirstListItem(`praesidium = "${locals.praesidium?.id}"`);
 
 	const gebruikers = netwerk.gebruikers.filter((g) => {
 		return g.id != data.get('id');
@@ -19,7 +19,8 @@ export async function POST({ request, locals }) {
 
 	try {
 		await locals.pb.collection('vriendschapsnetwerk').update(netwerk.id, { gebruikers, datamap });
+		return actionResult('success');
 	} catch (err) {
-		return json(err, {status: 500});
+		return actionResult('error');
 	}
 }

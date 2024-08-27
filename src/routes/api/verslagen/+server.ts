@@ -1,7 +1,7 @@
 import { VerslagSchema } from '$lib/schemas';
 import type { PRAESIDIUM } from '$lib/types';
-import { serializeNonPOJOs } from '$lib/utils.js';
 import { error, fail, json } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { actionResult, superValidate } from 'sveltekit-superforms/server';
 
 /// Mapping met ´verslagen´ in de database
@@ -20,52 +20,43 @@ export async function GET({ locals, url }) {
 	const verslagen = await locals.pb
 		.collection('verslagen')
 		.getFullList({
-			filter: `praesidium.academiejaar = "${academiejaar_query ?? locals.academiejaar}"`
+			filter: `praesidium.academiejaar = "${academiejaar_query ?? locals.praesidium?.academiejaar}"`, sort: '-created'
 		})
-		.then((r) => {
-            return r.map((a) => {
-                return serializeNonPOJOs({
-                    ...a,
-                    created: new Date(a.created),
-                    bestand: locals.pb.files.getUrl(a, a.bestand)
-                }) as Verslag
-            }).sort((a, b) => {
-				return b.created.getTime() - a.created.getTime();
-			})
-		});
+		.then(r => r.map(a => ({...a, created: new Date(a.created), pdf: locals.pb.files.getUrl(a, a.pdf)})));
 
 	return json(verslagen);
 }
 
-export async function POST({ locals, request }) {
-    const origineleData = await request.clone().formData();
+export async function POST(event) {
+    const origineleData = await event.request.clone().formData();
 
-		const form = await superValidate(origineleData, VerslagSchema);
+	if ((origineleData.get('pdf') as File).size == 0) {
+		origineleData.delete('pdf');
+	}
 
-		if (!locals.pb.authStore.isValid) {
-            return actionResult('failure', {form}, 403)
-        }
-    
-        if (!form.valid) {
-            return actionResult('failure', { form }, 400);
-        }
+	const form = await superValidate(event, zod(VerslagSchema));
+	form.data.pdf = undefined;
 
-		if ((origineleData.get('bestand') as any).size == 0) {
-			origineleData.delete('bestand');
-		}
+	if (!form.valid) {
+		return actionResult('failure', { form }, 400);
+	}
 
-
+	if (form.data.id) {
 		try {
-			if (form.data.id) {
-				await locals.pb.collection('verslagen').update(form.data.id, origineleData);
-			} else {
-				await locals.pb.collection('verslagen').create(origineleData);
-			}
+			await event.locals.pb.collection('verslagen').update(form.data.id, origineleData);
 		} catch (err) {
-			return actionResult('error', {form}, 500);
+			return actionResult('error', { form }, 500);
 		}
+	} else {
+		origineleData.set('praesidium', event.locals.praesidium?.id ?? '')
+		try {
+			await event.locals.pb.collection('verslagen').create(origineleData);
+		} catch (err) {
+			return actionResult('error', { form }, 500);
+		}
+	}
 
-		return actionResult('success', {form}, 200);
+	return actionResult('success', { form }, 200);
 }
 
 export async function DELETE({ locals, request }) {

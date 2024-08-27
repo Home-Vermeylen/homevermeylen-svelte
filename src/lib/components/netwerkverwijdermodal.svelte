@@ -1,61 +1,18 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import toast from 'svelte-french-toast';
+	import { invalidateAll } from '$app/navigation';
+	import * as Dialog from '$lib/components/ui/dialog';
 	import { Trash } from 'lucide-svelte';
 
-	export let dialog: HTMLDialogElement;
+	export let modal_open: boolean;
 	export let personen: any;
 	export let connecties: any;
-
-	let loading = false;
-
-	const updateNetwerk = () => {
-		loading = true;
-
-		return async ({ result, update }: { result: any; update: any }) => {
-			switch (result.type) {
-				case 'success':
-					toast.success('Netwerk aangepast.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					await update();
-					break;
-				case 'invalid':
-					toast.error('Aanpassen netwerk mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					await update();
-					break;
-				case 'error':
-					toast.error('Aanpassen netwerk mislukt.', { style: 'border-radius: 200px; background: #333; color: #fff;' });
-					break;
-				default:
-					await update();
-			}
-			loading = false;
-			sluit_modal();
-		};
-	};
-
-	const sluit_modal = () => {
-		dialog.close();
-	};
 </script>
 
-<dialog
-	bind:this={dialog}
-	id="verslag_modal"
-	class="modal modal-scroll h-max"
-	on:cancel={sluit_modal}
->
-	<form
-		use:enhance={updateNetwerk}
-		method="post"
-		action="?/update"
-		enctype="multipart/form-data"
-		class="modal-box flex flex-col space-y-5"
-	>
-	<form method="dialog">
-		<button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-	  </form>
-		<h3 class="text-center font-bold text-lg">Verwijder Persoon / Actie</h3>
-
+<Dialog.Root bind:open={modal_open}>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>Connectie / Persoon verwijderen</Dialog.Title>
+		</Dialog.Header>
 		{#each personen as persoon (persoon.id)}
 			<div class="flex flex-col">
 				<div class="flex flex-row justify-between">
@@ -70,10 +27,11 @@
 										? 'Gemuild'
 										: connectie.color.color == '#05f9e2'
 										? 'Seks'
-										: 'Relatie'} met {personen.find((p) => p.id == connectie.to)?.label} ({personen.find((p) => p.id == connectie.to)
-							?.group})
+										: 'Relatie'} met {personen.find((p) => p.id == connectie.to)?.label} ({personen.find(
+										(p) => p.id == connectie.to
+									)?.group})
 
-									<form method="post" use:enhance={updateNetwerk} action="/api/vriendschapsnetwerk/verwijder_connectie">
+									<form method="post" action="/api/vriendschapsnetwerk/verwijder_connectie" on:submit={async () => await invalidateAll()}>
 										<input
 											type="hidden"
 											name="type"
@@ -97,10 +55,11 @@
 										? 'Gemuild'
 										: connectie.color.color == '#05f9e2'
 										? 'Seks'
-										: 'Relatie'} met {personen.find((p) => p.id == connectie.from)?.label} ({personen.find((p) => p.id == connectie.from)
-							?.group})
+										: 'Relatie'} met {personen.find((p) => p.id == connectie.from)?.label} ({personen.find(
+										(p) => p.id == connectie.from
+									)?.group})
 
-									<form method="post" use:enhance={updateNetwerk} action="/api/vriendschapsnetwerk/verwijder_connectie">
+									<form method="post" action="/api/vriendschapsnetwerk/verwijder_connectie" on:submit={async () => await invalidateAll()}>
 										<input
 											type="hidden"
 											name="type"
@@ -119,7 +78,7 @@
 						</ol>
 					</div>
 					<div>
-						<form method="post" use:enhance={updateNetwerk} action="/api/vriendschapsnetwerk/verwijder_persoon">
+						<form method="post" action="/api/vriendschapsnetwerk/verwijder_persoon" on:submit={async () => await invalidateAll()}>
 							<input type="hidden" name="id" value={persoon.id} />
 							<button type="submit" class="btn btn-square btn-error"
 								><Trash class="h-4 w-4" /></button
@@ -130,5 +89,5 @@
 				<div class="divider" />
 			</div>
 		{/each}
-	</form>
-</dialog>
+	</Dialog.Content>
+</Dialog.Root>
