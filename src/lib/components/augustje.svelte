@@ -1,14 +1,27 @@
 <script lang="ts">
-	import type { Augustje } from '../../routes/api/augustjes/+server';
+	import * as Card from '$lib/components/ui/card';
+	import { BookOpen, BookOpenCheck } from 'lucide-svelte';
+	import { Button } from './ui/button';
 
-	export let augustje: Augustje;
+	export let augustje;
+
+	const gelezen = window.localStorage.getItem(augustje.id) != null;
+
+	const setGelezen = () => window.localStorage.setItem(augustje.id, 'gelezen');
 </script>
 
-<div class="card bg-base-200">
-	<div class="card-body items-center">
-		<h2 class="card-title">{augustje.naam}</h2>
-		<div class="card-actions justify-center mt-5">
-			<a class="btn btn-primary" target="_blank" href={augustje.bestand} data-umami-event="Augustje gelezen"> Lees nu </a>
-		</div>
-	</div>
-</div>
+<Card.Root class="w-80 md:w-96">
+	<Card.Header class="text-center">
+		<Card.Title>{augustje.naam}</Card.Title>
+	</Card.Header>
+	<Card.Footer class="flex justify-center">
+		<Button on:click={setGelezen} href={augustje.pdf} variant={gelezen ? 'outline' : 'default'} class="flex items-center gap-1">
+			{#if gelezen}
+				<BookOpenCheck class="h-4 w-4" /> Gelezen
+			{:else}
+				<BookOpen class="h-4 w-4" />
+				Lezen
+			{/if}
+		</Button>
+	</Card.Footer>
+</Card.Root>

@@ -2,6 +2,9 @@
 node_modules
 /build
 /.svelte-kit
+/pocketbase
+/static
+/src/lib/components/ui
 /package
 .env
 .env.*

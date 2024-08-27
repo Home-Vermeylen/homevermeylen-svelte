@@ -1,128 +1,257 @@
 <script lang="ts">
-	import { Avatar } from '$lib/components';
-	import Praesidiumbadge from '$lib/components/praesidiumbadge.svelte';
-	import { Home, Users, Calendar, Newspaper, ScrollText, Settings, LucideMenu, LucideX, Heart, LucideHome, Vote } from 'lucide-svelte';
-	import type { LayoutData } from './$types';
+	import {
+		Earth,
+		Flame,
+		Heart,
+		Home,
+		LogOut,
+		PanelLeft,
+		Settings,
+		UserCog,
+		Vote
+	} from 'lucide-svelte';
+
 	import { page } from '$app/stores';
+	import ProfielForm from '$lib/components/profielform.svelte';
+	import * as Avatar from '$lib/components/ui/avatar/';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+	import * as Sheet from '$lib/components/ui/sheet/index.js';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import '../../app.postcss';
+	import type { PageData } from './$types';
 
-	export let data: any;
-	let huidig_paneel: string;
+	export let data: PageData;
 
-	if ($page.url.pathname.includes('activiteiten')) {
-		huidig_paneel = "ACTIVITEITEN"
-	} else if ($page.url.pathname.includes('augustje')) {
-		huidig_paneel = "AUGUSTJE"
-	} else if ($page.url.pathname.includes('verslagen')) {
-		huidig_paneel = "VERSLAGEN"
-	} else if ($page.url.pathname.includes('instellingen')) {
-		huidig_paneel = "INSTELLINGEN"
-	} else if ($page.url.pathname.includes('vriendschapsnetwerk')) {
-		huidig_paneel = "VRIENDSCHAPSNETWERK"
-	} else if ($page.url.pathname.includes('verkiezingen')) {
-		huidig_paneel = "VERKIEZINGEN"
-	}else {
-		huidig_paneel = "DASH"
-	}
+	let huidige_pagina = $page.url.toString().includes('fakkels_bakken')
+		? 'FAKKELS_BAKKEN'
+		: $page.url.toString().includes('vriendschapsnetwerk')
+			? 'VRIENDSCHAPSNETWERK'
+			: $page.url.toString().includes('verkiezingen') ? 'VERKIEZINGEN' : 'PUBLIEKE_GEGEVENS';
+
+	let profiel_open = false;
+
+	$: ingelogd_lid = data.praesidium_leden?.find((v) => v.functie == data.functie_id);
 </script>
 
-<svelte:head>
-	<title>Beheer</title>
-	<meta name="robots" content="none, noarchive">
-</svelte:head>
-
-<div>
-	<div class="drawer lg:drawer-open">
-		<input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
-		<div class="drawer-content">
-			<div class="navbar lg:hidden bg-base-100 shadow flex flex-row max-w-full justify-evenly">
-				<label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">
-					<LucideMenu class="h-4 w-4" /> Menu
-				</label>
-				<img width={50} height={50} class="w-auto h-8 sm:h-9" src="/logo.png" alt="" />
-				<a href="/" class="lg:hidden btn btn-primary">
-					<LucideHome class="h-4 w-4" /> Thuispagina
-				</a>
-			  </div>
-			<slot />
-		</div>
-		<div class="drawer-side">
-			<label for="my-drawer-2" class="drawer-overlay" />
-			<aside
-				class="flex flex-col w-72 h-screen px-4 py-8 overflow-y-auto bg-base-200 shadow-2xl rounded-sm"
-			>
-				<a href="/" class="mx-auto hidden lg:block">
-					<div
-						class="flex flex-row gap-4 text-center items-center font-bold tracking-tight text-xl hover:bg-base-300 p-2 rounded-lg"
-					>
-						<img width={50} height={50} class="w-auto h-8 sm:h-9" src="/logo.png" alt="" />
-						<h1>Home Vermeylen</h1>
-					</div>
-				</a>
-
-				<div class="flex flex-col items-center mt-6 -mx-2 gap-2">
-					<div class="avatar">
-						<div class="w-24 rounded-full">
-							<Avatar gebruiker={data.gebruiker} />
-						</div>
-					</div>
-
-					<h4 class="mx-2 mt-2 font-medium text-gray-800 dark:text-gray-200">
-						{data.gebruiker.voornaam}
-						{data.gebruiker.familienaam}
-					</h4>
-					<Praesidiumbadge functie={data.gebruiker.expand.praesidiumlid.functie} />
-				</div>
-
-				<div class="flex flex-col justify-between align-center text-center mt-6 gap-2">
-					<a class={`btn ${huidig_paneel != 'DASH' ? 'btn-neutral' : 'btn-primary'}`} href="/beheer" on:click={() => { huidig_paneel = 'DASH' }}>
-						<Home class="h-4 w-4" />
-						Thuispagina
-					</a>
+<Dialog.Root bind:open={profiel_open}>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>Profiel bewerken</Dialog.Title>
+		</Dialog.Header>
+		<ProfielForm bind:profiel_open data={data.profiel_form} {ingelogd_lid} />
+	</Dialog.Content>
+</Dialog.Root>
+<div class="flex min-h-screen w-full flex-col bg-muted/40">
+	<aside class="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
+		<nav class="flex flex-col items-center gap-4 px-2 sm:py-5">
+			<Tooltip.Root>
+				<Tooltip.Trigger asChild let:builder>
 					<a
-						class={`btn ${huidig_paneel != 'ACTIVITEITEN' ? 'btn-neutral' : 'btn-primary'}`}
-						href="/beheer/activiteiten"
-						on:click={() => { huidig_paneel = 'ACTIVITEITEN' }}
+						href="/"
+						use:builder.action
+						{...builder}
+						class="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
 					>
-						<Calendar class="h-4 w-4" />
-						Activiteiten
+						<Home class="h-4 w-4 transition-all group-hover:scale-110" />
+						<span class="sr-only">Terug naar thuispagina</span>
 					</a>
+				</Tooltip.Trigger>
+				<Tooltip.Content side="right">Terug naar thuispagina</Tooltip.Content>
+			</Tooltip.Root>
 
+			<Tooltip.Root>
+				<Tooltip.Trigger asChild let:builder>
 					<a
-						class={`btn ${huidig_paneel != 'AUGUSTJE' ? 'btn-neutral' : 'btn-primary'}`}
-						href="/beheer/augustje"
-						on:click={() => { huidig_paneel = 'AUGUSTJE' }}
+						href="/beheer/fakkels_bakken"
+						class="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8"
+						use:builder.action
+						class:text-muted-foreground={huidige_pagina != 'FAKKELS_BAKKEN'}
+						class:text-accent-foreground={huidige_pagina == 'FAKKELS_BAKKEN'}
+						class:bg-accent={huidige_pagina == 'FAKKELS_BAKKEN'}
+						{...builder}
 					>
-						<Newspaper class="h-4 w-4" />
-						Augustjes
+						<Flame class="h-5 w-5" />
+						<span class="sr-only">Fakkels & Bakken</span>
 					</a>
-
+				</Tooltip.Trigger>
+				<Tooltip.Content side="right">Fakkels & Bakken</Tooltip.Content>
+			</Tooltip.Root>
+			<Tooltip.Root>
+				<Tooltip.Trigger asChild let:builder>
 					<a
-						class={`btn ${huidig_paneel != 'VERSLAGEN' ? 'btn-neutral' : 'btn-primary'}`}
-						href="/beheer/verslagen"
-						on:click={() => { huidig_paneel = 'VERSLAGEN' }}
+						href="/beheer"
+						class="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8"
+						class:text-muted-foreground={huidige_pagina != 'PUBLIEKE_GEGEVENS'}
+						class:text-accent-foreground={huidige_pagina == 'PUBLIEKE_GEGEVENS'}
+						class:bg-accent={huidige_pagina == 'PUBLIEKE_GEGEVENS'}
+						use:builder.action
+						{...builder}
 					>
-						<ScrollText class="h-4 w-4" />
-						Verslagen
+						<Earth class="h-5 w-5" />
+						<span class="sr-only">Publieke Gegevens</span>
 					</a>
+				</Tooltip.Trigger>
+				<Tooltip.Content side="right">Publieke Gegevens</Tooltip.Content>
+			</Tooltip.Root>
 
+			<Tooltip.Root>
+				<Tooltip.Trigger asChild let:builder>
 					<a
-						class={`btn ${huidig_paneel != 'VRIENDSCHAPSNETWERK' ? 'btn-neutral' : 'btn-primary'}`}
 						href="/beheer/vriendschapsnetwerk"
-						on:click={() => { huidig_paneel = 'VRIENDSCHAPSNETWERK' }}
+						class="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8"
+						class:text-muted-foreground={huidige_pagina != 'VRIENDSCHAPSNETWERK'}
+						class:text-accent-foreground={huidige_pagina == 'VRIENDSCHAPSNETWERK'}
+						class:bg-accent={huidige_pagina == 'VRIENDSCHAPSNETWERK'}
+						use:builder.action
+						{...builder}
 					>
-						<Heart class="h-4 w-4" />
-						Vriendschapsnetwerk
+						<Heart class="h-5 w-5" />
+						<span class="sr-only">Vriendschapsnetwerk</span>
 					</a>
+				</Tooltip.Trigger>
+				<Tooltip.Content side="right">Vriendschapsnetwerk</Tooltip.Content>
+			</Tooltip.Root>
+			<Tooltip.Root>
+				<Tooltip.Trigger asChild let:builder>
 					<a
-						class={`btn ${huidig_paneel != 'VERKIEZINGEN' ? 'btn-neutral' : 'btn-primary'}`}
 						href="/beheer/verkiezingen"
-						on:click={() => { huidig_paneel = 'VERKIEZINGDN' }}
+						class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+						use:builder.action
+						class:text-muted-foreground={huidige_pagina != 'VERKIEZINGEN'}
+						class:text-accent-foreground={huidige_pagina == 'VERKIEZINGEN'}
+						class:bg-accent={huidige_pagina == 'VERKIEZINGEN'}
+						{...builder}
 					>
-						<Vote class="h-4 w-4" />
-						Verkiezingen
+						<Vote class="h-5 w-5" />
+						<span class="sr-only">Verkiezingen</span>
 					</a>
-				</div>
-			</aside>
-		</div>
+				</Tooltip.Trigger>
+				<Tooltip.Content side="right">Verkiezingen</Tooltip.Content>
+			</Tooltip.Root>
+		</nav>
+		<nav class="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
+			<Tooltip.Root>
+				<Tooltip.Trigger asChild let:builder>
+					<a
+						href="##"
+						class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+						use:builder.action
+						{...builder}
+					>
+						<Settings class="h-5 w-5" />
+						<span class="sr-only">Instellingen</span>
+					</a>
+				</Tooltip.Trigger>
+				<Tooltip.Content side="right">Instellingen</Tooltip.Content>
+			</Tooltip.Root>
+		</nav>
+	</aside>
+	<div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+		<header
+			class="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
+		>
+			<Sheet.Root>
+				<Sheet.Trigger asChild let:builder>
+					<Button builders={[builder]} size="icon" variant="outline" class="sm:hidden">
+						<PanelLeft class="h-5 w-5" />
+						<span class="sr-only">Toon navigatiemenu</span>
+					</Button>
+				</Sheet.Trigger>
+				<Sheet.Content side="left" class="sm:max-w-xs">
+					<nav class="grid gap-6 text-lg font-medium">
+						<a
+							href="##"
+							class="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
+						>
+							<Home class="h-5 w-5 transition-all group-hover:scale-110" />
+							<span class="sr-only">Terug naar thuispagina</span>
+						</a>
+						<a
+							href="##"
+							class="flex items-center gap-4 px-2.5 hover:text-foreground"
+							class:text-muted-foreground={huidige_pagina != 'FAKKELS_BAKKEN'}
+							class:text-accent-foreground={huidige_pagina == 'FAKKELS_BAKKEN'}
+							class:bg-accent={huidige_pagina == 'FAKKELS_BAKKEN'}
+						>
+							<Flame class="h-5 w-5" />
+							Fakkels & Bakken
+						</a>
+						<a
+							href="/beheer"
+							class="flex items-center gap-4 px-2.5 hover:text-foreground"
+							class:text-muted-foreground={huidige_pagina != 'PUBLIEKE_GEGEVENS'}
+							class:text-accent-foreground={huidige_pagina == 'PUBLIEKE_GEGEVENS'}
+							class:bg-accent={huidige_pagina == 'PUBLIEKE GEGEVENS'}
+						>
+							<Earth class="h-5 w-5" />
+							Publieke Gegevens
+						</a>
+
+						<a
+							href="/beheer/vriendschapsnetwerk"
+							class="flex items-center gap-4 px-2.5 hover:text-foreground"
+							class:text-muted-foreground={huidige_pagina != 'VRIENDSCHAPSNETWERK'}
+							class:text-accent-foreground={huidige_pagina == 'VRIENDSCHAPSNETWERK'}
+							class:bg-accent={huidige_pagina == 'VRIENDSCHAPSNETWERK'}
+						>
+							<Heart class="h-5 w-5" />
+							Vriendschapsnetwerk
+						</a>
+						<a
+							href="/beheer/verkiezingen"
+							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+						>
+							<Vote class="h-5 w-5" />
+							Verkiezingen
+						</a>
+						<a
+							href="##"
+							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+						>
+							<Settings class="h-5 w-5" />
+							Instellingen
+						</a>
+					</nav>
+				</Sheet.Content>
+			</Sheet.Root>
+			<div class="relative ml-auto flex-1 md:grow-0" />
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger asChild let:builder>
+					<Button variant="outline" size="icon" class="rounded-full" builders={[builder]}>
+						<Avatar.Root>
+							<Avatar.Image
+								class="object-cover"
+								src={ingelogd_lid?.avatar}
+								alt={`${ingelogd_lid?.voornaam} ${ingelogd_lid?.familienaam}`}
+							/>
+							<Avatar.Fallback
+								>{ingelogd_lid?.voornaam?.at(0)}{ingelogd_lid?.familienaam?.at(0)}</Avatar.Fallback
+							>
+						</Avatar.Root>
+					</Button>
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Content align="end">
+					<DropdownMenu.Label
+						>{ingelogd_lid?.voornaam} {ingelogd_lid?.familienaam}</DropdownMenu.Label
+					>
+					<DropdownMenu.Separator />
+					<DropdownMenu.Item class="flex gap-1 items-center" href="/" data-sveltekit-reload
+						><Home class="h-4 w-4" /> Thuispagina</DropdownMenu.Item
+					>
+					<DropdownMenu.Item class="flex gap-1 items-center" on:click={() => (profiel_open = true)}
+						><UserCog class="h-4 w-4" /> Profiel</DropdownMenu.Item
+					>
+					<DropdownMenu.Item class="flex gap-1 items-center" href="/logout"
+						><LogOut class="h-4 w-4" /> Uitloggen</DropdownMenu.Item
+					>
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
+		</header>
+
+		<main class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+			<slot />
+		</main>
 	</div>
 </div>

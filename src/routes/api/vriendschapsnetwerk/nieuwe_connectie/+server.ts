@@ -1,28 +1,37 @@
-import { json } from '@sveltejs/kit';
+import { NieuweConnectieSchema } from '$lib/schemas.js';
+import { actionResult, superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 
-export async function POST({ request, locals }) {
-	if (!locals.pb.authStore.isValid || !locals.user) {
-		return json(undefined, { status: 403 });
+export async function POST(event) {
+	const origineleData = await event.request.clone().formData();
+
+	const form = await superValidate(event, zod(NieuweConnectieSchema));
+
+	if (!event.locals.pb.authStore.isValid) {
+		return actionResult("failure", { form }, { status: 403 })
 	}
 
-	const data = await request.formData();
-	const netwerk = await locals.pb
+	const netwerk = await event.locals.pb
 		.collection('vriendschapsnetwerk')
-		.getFirstListItem(`praesidium = "${locals.user?.expand?.praesidiumlid?.praesidium}"`);
+		.getFirstListItem(`praesidium = "${event.locals.praesidium?.id}"`);
+
+	
 
 	netwerk.datamap.push({
-		id1: data.get('id1'),
-		id2: data.get('id2'),
-		type: data.get('type'),
-		locatie: data.get('locatie'),
-		commentaar: data.get('commentaar')
+		id1: origineleData.get('id1'),
+		id2: origineleData.get('id2'),
+		type: origineleData.get('type'),
+		locatie: origineleData.get('locatie'),
+		commentaar: origineleData.get('commentaar')
 	});
 
 	try {
-		await locals.pb
+		await event.locals.pb
 			.collection('vriendschapsnetwerk')
 			.update(netwerk.id, { gebruikers: netwerk.gebruikers, datamap: netwerk.datamap });
+
+		return actionResult("success", { form }, { status: 200 })
 	} catch (err) {
-		return json(err, { status: 500 });
+		return actionResult("failure", { form }, { status: 500 })
 	}
 }

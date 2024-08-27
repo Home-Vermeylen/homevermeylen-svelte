@@ -1,50 +1,28 @@
-import { GebruikersSchema, WachtwoordSchema } from '$lib/schemas.js';
-import { serializeNonPOJOs, valideerData } from '$lib/utils';
-import { error, fail } from '@sveltejs/kit';
+import { LoginGebruikerSchema } from '$lib/schemas.js';
+import { fail, type Actions } from '@sveltejs/kit';
+import { message, superValidate, type Infer } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 
-export const actions = {
-	update: async ({ request, locals }) => {
-		const origineleData = await request.formData();
+export type Message = { status: 'error' | 'success' | 'warning'; text: string };
 
-		const { formData, errors } = await valideerData(origineleData, GebruikersSchema);
+export const actions: Actions = {
+	default: async (event) => {
+	  const login_form = await superValidate<Infer<typeof LoginGebruikerSchema>, Message>(event, zod(LoginGebruikerSchema));
+	  if (!login_form.valid) {
+		return fail(400, {
+		  login_form,
+		});
+	  }
 
-		if (errors) {
-			return fail(400, {
-				data: serializeNonPOJOs(formData),
-				errors: errors.fieldErrors
-			});
-		}
+	  try {
+		await event.locals.pb.collection('functies').authWithPassword(login_form.data.gebruikersnaam, login_form.data.wachtwoord);
+	  } catch(_) {
+		return message(login_form, { status: 'error', text: 'Verkeerde inloggegevens' }, {status: 401})
+	  }
 
-		if ((origineleData.get('avatar') as any).size == 0) {
-			origineleData.delete('avatar');
-		}
-
-		try {
-			if (formData.id) {
-				await locals.pb.collection('gebruikers').update(formData.id, origineleData);
-			} else {
-				await locals.pb.collection('gebruikers').create(origineleData);
-			}
-		} catch (err) {
-			error(500, 'Er is een probleem opgetreden bij het opladen van het profiel.');
-		}
+	  return {
+		login_form,
+	  };
 	},
-	update_wachtwoord: async ({ request, locals }) => {
-		const origineleData = await request.formData();
+  };
 
-		const { formData, errors } = await valideerData(origineleData, WachtwoordSchema);
-
-		if (errors) {
-			return fail(400, {
-				data: serializeNonPOJOs(formData),
-				errors: errors.fieldErrors
-			});
-		}
-
-		try {
-			await locals.pb.collection('gebruikers').update(formData.id, origineleData);
-		} catch (err) {
-			error(500, 'Er is een probleem opgetreden bij het updaten van het wachtwoord.');
-		}
-	}
-};

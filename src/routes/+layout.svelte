@@ -1,7 +1,6 @@
 <script>
-	import { Toaster } from 'svelte-french-toast';
-	import { fly } from 'svelte/transition';
-
+	import { Toaster } from "$lib/components/ui/sonner";
+	
 	export let data;
 
 </script>
@@ -10,13 +9,8 @@
   <meta charset="utf8" />
 </svelte:head>
 
-<Toaster />
+<Toaster richColors theme="dark" />
 
 {#key data.url}
-  <div
-    in:fly={{ x: -200, duration: 300, delay: 300 }}
-    out:fly={{ x: 200, duration: 300 }}
-  >
     <slot />
-  </div>
 {/key}

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Badge from "./ui/badge/badge.svelte";
+
 	export let functie: string;
 
 	const map = [
@@ -112,6 +114,7 @@
 
 {#each map as badge}
 	{#if functie == badge.functie}
-		<span class={`badge font-bold ${badge.color}`}>{badge.tekst}</span>
+		<Badge variant="outline">{badge.tekst}</Badge>
+		<span class={`badge font-bold ${badge.color}`}></span>
 	{/if}
 {/each}

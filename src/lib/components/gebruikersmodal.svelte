@@ -1,17 +1,15 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import toast from 'svelte-french-toast';
-	import Input from './input.svelte';
-	import { getImageURL } from '$lib/utils';
 	import { Pencil } from 'lucide-svelte';
+	import toast from 'svelte-french-toast';
 	import { Avatar } from '.';
+	import Input from './input.svelte';
 
 	export let dialog: HTMLDialogElement;
 	export let gebruiker: any;
 	export let form: any;
 
 	let loading = false;
-	let prematuur_gesloten = false;
 	let avatar: HTMLImageElement;
 
 	const updateProfiel = () => {

@@ -1,5 +1,6 @@
 import { json } from "@sveltejs/kit";
 
+
 const vis_opties = {
 	nodes: {
 		borderWidth: 0,
@@ -58,21 +59,19 @@ const vis_opties = {
 };
 
 export async function GET({ locals }) {
-	if (!locals.pb.authStore.isValid || !locals.user) {
-		return json("Geen toegang.", { status: 403 });
-	}
-
 	const netwerk = await locals.pb
 		.collection('vriendschapsnetwerk')
-		.getFirstListItem(`praesidium = "${locals.user?.expand?.praesidiumlid?.praesidium}"`);
+		.getFirstListItem(`praesidium = "${locals.praesidium?.id}"`);
 
 	const { gebruikers, datamap } = netwerk;
 
 	const data = {
-		nodes: gebruikers.map((v: any) => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		nodes: gebruikers.map((v) => {
 			return { id: v.id, label: v.naam, group: v.club };
 		}),
-		edges: datamap.map((v: any, i: any) => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		edges: datamap.map((v, i) => {
 			let color = {};
 			let arrows = '';
 
@@ -98,7 +97,6 @@ export async function GET({ locals }) {
 	};
 
 	return json({
-		gebruiker: locals.user,
 		netwerk_data: data,
 		opties: vis_opties
 	});

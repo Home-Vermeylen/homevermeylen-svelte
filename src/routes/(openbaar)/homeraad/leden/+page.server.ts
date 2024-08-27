@@ -1,6 +1,4 @@
-import { serializeNonPOJOs } from '$lib/utils.js';
-
-export async function load({ request, locals }) {
+export async function load({ locals, url }) {
 	const sorteer_door_functie = (a: string, b: string): number => {
 		return functie_rank(b) - functie_rank(a);
 	};
@@ -54,33 +52,29 @@ export async function load({ request, locals }) {
 		}
 	};
 
-	const academiejaar_query = new URL(request.url).searchParams.get('aj');
+	const academiejaar_query = new URL(url).searchParams.get('aj');
 
-	const academiejaren = await locals.pb
-		.collection('praesidium_openbaar')
-		.getFullList()
-		.then((res: any) =>
-			res.map((val: any) => {
-				return val.academiejaar;
-			})
-		);
+	const academiejaren = locals.pb
+		.collection('praesidia')
+		.getFullList({ fields: 'academiejaar', sort: '-academiejaar' })
+		.then(r => r.map(a => a.academiejaar));
 
-	let praesidium_leden: any[] = (
-		await locals.pb
-			.collection('praesidium_openbaar')
-			.getFirstListItem(`academiejaar = "${academiejaar_query ?? locals.academiejaar}"`, {
-				expand: 'praesidium_leden, praesidium_leden.gebruiker'
-			})
-	).expand.praesidium_leden;
 
-	praesidium_leden = [].sort.call(praesidium_leden, (a, b) =>
-		sorteer_door_functie((a as any).functie, (b as any).functie)
-	);
+	const praesidium_leden =
+		locals.pb.collection('praesidium_leden').
+			getFullList(
+				{
+					filter: `praesidium.academiejaar = '${academiejaar_query ?? locals.praesidium?.academiejaar}'`,
+					expand: 'functie'
+				}).then(r => r.sort((a, b) => sorteer_door_functie(a.expand?.functie?.username.replace(/[0-9]/g, ''), b.expand?.functie?.username.replace(/[0-9]/g, ''))).map(a => ({
+					...a,
+					avatar: locals.pb.files.getUrl(a, a.avatar)
+				})))
 
 	return {
-		praesidium_leden: serializeNonPOJOs(praesidium_leden),
-		huidig_academiejaar: locals.academiejaar,
-		academiejaar_query: new URL(request.url).searchParams.get('aj'),
+		praesidium_leden,
+		academiejaar: locals.praesidium?.academiejaar,
+		academiejaar_query,
 		academiejaren
 	};
 }

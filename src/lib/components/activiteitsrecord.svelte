@@ -1,11 +1,10 @@
 <script lang="ts">
-	import type { Activiteit } from '../../routes/api/activiteiten/+server'
 	import { Edit, Trash } from 'lucide-svelte';
 	import toast from 'svelte-french-toast';
 
-	export let activiteit: Activiteit;
+	export let activiteit: any;
 	export let dialog: HTMLDialogElement;
-	export let geselecteerde_activiteit: Activiteit | null;
+	export let geselecteerde_activiteit: any | null;
 
 	const datum = new Date(activiteit.datum);
 	let loading = false;
