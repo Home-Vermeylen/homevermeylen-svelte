@@ -4,7 +4,7 @@
 </script>
 <svelte:head>
 	<title>Clublied</title>
-    <meta name="description" content="Het clublied van de vereniging Home Vermeylen.">
+    <meta name="description" content="Het clublied van de studentenvereniging Home Vermeylen.">
 </svelte:head>
 
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center">

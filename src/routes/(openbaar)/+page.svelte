@@ -5,6 +5,7 @@
 
 <svelte:head>
 	<title>Thuispagina</title>
+	<meta  name="description" content="Thuispagina Home Vermeylen" />
 </svelte:head>
 
 <div

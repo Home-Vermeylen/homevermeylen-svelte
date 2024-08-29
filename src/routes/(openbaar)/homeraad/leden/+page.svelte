@@ -11,7 +11,7 @@
 
 <svelte:head>
 	<title>Homeraad - Leden</title>
-	<meta name="description" content="De leden van de homeraad van Home Vermeylen." />
+	<meta name="description" content="De leden van de homeraad Home Vermeylen." />
 </svelte:head>
 
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center">

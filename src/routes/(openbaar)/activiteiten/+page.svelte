@@ -12,7 +12,7 @@
 	<title>Activiteiten</title>
 	<meta
 		name="description"
-		content="Een lijst van de geplande en afgelopen activiteiten georganiseerd door de Homeraad Vermeylen."
+		content="Een lijst van de geplande en reeds afgelopen activiteiten georganiseerd door Home Vermeylen."
 	/>
 </svelte:head>
 

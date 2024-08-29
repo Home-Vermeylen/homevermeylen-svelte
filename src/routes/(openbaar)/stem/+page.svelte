@@ -22,6 +22,11 @@
 	let tainted: string[] = [];
 </script>
 
+<svelte:head>
+	<meta name="description" content="Stempagina voor Homeraadsleden"/>
+	<meta name="robots" content="noindex,nofollow">
+</svelte:head>
+
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center">
 	<div class="flex flex-col items-center text-center">
 		<h1
