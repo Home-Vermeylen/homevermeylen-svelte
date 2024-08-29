@@ -4,6 +4,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import { GraduationCap, Home } from 'lucide-svelte';
 	import type { PraesidiumLedenRecord } from '../../../types/pocketbase-types';
+	import Badge from './ui/badge/badge.svelte';
 
 	export let lid: PraesidiumLedenRecord;
 </script>
@@ -17,19 +18,19 @@
 		<Card.Title>{lid.voornaam} {lid.familienaam}</Card.Title>
 		<PraesidiumBadge functie={lid.expand?.functie.username.replace(/[0-9]/g, '')} />
 	</Card.Header>
-	<Card.Content>
+	<Card.Content class="flex flex-col gap-4 items-center">
 		{#if lid.woonplaats}
-			<div class="flex flex-row gap-x-2 text-center">
-				<Home class="h-5 w-5" />
+			<Badge variant="secondary" class="flex flex-row gap-x-2 text-center">
+				<Home class="h-4 w-4" />
 				{lid.woonplaats}
-			</div>
+			</Badge>
 		{/if}
 
 		{#if lid.studierichting}
-			<div class="flex flex-row gap-x-2 text-center">
-				<GraduationCap class="h-5 w-5" />
+			<Badge class="flex flex-row gap-x-2 text-center">
+				<GraduationCap class="h-4 w-4" />
 				{lid.studierichting}
-			</div>
+			</Badge>
 		{/if}
 	</Card.Content>
 </Card.Root>

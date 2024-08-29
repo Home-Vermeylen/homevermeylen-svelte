@@ -67,7 +67,7 @@
 
 <nav class="fixed z-50 h-[64px] w-full bg-background shadow-sm dark:bg-gray-950/90">
 	<Dialog.Root bind:open={profiel_open}>
-		<Dialog.Content class="max-w-80 max-h-96">
+		<Dialog.Content>
 			<Dialog.Header>
 				<Dialog.Title>Profiel bewerken</Dialog.Title>
 			</Dialog.Header>
