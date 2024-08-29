@@ -258,7 +258,7 @@
 							<Button builders={[builder]}>Inloggen</Button>
 						</Drawer.Trigger>
 						<Drawer.Content>
-							<Drawer.Header class="text-left">
+							<Drawer.Header>
 								<Drawer.Title>Inloggen</Drawer.Title>
 								<Drawer.Description>Log in als Homeraadslid</Drawer.Description>
 							</Drawer.Header>

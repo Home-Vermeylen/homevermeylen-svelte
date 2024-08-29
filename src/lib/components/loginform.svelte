@@ -2,7 +2,7 @@
 	import { cn } from '$lib/utils';
 	import { Check, ChevronsUpDown } from 'lucide-svelte';
 	import { tick } from 'svelte';
-	import SuperDebug from 'sveltekit-superforms';
+	import { mediaQuery } from 'svelte-legos';
 	import { Button, buttonVariants } from './ui/button';
 	import * as Command from './ui/command';
 	import * as Form from './ui/form';
@@ -17,6 +17,8 @@
 
 	let combobox_open = false;
 
+	const isDesktop = mediaQuery('(min-width: 768px)');
+
     function closeAndFocusTrigger(triggerId: string) {
 		combobox_open = false;
 		tick().then(() => {
@@ -25,14 +27,14 @@
 	}
 </script>
 
-<form class="grid items-start gap-4" method="post" action="/" use:login_enhance>
+<form class={$isDesktop ? 'grid items-start gap-4' : 'flex flex-col items-center'} method="post" action="/" use:login_enhance>
 	<Form.Field form={login_form} name="gebruikersnaam" class="text-center">
 		<Popover.Root bind:open={combobox_open} let:ids>
 			<Form.Control let:attrs>
 				<Popover.Trigger
 					class={cn(
 						buttonVariants({ variant: 'outline' }),
-						'w-[200px] justify-between',
+						'justify-between',
 						!$login_formData.gebruikersnaam && 'text-muted-foreground',
 						"w-54"
 					)}
@@ -46,7 +48,7 @@
 				</Popover.Trigger>
 				<input hidden value={$login_formData.gebruikersnaam} name={attrs.name} />
 			</Form.Control>
-			<Popover.Content class="w-[400px] p-0">
+			<Popover.Content class="w-[250px] md:w-[400px] max-h-52 overflow-scroll p-0">
 				<Command.Root>
 					<Command.Input autofocus placeholder="Zoek homeraadslid..." class="h-9" />
 					<Command.Empty>Geen homeraadsleden gevonden.</Command.Empty>
@@ -74,14 +76,13 @@
 		</Popover.Root>
 		<Form.FieldErrors />
 	</Form.Field>
-	<Form.Field form={login_form} name="wachtwoord">
-		<Form.Control let:attrs>
+	<Form.Field class={`${$isDesktop ? '' : 'w-80 self-center'}`} form={login_form} name="wachtwoord">
+		<Form.Control  let:attrs>
 			<Form.Label>Wachtwoord</Form.Label>
 			<Input {...attrs} type="password" bind:value={$login_formData.wachtwoord} />
 		</Form.Control>
 		<Form.Description />
 		<Form.FieldErrors />
 	</Form.Field>
-	<SuperDebug display={import.meta.env.DEV} data={$login_formData} />
-	<Button type="submit">Verzenden</Button>
+	<Button class="my-5" type="submit">Verzenden</Button>
 </form>
