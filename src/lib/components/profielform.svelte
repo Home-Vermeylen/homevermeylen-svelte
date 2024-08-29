@@ -11,7 +11,6 @@
 	} from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import type { PraesidiumLedenRecord } from '../../../types/pocketbase-types';
-	import ScrollArea from './ui/scroll-area/scroll-area.svelte';
 
 	export let data: SuperValidated<Infer<typeof ProfielSchema>>;
 	export let ingelogd_lid: PraesidiumLedenRecord | undefined;
@@ -36,7 +35,6 @@
 </script>
 
 <form method="POST" use:enhance enctype="multipart/form-data" action="/api/profiel">
-	<ScrollArea class="max-h-[80vh]">
 		<div class="flex flex-col items-center gap-2">
 			<Avatar.Root class="h-40 w-40">
 				<Avatar.Image
@@ -115,5 +113,4 @@
 		</Form.Field>
 		<!-- <SuperDebug display={import.meta.env.DEV} data={$formData} /> -->
 		<Form.Button>Opslaan</Form.Button>
-	</ScrollArea>
 </form>
