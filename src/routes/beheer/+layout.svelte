@@ -35,15 +35,15 @@
 	$: ingelogd_lid = data.praesidium_leden?.find((v) => v.functie == data.functie_id);
 </script>
 
-<Dialog.Root bind:open={profiel_open}>
-	<Dialog.Content>
-		<Dialog.Header>
-			<Dialog.Title>Profiel bewerken</Dialog.Title>
-		</Dialog.Header>
-		<ProfielForm bind:profiel_open data={data.profiel_form} {ingelogd_lid} />
-	</Dialog.Content>
-</Dialog.Root>
 <div class="flex min-h-screen w-full flex-col bg-muted/40">
+	<Dialog.Root bind:open={profiel_open}>
+		<Dialog.Content>
+			<Dialog.Header>
+				<Dialog.Title>Profiel bewerken</Dialog.Title>
+			</Dialog.Header>
+			<ProfielForm bind:profiel_open data={data.profiel_form} {ingelogd_lid} />
+		</Dialog.Content>
+	</Dialog.Root>
 	<aside class="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
 		<nav class="flex flex-col items-center gap-4 px-2 sm:py-5">
 			<Tooltip.Root>
