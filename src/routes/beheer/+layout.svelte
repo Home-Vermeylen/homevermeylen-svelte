@@ -162,14 +162,14 @@
 				<Sheet.Content side="left" class="sm:max-w-xs">
 					<nav class="grid gap-6 text-lg font-medium">
 						<a
-							href="##"
+							href="/"
 							class="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
 						>
 							<Home class="h-5 w-5 transition-all group-hover:scale-110" />
 							<span class="sr-only">Terug naar thuispagina</span>
 						</a>
 						<a
-							href="##"
+							href="/beheer/fakkels_bakken"
 							class="flex items-center gap-4 px-2.5 hover:text-foreground"
 							class:text-muted-foreground={huidige_pagina != 'FAKKELS_BAKKEN'}
 							class:text-accent-foreground={huidige_pagina == 'FAKKELS_BAKKEN'}
