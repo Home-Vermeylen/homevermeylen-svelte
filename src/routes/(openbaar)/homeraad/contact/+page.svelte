@@ -1,0 +1,23 @@
+<script>
+	import { Button } from "$lib/components/ui/button";
+
+	
+</script>
+<svelte:head>
+	<title>Contact</title>
+    <meta name="description" content="Contactgegevens homeraad Home Vermeylen">
+</svelte:head>
+
+<div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center mx-5">
+	<div class="flex flex-col items-center text-center w-full">
+		<h1
+			class="scroll-m-20 border-b text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center pt-24 mb-8"
+		>
+            Contact
+		</h1>
+        <p class="leading-7 [&:not(:first-child)]:mt-6">
+            De homeraad is bereikbaar via volgend e-mailadres: <Button variant="link" href="mailto:homeraadvermeylen@gmail.com">homeraadvermeylen@gmail.com</Button>
+        </p>
+    </div>
+</div>
+

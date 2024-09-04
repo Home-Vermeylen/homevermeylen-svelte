@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Navbar from '$lib/components/navbar.svelte';
-	import { Facebook, Instagram, Linkedin, Music2 } from 'lucide-svelte';
+	import { Facebook, Instagram, Mail, Music2 } from 'lucide-svelte';
 	import '../../app.postcss';
 	import type { PageData } from './$types';
 
@@ -19,8 +19,8 @@
 		height={901}
 		src="/logo.png"
 	/>
-	<p class="font-bold">Homeraad Vermeylen</p>
-	<p>© 2024 Homeraad Vermeylen. Alle rechten voorbehouden</p>
+	<p class="font-bold text-center">Homeraad Vermeylen</p>
+	<p class="text-center">© 2024 Homeraad Vermeylen. Alle rechten voorbehouden</p>
 	<div class="grid grid-flow-col gap-4 justify-evenly">
 		<a class="btn btn-ghost" href="https://www.facebook.com/Home-Vermeylen-845283782203005/"
 			><Facebook /></a
@@ -31,9 +31,8 @@
 		<a class="btn btn-ghost" href="https://www.tiktok.com/@homevermeylen/video/7177768007366659333">
 			<Music2 />
 		</a>
-		<!-- TODO: Voeg Linkedin toe -->
-		<a class="btn btn-ghost" href="/">
-			<Linkedin />
+		<a class="btn btn-ghost" href="mailto:homeraadvermeylen@gmail.com">
+			<Mail />
 		</a>
 	</div>
 </footer>

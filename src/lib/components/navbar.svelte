@@ -12,6 +12,7 @@
 		Info,
 		LucideEarthLock,
 		LucideLogOut,
+		Mail,
 		MessageCircleQuestion,
 		Music,
 		Newspaper,
@@ -47,7 +48,7 @@
 		validators: zodClient(LoginGebruikerSchema),
 		async onUpdated({ form }) {
 			if (form.message) {
-				if (form.message.status == 'error') {
+				if (form.message.type == 'error') {
 					toast.error(form.message.text);
 				}
 			} else {
@@ -118,6 +119,10 @@
 										<Music class="h-5 w-5" />
 										Clublied
 									</a>
+									<a href="/homeraad/contact" class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
+										<Mail class="h-5 w-5" />
+										Contact
+									</a>
 								</Accordion.Content>
 							</Accordion.Item>
 							<Accordion.Item value="info">
@@ -173,6 +178,9 @@
 							>
 							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/clublied"
 								>Clublied</DropdownMenu.Item
+							>
+							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/contact"
+								>Contact</DropdownMenu.Item
 							>
 						</DropdownMenu.Group>
 					</DropdownMenu.Content>
