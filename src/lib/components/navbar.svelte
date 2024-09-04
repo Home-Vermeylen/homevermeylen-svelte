@@ -17,6 +17,7 @@
 		Music,
 		Newspaper,
 		PanelLeft,
+		Rocket,
 		ScrollText,
 		UserCog,
 		Users,
@@ -111,6 +112,10 @@
 										<Users class="h-5 w-5" />
 										Homeraadsleden
 									</a>
+									<a href="/homeraad/werking" class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
+										<Rocket class="h-5 w-5" />
+										Werking
+									</a>
 									<a href="/homeraad/verslagen" class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
 										<ScrollText class="h-5 w-5" />
 										Verslagen
@@ -173,6 +178,9 @@
 							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/leden"
 								>Homeraadsleden</DropdownMenu.Item
 							>
+							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/werking"
+								>Werking</DropdownMenu.Item
+							>
 							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/verslagen"
 								>Verslagen</DropdownMenu.Item
 							>
@@ -195,8 +203,6 @@
 					>
 					<DropdownMenu.Content>
 						<DropdownMenu.Group>
-							<DropdownMenu.Label>Info</DropdownMenu.Label>
-							<DropdownMenu.Separator />
 							<DropdownMenu.Item data-sveltekit-reload href="/info/faq"
 								>Veelgestelde Vragen</DropdownMenu.Item
 							>

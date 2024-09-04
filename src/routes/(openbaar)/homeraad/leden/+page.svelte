@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-	<title>Homeraad - Leden</title>
+	<title>Homeraad - Homeraadsleden</title>
 	<meta name="description" content="De leden van de homeraad Home Vermeylen." />
 </svelte:head>
 

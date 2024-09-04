@@ -4,7 +4,7 @@
 	
 </script>
 <svelte:head>
-	<title>Contact</title>
+	<title>Homeraad - Contact</title>
     <meta name="description" content="Contactgegevens homeraad Home Vermeylen">
 </svelte:head>
 
@@ -16,7 +16,7 @@
             Contact
 		</h1>
         <p class="leading-7 [&:not(:first-child)]:mt-6">
-            De homeraad is bereikbaar via volgend e-mailadres: <Button variant="link" href="mailto:homeraadvermeylen@gmail.com">homeraadvermeylen@gmail.com</Button>
+            De homeraad is bereikbaar via volgend e-mailadres: <Button class="w-56" variant="link" href="mailto:homeraadvermeylen@gmail.com">homeraadvermeylen@gmail.com</Button>
         </p>
     </div>
 </div>

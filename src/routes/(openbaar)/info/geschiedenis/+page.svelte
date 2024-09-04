@@ -13,7 +13,7 @@
 		>
 			Geschiedenis
 		</h1>
-		<div class="max-w-56">
+		<div class="max-w-56 md:max-w-96">
 			<h3 class="scroll-m-20 text-2xl font-semibold tracking-tight mb-5">Onze Home</h3>
 			<div class="flex flex-row gap-2">
 				<div class="text-left">

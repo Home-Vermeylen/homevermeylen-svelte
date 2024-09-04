@@ -9,7 +9,7 @@
 </script>
 
 <svelte:head>
-	<title>Verslagen</title>
+	<title>Homeraad - Verslagen</title>
 	<meta
 		name="description"
 		content="De verslagen van de vergaderingen van de beperkte Homeraad van Home Vermeylen."

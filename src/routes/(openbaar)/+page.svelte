@@ -50,7 +50,7 @@
 			hier gevestigd.
 		</p>
 		<p class="leading-7 [&:not(:first-child)]:mt-6">
-			Het gebouw telt 8 verdiepingen en 453 kamers waarvan er enkel aangepast zijn voor personen met
+			Het gebouw telt 8 verdiepingen en 453 kamers waarvan er enkele aangepast zijn voor personen met
 			een handicap. De Home biedt naast een kot zelf ook een tuin, ontspanningszaal fietsenstalling en
 			twee studiezalen aan.
 		</p>
@@ -144,6 +144,7 @@
 				target="_blank"
 				rel="noopener"
 				variant="link"
+				class="w-60"
 			>
 				de website van de dienst Huisvesting
 			</Button>
@@ -161,11 +162,11 @@
 		</h1>
 		<p class="leading-7 [&:not(:first-child)]:mt-6">
 			De
-			<Button variant="link" href="/info/faq" class="link">Veelgestelde Vragen pagina</Button>
+			<Button variant="link" href="/info/faq" class="w-48">Veelgestelde Vragen pagina</Button>
 			van de site probeert een antwoord te geven op vaak terugkomende vragen van bewoners. Indien je zelf
 			nog een vraag hebt kan je hiervoor altijd terecht bij het onthaal van de dienst Huisvesting op het
 			gelijkvloers of bij een
-			<Button href="/homeraad/leden" variant="link">vertegenwoordiger van de Homeraad</Button>
+			<Button href="/homeraad/leden" variant="link" class="w-60">vertegenwoordiger van de Homeraad</Button>
 			.
 		</p>
 	</section>

@@ -3,7 +3,7 @@
 
 </script>
 <svelte:head>
-	<title>Clublied</title>
+	<title>Homeraad - Clublied</title>
     <meta name="description" content="Het clublied van de studentenvereniging Home Vermeylen.">
 </svelte:head>
 
