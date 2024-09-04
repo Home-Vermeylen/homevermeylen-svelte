@@ -8,7 +8,7 @@
 	<meta charset="utf8" />
 	{#if import.meta.env.PROD}
 		<script
-			defer
+			async
 			src="https://cloud.umami.is/script.js"
 			data-website-id="a628ad5e-8f36-43aa-8215-374451f852df"
 		></script>
