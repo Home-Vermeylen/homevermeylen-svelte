@@ -49,18 +49,18 @@
 						variant="outline"
 						role="combobox"
 						aria-expanded={open}
-						class="w-[200px] justify-between"
+						class="w-[200px] md:w-[400px] justify-between"
 					>
 						{$formData.geselecteerde_functies.length}
 						{$formData.geselecteerde_functies.length == 1 ? 'lid' : 'leden'} geselecteerd
 						<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 					</Button>
 				</Popover.Trigger>
-				<Popover.Content class="w-[400px] p-0">
+				<Popover.Content class="w-[200px] md:w-[400px] h-56 p-0 overflow-y-auto">
 					<Command.Root>
 						<Command.Input autofocus placeholder="Zoek homeraadslid..." class="h-9" />
 						<Command.Empty>Geen homeraadsleden gevonden.</Command.Empty>
-						<Command.Group>
+						<Command.Group class="overflow-y-auto">
 							{#each praesidium_leden as praesidium_lid}
 								<Command.Item
 									value={`${praesidium_lid.expand.functie.username.replace(/[0-9]/g, '')} (${

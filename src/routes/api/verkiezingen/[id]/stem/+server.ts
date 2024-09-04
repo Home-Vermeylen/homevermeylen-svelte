@@ -8,6 +8,8 @@ export async function POST(event) {
     const form = await superValidate(event, zod(StemSchema));
 
     if (!form.valid) {
+        form.message = { type: 'error', text: 'Stemmen mislukt!' };
+
         return actionResult('failure', { form }, 400);
     }
 
@@ -32,9 +34,10 @@ export async function POST(event) {
 
         await event.locals.pb.collection('verkiezingen').update(form.data.verkiezing_id, {kandidaten, stemmer_id: form.data.stemmer_id});
     } catch (err) {
+        form.message = { type: 'error', text: 'Stemmen mislukt!' };
         return actionResult('error', { form }, 500);
     }
 
-
+    form.message = { type: 'success', text: 'Stemmen gelukt!' };
     return actionResult('success', { form }, 200);
 }

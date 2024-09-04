@@ -107,126 +107,124 @@
 	const { form: formData, enhance } = nieuw_form;
 </script>
 
-<div>
-	<div class="flex items-center justify-evenly py-4">
-		<Input
-			class="max-w-sm"
-			placeholder="Filter verkiezingen..."
-			type="text"
-			bind:value={$filterValue}
-		/>
+<div class="flex items-center justify-evenly py-4">
+	<Input
+		class="w-auto"
+		placeholder="Filter verkiezingen..."
+		type="text"
+		bind:value={$filterValue}
+	/>
 
-		<Dialog.Root>
-			<Dialog.Trigger
-				><Button class="flex gap-2"><Plus class="h-4 w-4" /> Nieuw</Button></Dialog.Trigger
-			>
-			<Dialog.Content>
-				<Dialog.Header>
-					<Dialog.Title>Nieuwe verkiezing</Dialog.Title>
-				</Dialog.Header>
+	<Dialog.Root>
+		<Dialog.Trigger
+			><Button class="flex gap-2"><Plus class="h-4 w-4" /> Nieuw</Button></Dialog.Trigger
+		>
+		<Dialog.Content>
+			<Dialog.Header>
+				<Dialog.Title>Nieuwe verkiezing</Dialog.Title>
+			</Dialog.Header>
 
-				<form method="POST" use:enhance action="/api/verkiezingen">
-					<Form.Field form={nieuw_form} name="naam">
-						<Form.Control let:attrs>
-							<Form.Label>Naam</Form.Label>
-							<Input {...attrs} bind:value={$formData.naam} />
-						</Form.Control>
-						<Form.FieldErrors />
-					</Form.Field>
-					<Form.Field form={nieuw_form} name="type">
-						<Form.Control let:attrs>
-							<Form.Label>Type</Form.Label>
-							<Select.Root
-								onSelectedChange={(v) => {
-									v && ($formData.type = v.value);
-								}}
-							>
-								<Select.Trigger {...attrs}>
-									<Select.Value placeholder="Kies type verkiezing" />
-								</Select.Trigger>
-								<Select.Content>
-									<Select.Item value="OPENBAAR" label="Openbaar" />
-									<Select.Item value="BEPERKT" label="Beperkt" />
-									<Select.Item value="VM" label="Vaste Medewerkers" />
-									<Select.Item value="ERE" label="Erefuncties" />
-									<Select.Item value="HR" label="Homeraad" />
-								</Select.Content>
-							</Select.Root>
-							<input hidden bind:value={$formData.type} name={attrs.name} />
-						</Form.Control>
-						<Form.Description>
-							{#if $formData.type == 'OPENBAAR'}
-								Een verkiezing waarbij alle bewoners en homeraadleden kunnen stemmen
-							{:else if $formData.type == 'BEPERKT'}
-								Een verkiezing waarbij enkel homeraadleden kunnen stemmen
-							{:else if $formData.type == 'VM'}
-								Een verkiezing waarbij vaste medewerkers worden verkozen
-							{:else if $formData.type == 'ERE'}
-								Een verkiezing waarbij meters en peters worden verkozen
-							{:else if $formData.type == 'HR'}
-								Een verkiezing waarbij een nieuwe homeraad wordt verkozen
-							{/if}
-						</Form.Description>
-						<Form.FieldErrors />
-					</Form.Field>
-					<Form.Button>Opslaan</Form.Button>
-				</form>
-			</Dialog.Content>
-		</Dialog.Root>
-	</div>
-	<div class="rounded-md border">
-		<Table.Root {...$tableAttrs}>
-			<Table.Header>
-				{#each $headerRows as headerRow}
-					<Subscribe rowAttrs={headerRow.attrs()}>
-						<Table.Row>
-							{#each headerRow.cells as cell (cell.id)}
-								<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-									<Table.Head {...attrs}>
-										{#if cell.id === 'created'}
-											<Button variant="ghost" on:click={props.sort.toggle}>
-												<Render of={cell.render()} />
-												<ArrowUpDown class={'ml-2 h-4 w-4'} />
-											</Button>
-										{:else}
+			<form method="POST" use:enhance action="/api/verkiezingen">
+				<Form.Field form={nieuw_form} name="naam">
+					<Form.Control let:attrs>
+						<Form.Label>Naam</Form.Label>
+						<Input {...attrs} bind:value={$formData.naam} />
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+				<Form.Field form={nieuw_form} name="type">
+					<Form.Control let:attrs>
+						<Form.Label>Type</Form.Label>
+						<Select.Root
+							onSelectedChange={(v) => {
+								v && ($formData.type = v.value);
+							}}
+						>
+							<Select.Trigger {...attrs}>
+								<Select.Value placeholder="Kies type verkiezing" />
+							</Select.Trigger>
+							<Select.Content>
+								<Select.Item value="OPENBAAR" label="Openbaar" />
+								<Select.Item value="BEPERKT" label="Beperkt" />
+								<Select.Item value="VM" label="Vaste Medewerkers" />
+								<Select.Item value="ERE" label="Erefuncties" />
+								<Select.Item value="HR" label="Homeraad" />
+							</Select.Content>
+						</Select.Root>
+						<input hidden bind:value={$formData.type} name={attrs.name} />
+					</Form.Control>
+					<Form.Description>
+						{#if $formData.type == 'OPENBAAR'}
+							Een verkiezing waarbij alle bewoners en homeraadleden kunnen stemmen
+						{:else if $formData.type == 'BEPERKT'}
+							Een verkiezing waarbij enkel homeraadleden kunnen stemmen
+						{:else if $formData.type == 'VM'}
+							Een verkiezing waarbij vaste medewerkers worden verkozen
+						{:else if $formData.type == 'ERE'}
+							Een verkiezing waarbij meters en peters worden verkozen
+						{:else if $formData.type == 'HR'}
+							Een verkiezing waarbij een nieuwe homeraad wordt verkozen
+						{/if}
+					</Form.Description>
+					<Form.FieldErrors />
+				</Form.Field>
+				<Form.Button>Opslaan</Form.Button>
+			</form>
+		</Dialog.Content>
+	</Dialog.Root>
+</div>
+<div class="rounded-md border overflow-y-scroll">
+	<Table.Root {...$tableAttrs}>
+		<Table.Header>
+			{#each $headerRows as headerRow}
+				<Subscribe rowAttrs={headerRow.attrs()}>
+					<Table.Row>
+						{#each headerRow.cells as cell (cell.id)}
+							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
+								<Table.Head {...attrs}>
+									{#if cell.id === 'created'}
+										<Button variant="ghost" on:click={props.sort.toggle}>
 											<Render of={cell.render()} />
-										{/if}
-									</Table.Head>
-								</Subscribe>
-							{/each}
-						</Table.Row>
-					</Subscribe>
-				{/each}
-			</Table.Header>
-			<Table.Body {...$tableBodyAttrs}>
-				{#each $pageRows as row (row.id)}
-					<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-						<Table.Row {...rowAttrs}>
-							{#each row.cells as cell (cell.id)}
-								<Subscribe attrs={cell.attrs()} let:attrs>
-									<Table.Cell {...attrs}>
+											<ArrowUpDown class={'ml-2 h-4 w-4'} />
+										</Button>
+									{:else}
 										<Render of={cell.render()} />
-									</Table.Cell>
-								</Subscribe>
-							{/each}
-						</Table.Row>
-					</Subscribe>
-				{/each}
-			</Table.Body>
-		</Table.Root>
-	</div>
-	<div class="flex items-center justify-end space-x-4 py-4">
-		<Button
-			variant="outline"
-			size="sm"
-			on:click={() => ($pageIndex = $pageIndex - 1)}
-			disabled={!$hasPreviousPage}>Vorige</Button
-		>
-		<Button
-			variant="outline"
-			size="sm"
-			disabled={!$hasNextPage}
-			on:click={() => ($pageIndex = $pageIndex + 1)}>Volgende</Button
-		>
-	</div>
+									{/if}
+								</Table.Head>
+							</Subscribe>
+						{/each}
+					</Table.Row>
+				</Subscribe>
+			{/each}
+		</Table.Header>
+		<Table.Body {...$tableBodyAttrs}>
+			{#each $pageRows as row (row.id)}
+				<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
+					<Table.Row {...rowAttrs}>
+						{#each row.cells as cell (cell.id)}
+							<Subscribe attrs={cell.attrs()} let:attrs>
+								<Table.Cell {...attrs}>
+									<Render of={cell.render()} />
+								</Table.Cell>
+							</Subscribe>
+						{/each}
+					</Table.Row>
+				</Subscribe>
+			{/each}
+		</Table.Body>
+	</Table.Root>
+</div>
+<div class="flex items-center justify-end space-x-4 py-4">
+	<Button
+		variant="outline"
+		size="sm"
+		on:click={() => ($pageIndex = $pageIndex - 1)}
+		disabled={!$hasPreviousPage}>Vorige</Button
+	>
+	<Button
+		variant="outline"
+		size="sm"
+		disabled={!$hasNextPage}
+		on:click={() => ($pageIndex = $pageIndex + 1)}>Volgende</Button
+	>
 </div>

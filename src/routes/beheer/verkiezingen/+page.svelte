@@ -5,8 +5,6 @@
 	export let data: PageData;
 </script>
 
-<div class="container mx-auto py-10">
-	{#await data.verkiezingen then verkiezingen}
-		<DataTable data={verkiezingen} form={data.form}/>
-	{/await}
-</div>
+{#await data.verkiezingen then verkiezingen}
+	<DataTable data={verkiezingen} form={data.form} />
+{/await}

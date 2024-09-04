@@ -35,7 +35,7 @@
 	$: ingelogd_lid = data.praesidium_leden?.find((v) => v.functie == data.functie_id);
 </script>
 
-<div class="flex min-h-screen w-full flex-col bg-muted/40">
+<div class="flex min-h-screen flex-col bg-muted/40">
 	<Dialog.Root bind:open={profiel_open}>
 		<Dialog.Content>
 			<Dialog.Header>
@@ -173,7 +173,6 @@
 							class="flex items-center gap-4 px-2.5 hover:text-foreground"
 							class:text-muted-foreground={huidige_pagina != 'FAKKELS_BAKKEN'}
 							class:text-accent-foreground={huidige_pagina == 'FAKKELS_BAKKEN'}
-							class:bg-accent={huidige_pagina == 'FAKKELS_BAKKEN'}
 						>
 							<Flame class="h-5 w-5" />
 							Fakkels & Bakken
@@ -183,7 +182,6 @@
 							class="flex items-center gap-4 px-2.5 hover:text-foreground"
 							class:text-muted-foreground={huidige_pagina != 'PUBLIEKE_GEGEVENS'}
 							class:text-accent-foreground={huidige_pagina == 'PUBLIEKE_GEGEVENS'}
-							class:bg-accent={huidige_pagina == 'PUBLIEKE GEGEVENS'}
 						>
 							<Earth class="h-5 w-5" />
 							Publieke Gegevens
@@ -194,14 +192,15 @@
 							class="flex items-center gap-4 px-2.5 hover:text-foreground"
 							class:text-muted-foreground={huidige_pagina != 'VRIENDSCHAPSNETWERK'}
 							class:text-accent-foreground={huidige_pagina == 'VRIENDSCHAPSNETWERK'}
-							class:bg-accent={huidige_pagina == 'VRIENDSCHAPSNETWERK'}
 						>
 							<Heart class="h-5 w-5" />
 							Vriendschapsnetwerk
 						</a>
 						<a
 							href="/beheer/verkiezingen"
-							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+							class="flex items-center gap-4 px-2.5 hover:text-foreground"
+							class:text-muted-foreground={huidige_pagina != 'VERKIEZINGEN'}
+							class:text-accent-foreground={huidige_pagina == 'VERKIEZINGEN'}
 						>
 							<Vote class="h-5 w-5" />
 							Verkiezingen

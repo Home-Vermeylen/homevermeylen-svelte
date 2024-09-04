@@ -488,7 +488,7 @@
 <Tabs.Root
 	bind:value={geselecteerde_tab}
 	onValueChange={(n) => refreshTable(n)}
-	class="overflow-hidden"
+	class="overflow-x-auto"
 >
 	<div class="flex items-center">
 		<Tabs.List>

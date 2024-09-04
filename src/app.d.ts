@@ -8,11 +8,17 @@ declare global {
 			pb: TypedPocketBase;
 			praesidium: PraesidiaResponse?
 		}
-		// interface Error {}
-		// interface Locals {}
-		// interface PageData {}
-		// interface Platform {}
+		namespace Superforms {
+			type Message = {
+				type: 'error' | 'success', text: string
+			}
+			// interface Error {}
+			// interface Locals {}
+			// interface PageData {}
+			// interface Platform {}
+		}
 	}
 }
 
 export { };
+

@@ -335,7 +335,7 @@
 										{#await data.praesidium_leden then praesidium_leden}
 											<Praesidiumlidselector bind:van_toegang verkiezing_id={verkiezing.id} {praesidium_leden} {geselecteerde_functies} />
 										{/await}
-										<Button class="flex gap-2 items-center" on:click={_ => modal_open = true}> <QrCode class="h-4 w-4" />Stemgerechtigden toevoegen via QR-Code</Button>
+										<Button class="flex gap-2 items-center" on:click={_ => modal_open = true}> <QrCode class="h-4 w-4" />Toevoegen via QR-Code</Button>
 									</Card.Content>
 								</Card.Root>
 							</Tabs.Content>

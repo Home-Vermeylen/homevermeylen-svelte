@@ -9,7 +9,7 @@ export const load = async ({ locals, fetch }) => {
             a => a.json()
                 .then(
                     b => b.filter(
-                        c => c.stemgerechtigde_functies.find((d) => d == locals.pb.authStore.model?.id)
+                        c => c.stemgerechtigde_functies.find((d) => d == locals.pb.authStore.model?.id) && c.actief == true
                     )
                 )
             );
