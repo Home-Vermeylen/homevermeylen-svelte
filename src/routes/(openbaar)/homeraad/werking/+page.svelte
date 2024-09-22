@@ -6,6 +6,7 @@
 <svelte:head>
 	<title>Homeraad - Werking</title>
 	<meta name="description" content="Een woordje uitleg over de werking van de homeraad" />
+	<link rel=“canonical” href=“https://homevermeylen.be/homeraad/werking”>
 </svelte:head>
 
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center mx-5">

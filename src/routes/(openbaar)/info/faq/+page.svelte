@@ -10,6 +10,7 @@
 		name="description"
 		content="Een antwoord op vaak gestelde vragen met betrekking tot het homeleven."
 	/>
+	<link rel=“canonical” href=“https://homevermeylen.be/info/faq”>
 </svelte:head>
 
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center">
