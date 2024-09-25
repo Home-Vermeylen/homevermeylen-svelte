@@ -208,7 +208,7 @@
 				<Accordion.Trigger>Vaste Medewerker</Accordion.Trigger>
 				<Accordion.Content>
 					<p class="leading-7 [&:not(:first-child)]:mt-6">
-						Ook wel VM genoemd. Ondersteund de homeraad waar nodig bij het organiseren van activiteiten.
+						Ook wel VM genoemd. Ondersteunt de homeraad waar nodig bij het organiseren van activiteiten.
 					</p>
 				</Accordion.Content>
 			</Accordion.Item>
