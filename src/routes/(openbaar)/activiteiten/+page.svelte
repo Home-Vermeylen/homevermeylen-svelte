@@ -14,7 +14,7 @@
 		name="description"
 		content="Een lijst van de geplande en reeds afgelopen activiteiten georganiseerd door Home Vermeylen."
 	/>
-	<link rel=“canonical” href=“https://homevermeylen.be/activiteiten”>
+	<link rel="canonical" href="https://homevermeylen.be/activiteiten"/>
 </svelte:head>
 
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center">

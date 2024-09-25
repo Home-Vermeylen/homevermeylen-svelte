@@ -6,7 +6,7 @@
 <svelte:head>
 	<title>Homeraad - Contact</title>
     <meta name="description" content="Contactgegevens homeraad Home Vermeylen">
-	<link rel=“canonical” href=“https://homevermeylen.be/homeraad/contact”>
+	<link rel="canonical" href="https://homevermeylen.be/homeraad/contact">
 </svelte:head>
 
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center mx-5">

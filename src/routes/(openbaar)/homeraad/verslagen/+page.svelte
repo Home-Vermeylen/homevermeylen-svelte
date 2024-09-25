@@ -14,7 +14,7 @@
 		name="description"
 		content="De verslagen van de vergaderingen van de beperkte Homeraad van Home Vermeylen."
 	/>
-	<link rel=“canonical” href=“https://homevermeylen.be/homeraad/verslagen”>
+	<link rel="canonical" href="https://homevermeylen.be/homeraad/verslagen" />
 </svelte:head>
 
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center">

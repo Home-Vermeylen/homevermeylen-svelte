@@ -15,7 +15,7 @@
 		name="description"
 		content="Het studentikoos tijdschrift van Home Vermeylen, het Augustje."
 	/>
-	<link rel=“canonical” href=“https://homevermeylen.be/augustjes”>
+	<link rel="canonical" href="https://homevermeylen.be/augustjes" />
 </svelte:head>
 
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center">

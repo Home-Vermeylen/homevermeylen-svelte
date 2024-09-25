@@ -6,7 +6,7 @@
 <svelte:head>
 	<title>Thuispagina</title>
 	<meta  name="description" content="Thuispagina Home Vermeylen" />
-	<link rel=“canonical” href=“https://homevermeylen.be”>
+	<link rel="canonical" href="https://homevermeylen.be" />
 </svelte:head>
 
 <div
