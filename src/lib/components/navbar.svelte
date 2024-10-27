@@ -21,7 +21,8 @@
 		ScrollText,
 		UserCog,
 		Users,
-		UsersRound
+		UsersRound,
+		HeartHandshake
 	} from 'lucide-svelte';
 	import { mediaQuery } from 'svelte-legos';
 	import { toast } from 'svelte-sonner';
@@ -59,7 +60,13 @@
 		}
 	});
 
-	const { form: login_formData, enhance: login_enhance } = login_form;
+	const {
+		form: login_formData,
+		enhance: login_enhance,
+		submitting: login_submitting,
+		delayed: login_delayed,
+		timeout: login_timeout
+	} = login_form;
 
 	import * as Accordion from '$lib/components/ui/accordion';
 
@@ -91,7 +98,10 @@
 							<Home class="h-5 w-5" />
 							Thuispagina
 						</a>
-						<a href="/activiteiten" class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
+						<a
+							href="/activiteiten"
+							class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+						>
 							<Calendar class="h-5 w-5" />
 							Activiteiten
 						</a>
@@ -108,23 +118,44 @@
 									</span></Accordion.Trigger
 								>
 								<Accordion.Content class="ml-8 grid gap-6 text-lg font-medium">
-									<a href="/homeraad/leden" class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
+									<a
+										href="/homeraad/leden"
+										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+									>
 										<Users class="h-5 w-5" />
 										Homeraadsleden
 									</a>
-									<a href="/homeraad/werking" class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
+									<a
+										href="/homeraad/werking"
+										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+									>
 										<Rocket class="h-5 w-5" />
 										Werking
 									</a>
-									<a href="/homeraad/verslagen" class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
+									<a
+										href="/homeraad/verslagen"
+										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+									>
 										<ScrollText class="h-5 w-5" />
 										Verslagen
 									</a>
-									<a href="/homeraad/clublied" class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
+									<a
+										href="/homeraad/clublied"
+										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+									>
 										<Music class="h-5 w-5" />
 										Clublied
 									</a>
-									<a href="/homeraad/contact" class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
+									<a
+										href="/homeraad/sponsors"
+										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+									>
+										<HeartHandshake class="h-5 w-5" />
+									</a>
+									<a
+										href="/homeraad/contact"
+										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+									>
 										<Mail class="h-5 w-5" />
 										Contact
 									</a>
@@ -132,19 +163,23 @@
 							</Accordion.Item>
 							<Accordion.Item value="info">
 								<Accordion.Trigger
-									><span
-										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
-									>
+									><span class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
 										<Info class="h-5 w-5" />
 										Info
 									</span></Accordion.Trigger
 								>
 								<Accordion.Content class="ml-8 grid gap-6 text-lg font-medium">
-									<a href="/info/geschiedenis" class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
+									<a
+										href="/info/geschiedenis"
+										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+									>
 										<History class="h-5 w-5" />
 										Geschiedenis
 									</a>
-									<a href="/info/faq" class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
+									<a
+										href="/info/faq"
+										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+									>
 										<MessageCircleQuestion class="h-5 w-5" />
 										Veelgestelde vragen
 									</a>
@@ -186,6 +221,9 @@
 							>
 							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/clublied"
 								>Clublied</DropdownMenu.Item
+							>
+							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/sponsors">
+								Sponsors</DropdownMenu.Item
 							>
 							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/contact"
 								>Contact</DropdownMenu.Item
@@ -263,7 +301,15 @@
 								<Dialog.Title>Inloggen</Dialog.Title>
 								<Dialog.Description>Log in als Homeraadslid</Dialog.Description>
 							</Dialog.Header>
-							<Loginform {login_enhance} {login_form} {login_formData} {praesidium_leden} />
+							<Loginform
+								{login_enhance}
+								{login_form}
+								{login_formData}
+								{login_submitting}
+								{login_delayed}
+								{login_timeout}
+								{praesidium_leden}
+							/>
 						</Dialog.Content>
 					</Dialog.Root>
 				{:else}
@@ -276,7 +322,15 @@
 								<Drawer.Title>Inloggen</Drawer.Title>
 								<Drawer.Description>Log in als Homeraadslid</Drawer.Description>
 							</Drawer.Header>
-							<Loginform {login_enhance} {login_form} {login_formData} {praesidium_leden} />
+							<Loginform
+								{login_enhance}
+								{login_form}
+								{login_formData}
+								{praesidium_leden}
+								{login_delayed}
+								{login_timeout}
+								{login_submitting}
+							/>
 						</Drawer.Content>
 					</Drawer.Root>
 				{/if}

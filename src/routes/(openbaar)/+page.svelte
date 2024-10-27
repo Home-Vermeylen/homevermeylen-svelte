@@ -5,7 +5,7 @@
 
 <svelte:head>
 	<title>Thuispagina</title>
-	<meta  name="description" content="Thuispagina Home Vermeylen" />
+	<meta name="description" content="Thuispagina Home Vermeylen" />
 	<link rel="canonical" href="https://homevermeylen.be" />
 </svelte:head>
 
@@ -26,8 +26,8 @@
 				</h2>
 				<div class="flex flex-col gap-2">
 					<Button href="#over">Nieuwe bewoners <ChevronRight class="h-4 w-4" /></Button>
-					<Button variant="outline" href="/info/faq"
-						>Veelgestelde vragen <ChevronRight class="h-4 w-4" /></Button
+					<Button variant="outline" href="/homeraad/sponsors"
+						>Ontdek onze sponsors <ChevronRight class="h-4 w-4" /></Button
 					>
 				</div>
 			</div>
@@ -38,7 +38,7 @@
 	<section class="flex flex-col justify-center p-10 max-w-prose">
 		<!-- svelte-ignore a11y-missing-content -->
 		<a id="over" />
-	
+
 		<h1
 			class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center"
 		>
@@ -47,13 +47,13 @@
 		<p class="leading-7 [&:not(:first-child)]:mt-6">
 			<strong>Home Vermeylen</strong> is een kotgebouw uitgebaat door de dienst Huisvesting van de
 			Gentse universiteit, gelegen aan het{' '}
-			<a href="https://goo.gl/maps/N8xuRbRZ1nJiNQcP9">Stalhof</a>. Ook het onthaal van deze dienst is
-			hier gevestigd.
+			<a href="https://goo.gl/maps/N8xuRbRZ1nJiNQcP9">Stalhof</a>. Ook het onthaal van deze dienst
+			is hier gevestigd.
 		</p>
 		<p class="leading-7 [&:not(:first-child)]:mt-6">
-			Het gebouw telt 8 verdiepingen en 453 kamers waarvan er enkele aangepast zijn voor personen met
-			een handicap. De Home biedt naast een kot zelf ook een tuin, ontspanningszaal fietsenstalling en
-			twee studiezalen aan.
+			Het gebouw telt 8 verdiepingen en 453 kamers waarvan er enkele aangepast zijn voor personen
+			met een handicap. De Home biedt naast een kot zelf ook een tuin, ontspanningszaal
+			fietsenstalling en twee studiezalen aan.
 		</p>
 		<p class="leading-7 [&:not(:first-child)]:mt-6">
 			Home Vermeylen maakt deel uit van het{' '}
@@ -64,8 +64,8 @@
 		<p class="leading-7 [&:not(:first-child)]:mt-6">
 			Zoals elke andere studentenhome heeft Home Vermeylen een{' '}
 			<a class="link link-hover" href="/homeraad/leden">Homeraad</a>, deze verdedigt de belangen van
-			elke bewoner en organiseert ook sportactiviteiten, cultuuractiviteiten, fuiven, cantussen en de
-			wekelijkse baravond.
+			elke bewoner en organiseert ook sportactiviteiten, cultuuractiviteiten, fuiven, cantussen en
+			de wekelijkse baravond.
 		</p>
 		<p class="leading-7 [&:not(:first-child)]:mt-6">
 			Home Vermeylen heeft ook een eigen tijdschrift: het{' '}
@@ -87,8 +87,9 @@
 			</h2>
 		</div>
 		<p class="leading-7 [&:not(:first-child)]:mt-6">
-			Omdat het gebouw centraal gelegen is liggen alle voornaamste campussen en studentenrestauranten
-			op fiets- of wandelafstand. Ook ligt de Home vlakbij de Overpoort, de uitgaansbuurt van Gent.
+			Omdat het gebouw centraal gelegen is liggen alle voornaamste campussen en
+			studentenrestauranten op fiets- of wandelafstand. Ook ligt de Home vlakbij de Overpoort, de
+			uitgaansbuurt van Gent.
 		</p>
 		<div class="flex gap-2 items-center pt-5">
 			<Users class="h-4 w-4" />
@@ -100,8 +101,8 @@
 			In het homeleven staat het sociale aspect centraal. Aangezien je met veel mensen op een
 			verdieping leeft zal je je kotgenoten dus heel vaak zien. Dit vereist misschien een zekere
 			aanpassing in het begin van je verblijf, maar de meeste mensen worden dit snel gewoon. Het
-			sociale leven en sfeer in het gebouw is een enorme troef die een studentenhome onderscheidt van
-			private koten.
+			sociale leven en sfeer in het gebouw is een enorme troef die een studentenhome onderscheidt
+			van private koten.
 		</p>
 		<div class="flex gap-2 items-center pt-5">
 			<Pin class="h-4 w-4" />
@@ -115,9 +116,9 @@
 			cultuuractiviteiten, ons jaarlijks festival August In April en nog zoveel meer.
 		</p>
 		<p class="leading-7 [&:not(:first-child)]:mt-6">
-			Ook is er op de eerste dag van het academiejaar op elke verdieping een <i>gangfeest</i> waar je als
-			nieuwe of oude bewoner de kans krijgt om je ganggenoten wat beter te leren kennen. Vaak worden er
-			per gang ook spontane activiteiten georganiseerd zoals bijvoorbeeld een filmavond.
+			Ook is er op de eerste dag van het academiejaar op elke verdieping een <i>gangfeest</i> waar je
+			als nieuwe of oude bewoner de kans krijgt om je ganggenoten wat beter te leren kennen. Vaak worden
+			er per gang ook spontane activiteiten georganiseerd zoals bijvoorbeeld een filmavond.
 		</p>
 		<div class="flex gap-2 items-center pt-5">
 			<Euro class="h-4 w-4" />
@@ -139,7 +140,8 @@
 			Hoe vraag ik een kamer aan?
 		</h1>
 		<p class="leading-7 [&:not(:first-child)]:mt-6">
-			Een kamer aanvragen voor het volgende academiejaar kan vanaf 1 maart. Meer informatie vind je op
+			Een kamer aanvragen voor het volgende academiejaar kan vanaf 1 maart. Meer informatie vind je
+			op
 			<Button
 				href="https://www.ugent.be/student/nl/meer-dan-studeren/huisvesting"
 				target="_blank"
@@ -149,8 +151,8 @@
 			>
 				de website van de dienst Huisvesting
 			</Button>
-			. Omdat er jaarlijks heel veel aanvragen zijn en slechts een beperkt aanbod, is het best om zo vroeg
-			mogelijk een aanvraag op te starten.
+			. Omdat er jaarlijks heel veel aanvragen zijn en slechts een beperkt aanbod, is het best om zo
+			vroeg mogelijk een aanvraag op te starten.
 		</p>
 	</section>
 	<section class="flex flex-col align-middle items-center p-10 pb-20 max-w-prose">
@@ -164,10 +166,12 @@
 		<p class="leading-7 [&:not(:first-child)]:mt-6">
 			De
 			<Button variant="link" href="/info/faq" class="w-48">Veelgestelde Vragen pagina</Button>
-			van de site probeert een antwoord te geven op vaak terugkomende vragen van bewoners. Indien je zelf
-			nog een vraag hebt kan je hiervoor altijd terecht bij het onthaal van de dienst Huisvesting op het
-			gelijkvloers of bij een
-			<Button href="/homeraad/leden" variant="link" class="w-60">vertegenwoordiger van de Homeraad</Button>
+			van de site probeert een antwoord te geven op vaak terugkomende vragen van bewoners. Indien je
+			zelf nog een vraag hebt kan je hiervoor altijd terecht bij het onthaal van de dienst Huisvesting
+			op het gelijkvloers of bij een
+			<Button href="/homeraad/leden" variant="link" class="w-60"
+				>vertegenwoordiger van de Homeraad</Button
+			>
 			.
 		</p>
 	</section>
