@@ -19,7 +19,7 @@
 	};
 </script>
 
-<Popover.Root bind:open let:ids>
+<Popover.Root bind:open>
 	<Popover.Trigger asChild let:builder>
 		<Button
 			builders={[builder]}
@@ -32,28 +32,34 @@
 			<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 		</Button>
 	</Popover.Trigger>
-	<Popover.Content class="w-[200px] p-0">
-		<Command.Root>
+	<Popover.Content class="w-[225px] p-0 mt-1 overflow-y-auto h-64">
+		<Command.Root class="overflow-y-auto">
 			<Command.Input placeholder="Selecteer een academiejaar" />
 			<Command.Empty>Geen academiejaar gevonden.</Command.Empty>
-			<Command.Group>
-				{#each academiejaren as academiejaar}
-					<Command.Item
-						value={academiejaar}
-						onSelect={(currentValue) => {
-							nav(currentValue);
-						}}
-					>
-						<Check
-							class={cn(
-								'mr-2 h-4 w-4',
-								geselecteerd_academiejaar !== academiejaar && 'text-transparent'
-							)}
-						/>
-						{academiejaar}
+			<Command.List>
+				<Command.Group heading="Geselecteerd">
+					<Command.Item class="justify-center" value={geselecteerd_academiejaar}>
+						<span>{geselecteerd_academiejaar}</span>
 					</Command.Item>
-				{/each}
-			</Command.Group>
+				</Command.Group>
+				<Command.Group class="overflow-y-auto" heading="Overige academiejaren">
+					{#each academiejaren as academiejaar}
+						{#if academiejaar != geselecteerd_academiejaar}
+							<Command.Item
+								class="justify-center"
+								value={academiejaar}
+								onSelect={(currentValue) => {
+									nav(currentValue);
+								}}
+							>
+								<span class={geselecteerd_academiejaar == academiejaar && 'font-bold underline'}
+									>{academiejaar}</span
+								>
+							</Command.Item>
+						{/if}
+					{/each}
+				</Command.Group>
+			</Command.List>
 		</Command.Root>
 	</Popover.Content>
 </Popover.Root>
