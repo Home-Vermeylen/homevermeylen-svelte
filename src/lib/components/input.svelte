@@ -1,15 +1,29 @@
 <script lang="ts">
-	export let value = '';
-	export let placeholder = '';
-	export let id: string;
-	export let label: string;
-	export let type = 'text';
-	export let disabled = false;
-	export let required = false;
 
-	export let binding: HTMLInputElement | null = null;
 
-	export let errors: any;
+	interface Props {
+		value?: string;
+		placeholder?: string;
+		id: string;
+		label: string;
+		type?: string;
+		disabled?: boolean;
+		required?: boolean;
+		binding?: HTMLInputElement | null;
+		errors: any;
+	}
+
+	let {
+		value = '',
+		placeholder = '',
+		id,
+		label,
+		type = 'text',
+		disabled = false,
+		required = false,
+		binding = $bindable(null),
+		errors
+	}: Props = $props();
 </script>
 
 <div class="form-control w-full max-w-lg mb-2">

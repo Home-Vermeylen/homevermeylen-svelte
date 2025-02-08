@@ -1,8 +1,17 @@
 <script lang="ts">
-    export let alt: string;
-    export let src: string;
-    export let height = '64';
-    export let width = '64';
+	interface Props {
+		alt: string;
+		src: string;
+		height?: string;
+		width?: string;
+	}
+
+	let {
+		alt,
+		src,
+		height = '64',
+		width = '64'
+	}: Props = $props();
 </script>
 
 <img

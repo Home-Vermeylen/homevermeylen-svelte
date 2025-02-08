@@ -15,8 +15,12 @@
 	import type { VerkiezingenResponse } from '../../../../types/pocketbase-types';
 	import DataTableActions from './data_table_actions.svelte';
 
-	export let data: VerkiezingenResponse[];
-	export let form: SuperValidated<Infer<typeof VerkiezingenSchema>>;
+	interface Props {
+		data: VerkiezingenResponse[];
+		form: SuperValidated<Infer<typeof VerkiezingenSchema>>;
+	}
+
+	let { data, form }: Props = $props();
 
 	const table = createTable(readable(data), {
 		page: addPagination(),
@@ -126,33 +130,37 @@
 
 			<form method="POST" use:enhance action="/api/verkiezingen">
 				<Form.Field form={nieuw_form} name="naam">
-					<Form.Control let:attrs>
-						<Form.Label>Naam</Form.Label>
-						<Input {...attrs} bind:value={$formData.naam} />
-					</Form.Control>
+					<Form.Control >
+						{#snippet children({ attrs })}
+												<Form.Label>Naam</Form.Label>
+							<Input {...attrs} bind:value={$formData.naam} />
+																	{/snippet}
+										</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
 				<Form.Field form={nieuw_form} name="type">
-					<Form.Control let:attrs>
-						<Form.Label>Type</Form.Label>
-						<Select.Root
-							onSelectedChange={(v) => {
-								v && ($formData.type = v.value);
-							}}
-						>
-							<Select.Trigger {...attrs}>
-								<Select.Value placeholder="Kies type verkiezing" />
-							</Select.Trigger>
-							<Select.Content>
-								<Select.Item value="OPENBAAR" label="Openbaar" />
-								<Select.Item value="BEPERKT" label="Beperkt" />
-								<Select.Item value="VM" label="Vaste Medewerkers" />
-								<Select.Item value="ERE" label="Erefuncties" />
-								<Select.Item value="HR" label="Homeraad" />
-							</Select.Content>
-						</Select.Root>
-						<input hidden bind:value={$formData.type} name={attrs.name} />
-					</Form.Control>
+					<Form.Control >
+						{#snippet children({ attrs })}
+												<Form.Label>Type</Form.Label>
+							<Select.Root
+								onSelectedChange={(v) => {
+									v && ($formData.type = v.value);
+								}}
+							>
+								<Select.Trigger {...attrs}>
+									<Select.Value placeholder="Kies type verkiezing" />
+								</Select.Trigger>
+								<Select.Content>
+									<Select.Item value="OPENBAAR" label="Openbaar" />
+									<Select.Item value="BEPERKT" label="Beperkt" />
+									<Select.Item value="VM" label="Vaste Medewerkers" />
+									<Select.Item value="ERE" label="Erefuncties" />
+									<Select.Item value="HR" label="Homeraad" />
+								</Select.Content>
+							</Select.Root>
+							<input hidden bind:value={$formData.type} name={attrs.name} />
+																	{/snippet}
+										</Form.Control>
 					<Form.Description>
 						{#if $formData.type == 'OPENBAAR'}
 							Een verkiezing waarbij alle bewoners en homeraadleden kunnen stemmen
@@ -180,18 +188,20 @@
 				<Subscribe rowAttrs={headerRow.attrs()}>
 					<Table.Row>
 						{#each headerRow.cells as cell (cell.id)}
-							<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-								<Table.Head {...attrs}>
-									{#if cell.id === 'created'}
-										<Button variant="ghost" on:click={props.sort.toggle}>
+							<Subscribe attrs={cell.attrs()}  props={cell.props()} >
+								{#snippet children({ attrs, props })}
+																<Table.Head {...attrs}>
+										{#if cell.id === 'created'}
+											<Button variant="ghost" on:click={props.sort.toggle}>
+												<Render of={cell.render()} />
+												<ArrowUpDown class={'ml-2 h-4 w-4'} />
+											</Button>
+										{:else}
 											<Render of={cell.render()} />
-											<ArrowUpDown class={'ml-2 h-4 w-4'} />
-										</Button>
-									{:else}
-										<Render of={cell.render()} />
-									{/if}
-								</Table.Head>
-							</Subscribe>
+										{/if}
+									</Table.Head>
+																							{/snippet}
+														</Subscribe>
 						{/each}
 					</Table.Row>
 				</Subscribe>
@@ -199,17 +209,21 @@
 		</Table.Header>
 		<Table.Body {...$tableBodyAttrs}>
 			{#each $pageRows as row (row.id)}
-				<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-					<Table.Row {...rowAttrs}>
-						{#each row.cells as cell (cell.id)}
-							<Subscribe attrs={cell.attrs()} let:attrs>
-								<Table.Cell {...attrs}>
-									<Render of={cell.render()} />
-								</Table.Cell>
-							</Subscribe>
-						{/each}
-					</Table.Row>
-				</Subscribe>
+				<Subscribe rowAttrs={row.attrs()} >
+					{#snippet children({ rowAttrs })}
+										<Table.Row {...rowAttrs}>
+							{#each row.cells as cell (cell.id)}
+								<Subscribe attrs={cell.attrs()} >
+									{#snippet children({ attrs })}
+																<Table.Cell {...attrs}>
+											<Render of={cell.render()} />
+										</Table.Cell>
+																								{/snippet}
+														</Subscribe>
+							{/each}
+						</Table.Row>
+														{/snippet}
+								</Subscribe>
 			{/each}
 		</Table.Body>
 	</Table.Root>

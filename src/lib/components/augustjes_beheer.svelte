@@ -12,12 +12,16 @@
 	import type { AugustjesRecord } from '../../../types/pocketbase-types';
 	import AugustjesModal from './augustjes_modal.svelte';
 
-	let augustjes_promise: Promise<AugustjesRecord[]> | undefined = undefined;
-    export let data: SuperValidated<Infer<typeof AugustjesSchema>>;
+	let augustjes_promise: Promise<AugustjesRecord[]> | undefined = $state(undefined);
+	interface Props {
+		data: SuperValidated<Infer<typeof AugustjesSchema>>;
+	}
 
-	let geselecteerd_augustje: AugustjesRecord | undefined = undefined;
-	let alert_open = false;
-    let augustjes_modal_open = false;
+	let { data }: Props = $props();
+
+	let geselecteerd_augustje: AugustjesRecord | undefined = $state(undefined);
+	let alert_open = $state(false);
+    let augustjes_modal_open = $state(false);
 
 	onMount(() => {
 		augustjes_promise = fetch('/api/augustjes', { method: 'GET' }).then(async (data) => {
@@ -107,12 +111,14 @@
 									></Table.Cell>
 								<Table.Cell>
 									<DropdownMenu.Root>
-										<DropdownMenu.Trigger asChild let:builder>
-											<Button aria-haspopup="true" size="icon" variant="ghost" builders={[builder]}>
-												<Ellipsis class="h-4 w-4" />
-												<span class="sr-only">Toon Menu</span>
-											</Button>
-										</DropdownMenu.Trigger>
+										<DropdownMenu.Trigger asChild >
+											{#snippet children({ builder })}
+																						<Button aria-haspopup="true" size="icon" variant="ghost" builders={[builder]}>
+													<Ellipsis class="h-4 w-4" />
+													<span class="sr-only">Toon Menu</span>
+												</Button>
+																																{/snippet}
+																				</DropdownMenu.Trigger>
 										<DropdownMenu.Content align="end">
 											<DropdownMenu.Label>Acties</DropdownMenu.Label>
 											<DropdownMenu.Item

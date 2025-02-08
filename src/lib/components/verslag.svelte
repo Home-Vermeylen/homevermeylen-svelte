@@ -3,7 +3,7 @@
 	import { Button } from './ui/button';
 	import { Scroll, ScrollText } from 'lucide-svelte';
 
-	export let verslag;
+	let { verslag } = $props();
 
 	const gelezen = window.localStorage.getItem(verslag.id) != null;
 

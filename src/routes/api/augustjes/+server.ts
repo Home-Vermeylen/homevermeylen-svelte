@@ -4,14 +4,14 @@ import { error, fail, json } from '@sveltejs/kit';
 import { zod } from 'sveltekit-superforms/adapters';
 import { actionResult, superValidate } from 'sveltekit-superforms/server';
 
-/// Mapping met ´augustjes´ in de database
+/// Mapping met ´augustje´ in de database
 export interface Augustje {
-	id: string,
-	naam: string,
-	bestand: string,
-	praesidium: PRAESIDIUM,
-	created: Date,
-	updated: Date
+	id: string;
+	naam: string;
+	bestand: string;
+	praesidium: PRAESIDIUM;
+	created: Date;
+	updated: Date;
 }
 
 export async function GET({ locals, url }) {
@@ -20,9 +20,12 @@ export async function GET({ locals, url }) {
 	const augustjes = await locals.pb
 		.collection('augustjes')
 		.getFullList({
-			filter: `praesidium.academiejaar = "${academiejaar_query ?? locals.praesidium?.academiejaar}"`, sort: '-created'
+			filter: `praesidium.academiejaar = "${academiejaar_query ?? locals.praesidium?.academiejaar}"`,
+			sort: '-created'
 		})
-		.then(r => r.map(a => ({ ...a, created: new Date(a.created), pdf: locals.pb.files.getUrl(a, a.pdf) })))
+		.then((r) =>
+			r.map((a) => ({ ...a, created: new Date(a.created), pdf: locals.pb.files.getUrl(a, a.pdf) }))
+		);
 
 	return json(augustjes);
 }
@@ -30,6 +33,7 @@ export async function GET({ locals, url }) {
 export async function POST(event) {
 	const origineleData = await event.request.clone().formData();
 
+	console.log(origineleData.get('pdf'));
 	if ((origineleData.get('pdf') as File).size == 0) {
 		origineleData.delete('pdf');
 	}
@@ -48,7 +52,7 @@ export async function POST(event) {
 			return actionResult('error', { form }, 500);
 		}
 	} else {
-		origineleData.set('praesidium', event.locals.praesidium?.id ?? '')
+		origineleData.set('praesidium', event.locals.praesidium?.id ?? '');
 		try {
 			await event.locals.pb.collection('augustjes').create(origineleData);
 		} catch (err) {

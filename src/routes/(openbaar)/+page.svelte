@@ -36,8 +36,8 @@
 </div>
 <div class="flex flex-col items-center">
 	<section class="flex flex-col justify-center p-10 max-w-prose">
-		<!-- svelte-ignore a11y-missing-content -->
-		<a id="over" />
+		<!-- svelte-ignore a11y_missing_content -->
+		<a id="over"></a>
 
 		<h1
 			class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center"
@@ -73,8 +73,8 @@
 		</p>
 	</section>
 	<section class="flex flex-col align-middle items-center p-10 max-w-prose">
-		<!-- svelte-ignore a11y-missing-content -->
-		<a id="troeven" />
+		<!-- svelte-ignore a11y_missing_content -->
+		<a id="troeven"></a>
 		<h1
 			class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center"
 		>
@@ -132,8 +132,8 @@
 		</p>
 	</section>
 	<section class="flex flex-col align-middle items-center p-10 max-w-prose">
-		<!-- svelte-ignore a11y-missing-content -->
-		<a id="aanvragen" />
+		<!-- svelte-ignore a11y_missing_content -->
+		<a id="aanvragen"></a>
 		<h1
 			class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center"
 		>
@@ -156,8 +156,8 @@
 		</p>
 	</section>
 	<section class="flex flex-col align-middle items-center p-10 pb-20 max-w-prose">
-		<!-- svelte-ignore a11y-missing-content -->
-		<a id="vragen" />
+		<!-- svelte-ignore a11y_missing_content -->
+		<a id="vragen"></a>
 		<h1
 			class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center"
 		>

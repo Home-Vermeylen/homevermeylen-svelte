@@ -14,12 +14,16 @@
 	import Activiteitenmodal from './activiteitenmodal.svelte';
 	import { ScrollArea } from './ui/scroll-area';
 
-	let activiteiten_promise: Promise<ActiviteitenRecord[]> | undefined = undefined;
-    export let data: SuperValidated<Infer<typeof ActiviteitSchema>>;
+	let activiteiten_promise: Promise<ActiviteitenRecord[]> | undefined = $state(undefined);
+	interface Props {
+		data: SuperValidated<Infer<typeof ActiviteitSchema>>;
+	}
 
-	let geselecteerde_activiteit: ActiviteitenRecord | undefined = undefined;
-	let alert_open = false;
-    let activiteiten_modal_open = false;
+	let { data }: Props = $props();
+
+	let geselecteerde_activiteit: ActiviteitenRecord | undefined = $state(undefined);
+	let alert_open = $state(false);
+    let activiteiten_modal_open = $state(false);
 
 	onMount(() => {
 		activiteiten_promise = fetch('/api/activiteiten', { method: 'GET' }).then(async (data) => {
@@ -162,12 +166,14 @@
 								>
 								<Table.Cell>
 									<DropdownMenu.Root>
-										<DropdownMenu.Trigger asChild let:builder>
-											<Button aria-haspopup="true" size="icon" variant="ghost" builders={[builder]}>
-												<Ellipsis class="h-4 w-4" />
-												<span class="sr-only">Toon Menu</span>
-											</Button>
-										</DropdownMenu.Trigger>
+										<DropdownMenu.Trigger asChild >
+											{#snippet children({ builder })}
+																						<Button aria-haspopup="true" size="icon" variant="ghost" builders={[builder]}>
+													<Ellipsis class="h-4 w-4" />
+													<span class="sr-only">Toon Menu</span>
+												</Button>
+																																{/snippet}
+																				</DropdownMenu.Trigger>
 										<DropdownMenu.Content align="end">
 											<DropdownMenu.Label>Acties</DropdownMenu.Label>
 											<DropdownMenu.Item

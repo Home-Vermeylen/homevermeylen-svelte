@@ -4,15 +4,19 @@
 	import Input from './input.svelte';
 	import { invalidateAll } from '$app/navigation';
 
-	export let dialog: HTMLDialogElement;
-	export let gebruiker: any;
+	interface Props {
+		dialog: HTMLDialogElement;
+		gebruiker: any;
+	}
 
-	let loading = false;
+	let { dialog = $bindable(), gebruiker }: Props = $props();
+
+	let loading = $state(false);
 	let disabled = true;
 
-	let oud_veld: HTMLInputElement;
-	let nieuw_veld: HTMLInputElement;
-	let herhaal_veld: HTMLInputElement;
+	let oud_veld: HTMLInputElement = $state();
+	let nieuw_veld: HTMLInputElement = $state();
+	let herhaal_veld: HTMLInputElement = $state();
 
 	const inputEvent = () => {
 		if (oud_veld?.value && nieuw_veld?.value == herhaal_veld?.value && nieuw_veld?.value != '') {
@@ -52,7 +56,7 @@
 	};
 </script>
 
-<dialog bind:this={dialog} class="modal modal-scroll h-max" on:cancel={sluitModal}>
+<dialog bind:this={dialog} class="modal modal-scroll h-max" oncancel={sluitModal}>
 	<form
 		use:enhance={updateWachtwoord}
 		method="post"

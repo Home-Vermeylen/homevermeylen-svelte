@@ -1,99 +1,25 @@
-import { type ClassValue, clsx } from "clsx";
-import { cubicOut } from "svelte/easing";
-import type { TransitionConfig } from "svelte/transition";
-import { twMerge } from "tailwind-merge";
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import { readable } from 'svelte/store';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-type FlyAndScaleParams = {
-	y?: number;
-	x?: number;
-	start?: number;
-	duration?: number;
-};
-
-export const flyAndScale = (
-	node: Element,
-	params: FlyAndScaleParams = { y: -8, x: 0, start: 0.95, duration: 150 }
-): TransitionConfig => {
-	const style = getComputedStyle(node);
-	const transform = style.transform === "none" ? "" : style.transform;
-
-	const scaleConversion = (
-		valueA: number,
-		scaleA: [number, number],
-		scaleB: [number, number]
-	) => {
-		const [minA, maxA] = scaleA;
-		const [minB, maxB] = scaleB;
-
-		const percentage = (valueA - minA) / (maxA - minA);
-		const valueB = percentage * (maxB - minB) + minB;
-
-		return valueB;
-	};
-
-	const styleToString = (
-		style: Record<string, number | string | undefined>
-	): string => {
-		return Object.keys(style).reduce((str, key) => {
-			if (style[key] === undefined) return str;
-			return str + `${key}:${style[key]};`;
-		}, "");
-	};
-
-	return {
-		duration: params.duration ?? 200,
-		delay: 0,
-		css: (t) => {
-			const y = scaleConversion(t, [0, 1], [params.y ?? 5, 0]);
-			const x = scaleConversion(t, [0, 1], [params.x ?? 0, 0]);
-			const scale = scaleConversion(t, [0, 1], [params.start ?? 0.95, 1]);
-
-			return styleToString({
-				transform: `${transform} translate3d(${x}px, ${y}px, 0) scale(${scale})`,
-				opacity: t
-			});
-		},
-		easing: cubicOut
-	};
-};
-
-import type { ZodSchema } from 'zod';
-
-export const serializeNonPOJOs = (obj: object) => {
-	return structuredClone(obj);
-};
-
-export const getImageURL = (
-	collectionId: string,
-	recordId: string,
-	filename: string,
-	size = '0x0'
-) => {
-	return `${
-		import.meta.env.VITE_PUBLIC_POCKETBASE_URL
-	}/api/files/${collectionId}/${recordId}/${filename}?thumb=${size}`;
-};
-
-export const valideerData = async (formData: FormData, schema: ZodSchema) => {
-	const body = Object.fromEntries(formData);
-
-	try {
-		const data = schema.parse(body);
-
-		return {
-			formData: data,
-			errors: null
+export const useMediaQuery = (mediaQueryString: string) => {
+	const matches = readable(null, (set) => {
+		const m = window.matchMedia(mediaQueryString);
+		//we set the value of the reader to the matches property
+		set(m.matches);
+		//we create the event listener that will set the new value on change
+		const el = (e) => set(e.matches);
+		//we add the new event listener
+		m.addEventListener('change', el);
+		//we return the stop function that will clean the event listener
+		return () => {
+			m.removeEventListener('change', el);
 		};
-	} catch (err: unknown) {
-		const errors = err.flatten();
-
-		return {
-			formData: body,
-			errors
-		};
-	}
+	});
+	//then we return the readable
+	return matches;
 };

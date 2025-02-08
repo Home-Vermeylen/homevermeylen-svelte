@@ -1,16 +1,19 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { cn } from '$lib/utils';
-	import { Check, ChevronsUpDown } from 'lucide-svelte';
+	import { ChevronsUpDown } from 'lucide-svelte';
 	import { Button } from './ui/button';
 	import * as Command from './ui/command';
 	import * as Popover from './ui/popover';
 
-	export let academiejaren: string[];
-	export let geselecteerd_academiejaar: string | undefined;
+	interface Props {
+		academiejaren: string[];
+		geselecteerd_academiejaar: string | undefined;
+	}
 
-	let open = false;
+	let { academiejaren, geselecteerd_academiejaar }: Props = $props();
+
+	let open = $state(false);
 
 	const nav = (academiejaar: string) => {
 		let query = new URLSearchParams($page.url.searchParams.toString());
@@ -20,9 +23,8 @@
 </script>
 
 <Popover.Root bind:open>
-	<Popover.Trigger asChild let:builder>
+	<Popover.Trigger>
 		<Button
-			builders={[builder]}
 			variant="outline"
 			role="combobox"
 			aria-expanded={open}
@@ -48,8 +50,8 @@
 							<Command.Item
 								class="justify-center"
 								value={academiejaar}
-								onSelect={(currentValue) => {
-									nav(currentValue);
+								onSelect={() => {
+									nav(academiejaar);
 								}}
 							>
 								<span class={geselecteerd_academiejaar == academiejaar && 'font-bold underline'}

@@ -1,8 +1,11 @@
-<script>
+<script lang="ts">
 	import { Toaster } from '$lib/components/ui/sonner';
+	import { ModeWatcher } from 'mode-watcher';
 
-	export let data;
+	let { data, children } = $props();
 </script>
+
+<ModeWatcher />
 
 <svelte:head>
 	<meta charset="utf8" />
@@ -18,5 +21,5 @@
 <Toaster richColors theme="dark" />
 
 {#key data.url}
-	<slot />
+	{@render children?.()}
 {/key}

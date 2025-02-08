@@ -11,9 +11,13 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import type { VerkiezingenResponse } from '../../../../types/pocketbase-types';
 
-	export let verkiezing: VerkiezingenResponse;
 
-	export let data: SuperValidated<Infer<typeof VerkiezingenSchema>>;
+	interface Props {
+		verkiezing: VerkiezingenResponse;
+		data: SuperValidated<Infer<typeof VerkiezingenSchema>>;
+	}
+
+	let { verkiezing = $bindable(), data }: Props = $props();
 
 	const form = superForm(data, {
 		validators: zodClient(VerkiezingenSchema)
@@ -23,25 +27,31 @@
 </script>
 
 <DropdownMenu.Root>
-	<DropdownMenu.Trigger asChild let:builder>
-		<Button variant="ghost" builders={[builder]} size="icon" class="relative h-8 w-8 p-0">
-			<span class="sr-only">Open menu</span>
-			<Ellipsis class="h-4 w-4" />
-		</Button>
-	</DropdownMenu.Trigger>
+	<DropdownMenu.Trigger asChild >
+		{#snippet children({ builder })}
+				<Button variant="ghost" builders={[builder]} size="icon" class="relative h-8 w-8 p-0">
+				<span class="sr-only">Open menu</span>
+				<Ellipsis class="h-4 w-4" />
+			</Button>
+					{/snippet}
+		</DropdownMenu.Trigger>
 	<DropdownMenu.Content>
 		<DropdownMenu.Group>
 			<DropdownMenu.Label>Acties</DropdownMenu.Label>
 			<form action={`/api/verkiezingen/${verkiezing.id}`} method="post" use:enhance>
 				<Form.Field {form} name="id">
-					<Form.Control let:attrs>
-						<Input {...attrs} type="hidden" bind:value={verkiezing.id} />
-					</Form.Control>
+					<Form.Control >
+						{#snippet children({ attrs })}
+												<Input {...attrs} type="hidden" bind:value={verkiezing.id} />
+																	{/snippet}
+										</Form.Control>
 				</Form.Field>
 				<Form.Field {form} name="actief">
-					<Form.Control let:attrs>
-						<Input {...attrs} type="hidden" value={!verkiezing.actief} />
-					</Form.Control>
+					<Form.Control >
+						{#snippet children({ attrs })}
+												<Input {...attrs} type="hidden" value={!verkiezing.actief} />
+																	{/snippet}
+										</Form.Control>
 				</Form.Field>
 				<DropdownMenu.Item on:click={() => form.submit()}>
 					{verkiezing.actief ? 'Deactiveer' : 'Activeer'} verkiezing

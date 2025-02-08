@@ -6,12 +6,12 @@ import { actionResult, superValidate } from 'sveltekit-superforms/server';
 
 /// Mapping met ´verslagen´ in de database
 export interface Verslag {
-    id: string,
-    naam: string,
-    bestand: string,
-    praesidium: PRAESIDIUM,
-    created: Date,
-    updated: Date
+	id: string;
+	naam: string;
+	bestand: string;
+	praesidium: PRAESIDIUM;
+	created: Date;
+	updated: Date;
 }
 
 export async function GET({ locals, url }) {
@@ -20,16 +20,20 @@ export async function GET({ locals, url }) {
 	const verslagen = await locals.pb
 		.collection('verslagen')
 		.getFullList({
-			filter: `praesidium.academiejaar = "${academiejaar_query ?? locals.praesidium?.academiejaar}"`, sort: '-created'
+			filter: `praesidium.academiejaar = "${academiejaar_query ?? locals.praesidium?.academiejaar}"`,
+			sort: '-created'
 		})
-		.then(r => r.map(a => ({...a, created: new Date(a.created), pdf: locals.pb.files.getUrl(a, a.pdf)})));
+		.then((r) =>
+			r.map((a) => ({ ...a, created: new Date(a.created), pdf: locals.pb.files.getUrl(a, a.pdf) }))
+		);
 
 	return json(verslagen);
 }
 
 export async function POST(event) {
-    const origineleData = await event.request.clone().formData();
+	const origineleData = await event.request.clone().formData();
 
+	console.log(origineleData.get('pdf'));
 	if ((origineleData.get('pdf') as File).size == 0) {
 		origineleData.delete('pdf');
 	}
@@ -48,7 +52,7 @@ export async function POST(event) {
 			return actionResult('error', { form }, 500);
 		}
 	} else {
-		origineleData.set('praesidium', event.locals.praesidium?.id ?? '')
+		origineleData.set('praesidium', event.locals.praesidium?.id ?? '');
 		try {
 			await event.locals.pb.collection('verslagen').create(origineleData);
 		} catch (err) {
@@ -62,9 +66,9 @@ export async function POST(event) {
 export async function DELETE({ locals, request }) {
 	const data = await request.json();
 
-    if (!locals.pb.authStore.isValid) {
-        fail(403);
-    }
+	if (!locals.pb.authStore.isValid) {
+		fail(403);
+	}
 
 	try {
 		await locals.pb.collection('verslagen').delete(data.id);
@@ -72,5 +76,5 @@ export async function DELETE({ locals, request }) {
 		error(500, 'Er is een probleem opgetreden bij het verwijderen van het verslag.');
 	}
 
-    return new Response(undefined, { status: 200 });
+	return new Response(undefined, { status: 200 });
 }

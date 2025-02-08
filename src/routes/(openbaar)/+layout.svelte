@@ -4,12 +4,17 @@
 	import '../../app.postcss';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+		children?: import('svelte').Snippet;
+	}
+
+	let { data, children }: Props = $props();
 </script>
 
 <Navbar profiel_form={data.profiel_form} login_data={data.login_data} praesidium_leden={data.praesidium_leden} functie_id={data.functie_id} />
 
-<slot />
+{@render children?.()}
 
 <footer class="flex items-center gap-5 flex-col p-10 bg-background">
 	<img

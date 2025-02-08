@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import Praesidiumlidselector from '$lib/components/praesidiumlidselector.svelte';
 	import Qrcodegenerator from '$lib/components/qrcodegenerator.svelte';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
@@ -16,33 +18,37 @@
 	import Resultaten from './resultaten.svelte';
 	import Statusknoppen from './statusknoppen.svelte';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
 
-	let kandidaten_table,
-		kandidaten_headerRows,
-		kandidaten_pageRows,
-		kandidaten_tableAttrs,
-		kandidaten_tableBodyAttrs,
+	let { data }: Props = $props();
+
+	let kandidaten_table = $state(),
+		kandidaten_headerRows = $state(),
+		kandidaten_pageRows = $state(),
+		kandidaten_tableAttrs = $state(),
+		kandidaten_tableBodyAttrs = $state(),
 		kandidaten_pluginStates,
-		kandidaten_hasNextPage,
-		kandidaten_hasPreviousPage,
-		kandidaten_pageIndex,
-		kandidaten_filterValue = undefined;
+		kandidaten_hasNextPage = $state(),
+		kandidaten_hasPreviousPage = $state(),
+		kandidaten_pageIndex = $state(),
+		kandidaten_filterValue = $state(undefined);
 
 	let resultaten_table,
-		resultaten_headerRows,
-		resultaten_pageRows,
-		resultaten_tableAttrs,
-		resultaten_tableBodyAttrs,
+		resultaten_headerRows = $state(),
+		resultaten_pageRows = $state(),
+		resultaten_tableAttrs = $state(),
+		resultaten_tableBodyAttrs = $state(),
 		resultaten_pluginStates,
-		resultaten_hasNextPage,
-		resultaten_hasPreviousPage,
-		resultaten_pageIndex,
-		resultaten_filterValue = undefined;
+		resultaten_hasNextPage = $state(),
+		resultaten_hasPreviousPage = $state(),
+		resultaten_pageIndex = $state(),
+		resultaten_filterValue = $state(undefined);
 
-	let geselecteerde_functies: string[] = [];
-	let van_toegang = false;
-	let modal_open = false;
+	let geselecteerde_functies: string[] = $state([]);
+	let van_toegang = $state(false);
+	let modal_open = $state(false);
 
 	onMount(async () => {
 		const verkiezing = await data.verkiezing;
@@ -148,7 +154,9 @@
 		({ filterValue: resultaten_filterValue } = resultaten_pluginStates.filter);
 	});
 
-	$: data.verkiezing.then((n) => { geselecteerde_functies = n.stemgerechtigde_functies })
+	run(() => {
+		data.verkiezing.then((n) => { geselecteerde_functies = n.stemgerechtigde_functies })
+	});
 </script>
 
 {#await data.verkiezing then verkiezing}
@@ -214,11 +222,13 @@
 														<Subscribe rowAttrs={headerRow.attrs()}>
 															<Table.Row>
 																{#each headerRow.cells as cell (cell.id)}
-																	<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()}>
-																		<Table.Head {...attrs}>
-																			<Render of={cell.render()} />
-																		</Table.Head>
-																	</Subscribe>
+																	<Subscribe attrs={cell.attrs()}  props={cell.props()}>
+																		{#snippet children({ attrs })}
+																																				<Table.Head {...attrs}>
+																				<Render of={cell.render()} />
+																			</Table.Head>
+																																																					{/snippet}
+																																		</Subscribe>
 																{/each}
 															</Table.Row>
 														</Subscribe>
@@ -226,17 +236,21 @@
 												</Table.Header>
 												<Table.Body {...$kandidaten_tableBodyAttrs}>
 													{#each $kandidaten_pageRows as row (row.id)}
-														<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-															<Table.Row {...rowAttrs}>
-																{#each row.cells as cell (cell.id)}
-																	<Subscribe attrs={cell.attrs()} let:attrs>
-																		<Table.Cell {...attrs}>
-																			<Render of={cell.render()} />
-																		</Table.Cell>
-																	</Subscribe>
-																{/each}
-															</Table.Row>
-														</Subscribe>
+														<Subscribe rowAttrs={row.attrs()} >
+															{#snippet children({ rowAttrs })}
+																														<Table.Row {...rowAttrs}>
+																	{#each row.cells as cell (cell.id)}
+																		<Subscribe attrs={cell.attrs()} >
+																			{#snippet children({ attrs })}
+																																				<Table.Cell {...attrs}>
+																					<Render of={cell.render()} />
+																				</Table.Cell>
+																																																						{/snippet}
+																																		</Subscribe>
+																	{/each}
+																</Table.Row>
+																																												{/snippet}
+																												</Subscribe>
 													{/each}
 												</Table.Body>
 											</Table.Root>
@@ -279,11 +293,13 @@
 														<Subscribe rowAttrs={headerRow.attrs()}>
 															<Table.Row>
 																{#each headerRow.cells as cell (cell.id)}
-																	<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()}>
-																		<Table.Head {...attrs}>
-																			<Render of={cell.render()} />
-																		</Table.Head>
-																	</Subscribe>
+																	<Subscribe attrs={cell.attrs()}  props={cell.props()}>
+																		{#snippet children({ attrs })}
+																																				<Table.Head {...attrs}>
+																				<Render of={cell.render()} />
+																			</Table.Head>
+																																																					{/snippet}
+																																		</Subscribe>
 																{/each}
 															</Table.Row>
 														</Subscribe>
@@ -291,17 +307,21 @@
 												</Table.Header>
 												<Table.Body {...$resultaten_tableBodyAttrs}>
 													{#each $resultaten_pageRows as row (row.id)}
-														<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-															<Table.Row {...rowAttrs}>
-																{#each row.cells as cell (cell.id)}
-																	<Subscribe attrs={cell.attrs()} let:attrs>
-																		<Table.Cell {...attrs}>
-																			<Render of={cell.render()} />
-																		</Table.Cell>
-																	</Subscribe>
-																{/each}
-															</Table.Row>
-														</Subscribe>
+														<Subscribe rowAttrs={row.attrs()} >
+															{#snippet children({ rowAttrs })}
+																														<Table.Row {...rowAttrs}>
+																	{#each row.cells as cell (cell.id)}
+																		<Subscribe attrs={cell.attrs()} >
+																			{#snippet children({ attrs })}
+																																				<Table.Cell {...attrs}>
+																					<Render of={cell.render()} />
+																				</Table.Cell>
+																																																						{/snippet}
+																																		</Subscribe>
+																	{/each}
+																</Table.Row>
+																																												{/snippet}
+																												</Subscribe>
 													{/each}
 												</Table.Body>
 											</Table.Root>

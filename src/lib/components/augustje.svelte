@@ -3,7 +3,7 @@
 	import { BookOpen, BookOpenCheck } from 'lucide-svelte';
 	import { Button } from './ui/button';
 
-	export let augustje;
+	let { augustje } = $props();
 
 	const gelezen = window.localStorage.getItem(augustje.id) != null;
 

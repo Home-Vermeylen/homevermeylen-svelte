@@ -12,12 +12,16 @@
 	import type { VerslagenRecord } from '../../../types/pocketbase-types';
 	import VerslagenModal from './verslagen_modal.svelte';
 
-	let verslagen_promise: Promise<VerslagenRecord[]> | undefined = undefined;
-    export let data: SuperValidated<Infer<typeof VerslagSchema>>;
+	let verslagen_promise: Promise<VerslagenRecord[]> | undefined = $state(undefined);
+	interface Props {
+		data: SuperValidated<Infer<typeof VerslagSchema>>;
+	}
 
-	let geselecteerd_verslag: VerslagenRecord | undefined = undefined;
-	let alert_open = false;
-    let verslagen_modal_open = false;
+	let { data }: Props = $props();
+
+	let geselecteerd_verslag: VerslagenRecord | undefined = $state(undefined);
+	let alert_open = $state(false);
+    let verslagen_modal_open = $state(false);
 
 	onMount(() => {
 		verslagen_promise = fetch('/api/verslagen', { method: 'GET' }).then(async (data) => {
@@ -107,12 +111,14 @@
 									></Table.Cell>
 								<Table.Cell>
 									<DropdownMenu.Root>
-										<DropdownMenu.Trigger asChild let:builder>
-											<Button aria-haspopup="true" size="icon" variant="ghost" builders={[builder]}>
-												<Ellipsis class="h-4 w-4" />
-												<span class="sr-only">Toon Menu</span>
-											</Button>
-										</DropdownMenu.Trigger>
+										<DropdownMenu.Trigger asChild >
+											{#snippet children({ builder })}
+																						<Button aria-haspopup="true" size="icon" variant="ghost" builders={[builder]}>
+													<Ellipsis class="h-4 w-4" />
+													<span class="sr-only">Toon Menu</span>
+												</Button>
+																																{/snippet}
+																				</DropdownMenu.Trigger>
 										<DropdownMenu.Content align="end">
 											<DropdownMenu.Label>Acties</DropdownMenu.Label>
 											<DropdownMenu.Item

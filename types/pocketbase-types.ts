@@ -54,12 +54,14 @@ export enum VerkiezingenTypeOptions {
 }
 
 export type ActiviteitenRecord = {
+  id: string,
 	activiteitstype?: ActiviteitenActiviteitstypeOptions
 	banner?: string
-	datum?: IsoDateString
+	datum?: Date,
 	locatie?: string
 	naam?: string
-	omschrijving?: string
+	omschrijving?: string,
+  formlink?: string,
 	praesidium?: RecordIdString
 }
 

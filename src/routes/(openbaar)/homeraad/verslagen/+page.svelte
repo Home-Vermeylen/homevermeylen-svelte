@@ -5,7 +5,7 @@
 	import Verslag from '$lib/components/verslag.svelte';
 	import { LucideAlertCircle, LucideLoader, Squirrel } from 'lucide-svelte';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <svelte:head>

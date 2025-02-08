@@ -13,7 +13,11 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	interface Props {
+		data: PageData;
+	}
+
+	let { data = $bindable() }: Props = $props();
 
 	const form = superForm(data.stem_form, {
 		validators: zodClient(StemSchema),
@@ -26,7 +30,7 @@
 
 	const { form: formData, enhance } = form;
 
-	let tainted: string[] = [];
+	let tainted: string[] = $state([]);
 </script>
 
 <svelte:head>
@@ -86,42 +90,50 @@
 											>
 												<div>
 													<Form.Field {form} name="verkiezing_id">
-														<Form.Control let:attrs>
-															<Input {...attrs} type="hidden" bind:value={verkiezing.id} />
-														</Form.Control>
+														<Form.Control >
+															{#snippet children({ attrs })}
+																														<Input {...attrs} type="hidden" bind:value={verkiezing.id} />
+																																												{/snippet}
+																												</Form.Control>
 														<Form.FieldErrors />
 													</Form.Field>
 													<Form.Field {form} name="kandidaat_id">
-														<Form.Control let:attrs>
-															<Input {...attrs} type="hidden" bind:value={kandidaat.id} />
-														</Form.Control>
+														<Form.Control >
+															{#snippet children({ attrs })}
+																														<Input {...attrs} type="hidden" bind:value={kandidaat.id} />
+																																												{/snippet}
+																												</Form.Control>
 														<Form.FieldErrors />
 													</Form.Field>
 													<Form.Field {form} name="stemmer_id">
-														<Form.Control let:attrs>
-															<Input {...attrs} type="hidden" bind:value={data.stemmer_id} />
-														</Form.Control>
+														<Form.Control >
+															{#snippet children({ attrs })}
+																														<Input {...attrs} type="hidden" bind:value={data.stemmer_id} />
+																																												{/snippet}
+																												</Form.Control>
 														<Form.FieldErrors />
 													</Form.Field>
 													<Form.Field {form} name="optie_titel">
-														<Form.Control let:attrs>
-															<Select.Root
-																onSelectedChange={(v) => {
-																	v && ($formData.optie_titel = v.value);
-																	tainted = [...tainted, kandidaat.id];
-																}}
-															>
-																<Select.Trigger {...attrs}>
-																	<Select.Value placeholder="Selecteer een optie" />
-																</Select.Trigger>
-																<Select.Content>
-																	{#each kandidaat.opties as optie (optie.titel)}
-																		<Select.Item value={optie.titel} label={optie.titel} />
-																	{/each}
-																</Select.Content>
-															</Select.Root>
-															<input hidden bind:value={$formData.optie_titel} name={attrs.name} />
-														</Form.Control>
+														<Form.Control >
+															{#snippet children({ attrs })}
+																														<Select.Root
+																	onSelectedChange={(v) => {
+																		v && ($formData.optie_titel = v.value);
+																		tainted = [...tainted, kandidaat.id];
+																	}}
+																>
+																	<Select.Trigger {...attrs}>
+																		<Select.Value placeholder="Selecteer een optie" />
+																	</Select.Trigger>
+																	<Select.Content>
+																		{#each kandidaat.opties as optie (optie.titel)}
+																			<Select.Item value={optie.titel} label={optie.titel} />
+																		{/each}
+																	</Select.Content>
+																</Select.Root>
+																<input hidden bind:value={$formData.optie_titel} name={attrs.name} />
+																																												{/snippet}
+																												</Form.Control>
 														<Form.FieldErrors />
 													</Form.Field>
 												</div>

@@ -3,10 +3,12 @@
 	import * as RadioGroup from '$lib/components/ui/radio-group';
 	import { superForm } from 'sveltekit-superforms';
 
-	export let status;
-	export let verkiezing_id;
-	export let kandidaat_id;
-	export let verkiezing_actief;
+	let {
+		status,
+		verkiezing_id,
+		kandidaat_id,
+		verkiezing_actief
+	} = $props();
 
 	const form = superForm({ status }, { onChange(event) {
         form.submit();
@@ -24,22 +26,28 @@
 		<Form.Fieldset {form} name="status" class="space-y-3">
 			<RadioGroup.Root disabled={!verkiezing_actief} bind:value={$formData.status} class="flex flex-col space-y-1">
 				<div class="flex items-center space-x-3 space-y-0">
-					<Form.Control let:attrs>
-						<RadioGroup.Item value="onzichtbaar" {...attrs} />
-						<Form.Label class="font-normal">Onzichtbaar</Form.Label>
-					</Form.Control>
+					<Form.Control >
+						{#snippet children({ attrs })}
+										<RadioGroup.Item value="onzichtbaar" {...attrs} />
+							<Form.Label class="font-normal">Onzichtbaar</Form.Label>
+															{/snippet}
+								</Form.Control>
 				</div>
 				<div class="flex items-center space-x-3 space-y-0">
-					<Form.Control let:attrs>
-						<RadioGroup.Item value="zichtbaar" {...attrs} />
-						<Form.Label class="font-normal">Zichtbaar</Form.Label>
-					</Form.Control>
+					<Form.Control >
+						{#snippet children({ attrs })}
+										<RadioGroup.Item value="zichtbaar" {...attrs} />
+							<Form.Label class="font-normal">Zichtbaar</Form.Label>
+															{/snippet}
+								</Form.Control>
 				</div>
 				<div class="flex items-center space-x-3 space-y-0">
-					<Form.Control let:attrs>
-						<RadioGroup.Item value="voltooid" {...attrs} />
-						<Form.Label class="font-normal">Voltooid</Form.Label>
-					</Form.Control>
+					<Form.Control >
+						{#snippet children({ attrs })}
+										<RadioGroup.Item value="voltooid" {...attrs} />
+							<Form.Label class="font-normal">Voltooid</Form.Label>
+															{/snippet}
+								</Form.Control>
 				</div>
 				<RadioGroup.Input name="status" />
 			</RadioGroup.Root>

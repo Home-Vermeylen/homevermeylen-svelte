@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let opties;
+    let { opties } = $props();
 
 </script>
 

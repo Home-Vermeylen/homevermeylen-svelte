@@ -13,8 +13,12 @@
 	import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import DataTableActions from './data_table_actions.svelte';
 
-	export let verkiezing;
-	export let data: SuperValidated<Infer<typeof KandidaatSchema>>;
+	interface Props {
+		verkiezing: any;
+		data: SuperValidated<Infer<typeof KandidaatSchema>>;
+	}
+
+	let { verkiezing, data }: Props = $props();
 
 	const table = createTable(readable(verkiezing.kandidaten), {
 		page: addPagination(),
@@ -68,16 +72,16 @@
 	const { hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
 	const { filterValue } = pluginStates.filter;
 
-	let nieuw_modal_open = false;
+	let nieuw_modal_open = $state(false);
 
 	const form = superForm(data);
 
 	const { form: formData, enhance } = form;
 
-	let voornaam = '';
-	let familienaam = '';
-	let ambitie = '';
-	let opties_select = 'standaard';
+	let voornaam = $state('');
+	let familienaam = $state('');
+	let ambitie = $state('');
+	let opties_select = $state('standaard');
 </script>
 
 <Dialog.Root bind:open={nieuw_modal_open}>
@@ -88,48 +92,56 @@
 		</Dialog.Header>
 		<form method="POST" use:enhance action={`/api/verkiezingen/${verkiezing.id}/kandidaten`}>
 			<Form.Field {form} name="voornaam">
-				<Form.Control let:attrs>
-					<Form.Label>Voornaam</Form.Label>
-					<Input {...attrs} bind:value={voornaam} />
-				</Form.Control>
+				<Form.Control >
+					{#snippet children({ attrs })}
+										<Form.Label>Voornaam</Form.Label>
+						<Input {...attrs} bind:value={voornaam} />
+														{/snippet}
+								</Form.Control>
 				<Form.Description />
 				<Form.FieldErrors />
 			</Form.Field>
 			<Form.Field {form} name="familienaam">
-				<Form.Control let:attrs>
-					<Form.Label>Familienaam</Form.Label>
-					<Input {...attrs} bind:value={familienaam} />
-				</Form.Control>
+				<Form.Control >
+					{#snippet children({ attrs })}
+										<Form.Label>Familienaam</Form.Label>
+						<Input {...attrs} bind:value={familienaam} />
+														{/snippet}
+								</Form.Control>
 				<Form.Description />
 				<Form.FieldErrors />
 			</Form.Field>
 			<Form.Field {form} name="ambitie">
-				<Form.Control let:attrs>
-					<Form.Label>Ambitie</Form.Label>
-					<Input {...attrs} bind:value={ambitie} />
-				</Form.Control>
+				<Form.Control >
+					{#snippet children({ attrs })}
+										<Form.Label>Ambitie</Form.Label>
+						<Input {...attrs} bind:value={ambitie} />
+														{/snippet}
+								</Form.Control>
 				<Form.Description />
 				<Form.FieldErrors />
 			</Form.Field>
 			<Form.Field {form} name="opties">
-				<Form.Control let:attrs>
-					<Form.Label>Opties</Form.Label>
-					<Select.Root
-						selected={{ value: 'standaard', label: 'Standaard' }}
-						onSelectedChange={(v) => {
-							v && (opties_select = v.value);
-						}}
-					>
-						<Select.Trigger {...attrs}>
-							<Select.Value />
-						</Select.Trigger>
-						<Select.Content>
-							<Select.Item value="standaard" label="Standaard" />
-							<Select.Item value="geen_onthouden" label="Geen Onthouding" />
-						</Select.Content>
-						<input type="hidden" bind:value={opties_select} name={'opties'} />
-					</Select.Root>
-				</Form.Control>
+				<Form.Control >
+					{#snippet children({ attrs })}
+										<Form.Label>Opties</Form.Label>
+						<Select.Root
+							selected={{ value: 'standaard', label: 'Standaard' }}
+							onSelectedChange={(v) => {
+								v && (opties_select = v.value);
+							}}
+						>
+							<Select.Trigger {...attrs}>
+								<Select.Value />
+							</Select.Trigger>
+							<Select.Content>
+								<Select.Item value="standaard" label="Standaard" />
+								<Select.Item value="geen_onthouden" label="Geen Onthouding" />
+							</Select.Content>
+							<input type="hidden" bind:value={opties_select} name={'opties'} />
+						</Select.Root>
+														{/snippet}
+								</Form.Control>
 				<Form.Description>
 					Bij <i>standaard</i> is onthouding mogelijk. Selecteer <i>Geen Onthouding</i> wanneer onthouden
 					niet toegestaan is.
@@ -164,11 +176,13 @@
 					<Subscribe rowAttrs={headerRow.attrs()}>
 						<Table.Row>
 							{#each headerRow.cells as cell (cell.id)}
-								<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()}>
-									<Table.Head {...attrs}>
-										<Render of={cell.render()} />
-									</Table.Head>
-								</Subscribe>
+								<Subscribe attrs={cell.attrs()}  props={cell.props()}>
+									{#snippet children({ attrs })}
+																		<Table.Head {...attrs}>
+											<Render of={cell.render()} />
+										</Table.Head>
+																										{/snippet}
+																</Subscribe>
 							{/each}
 						</Table.Row>
 					</Subscribe>
@@ -176,17 +190,21 @@
 			</Table.Header>
 			<Table.Body {...$tableBodyAttrs}>
 				{#each $pageRows as row (row.id)}
-					<Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-						<Table.Row {...rowAttrs}>
-							{#each row.cells as cell (cell.id)}
-								<Subscribe attrs={cell.attrs()} let:attrs>
-									<Table.Cell {...attrs}>
-										<Render of={cell.render()} />
-									</Table.Cell>
-								</Subscribe>
-							{/each}
-						</Table.Row>
-					</Subscribe>
+					<Subscribe rowAttrs={row.attrs()} >
+						{#snippet children({ rowAttrs })}
+												<Table.Row {...rowAttrs}>
+								{#each row.cells as cell (cell.id)}
+									<Subscribe attrs={cell.attrs()} >
+										{#snippet children({ attrs })}
+																		<Table.Cell {...attrs}>
+												<Render of={cell.render()} />
+											</Table.Cell>
+																											{/snippet}
+																</Subscribe>
+								{/each}
+							</Table.Row>
+																	{/snippet}
+										</Subscribe>
 				{/each}
 			</Table.Body>
 		</Table.Root>

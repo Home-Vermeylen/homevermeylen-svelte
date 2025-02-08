@@ -24,27 +24,32 @@
 		UsersRound,
 		HeartHandshake
 	} from 'lucide-svelte';
-	import { mediaQuery } from 'svelte-legos';
 	import { toast } from 'svelte-sonner';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import type { PraesidiumLedenRecord } from '../../../types/pocketbase-types';
 	import Loginform from './loginform.svelte';
-	import Profielform from './profielform.svelte';
 	import * as Avatar from './ui/avatar';
-	import { Button } from './ui/button';
+	import { Button, buttonVariants } from './ui/button';
 	import * as DropdownMenu from './ui/dropdown-menu';
+	import { goto, pushState } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { useMediaQuery } from '$lib/utils';
+	interface Props {
+		functie_id: string;
+		login_data: SuperValidated<Infer<typeof LoginGebruikerSchema>>;
+		profiel_form: SuperValidated<Infer<typeof ProfielSchema>>;
+		praesidium_leden: PraesidiumLedenRecord[] | undefined;
+	}
 
-	let login_open = false;
-	let profiel_open = false;
-	const isDesktop = mediaQuery('(min-width: 768px)');
+	let { functie_id, login_data, profiel_form, praesidium_leden }: Props = $props();
+	let login_open = $state(false);
+	let profiel_open = $state(false);
+	let isDesktop = $state(true);
 
-	export let functie_id: string;
-	export let login_data: SuperValidated<Infer<typeof LoginGebruikerSchema>>;
-	export let profiel_form: SuperValidated<Infer<typeof ProfielSchema>>;
-	export let praesidium_leden: PraesidiumLedenRecord[] | undefined;
-
-	$: ingelogd_lid = praesidium_leden?.find((v) => v.functie == functie_id);
+	onMount(() => {
+		isDesktop = useMediaQuery('(min-width: 716px)');
+	});
 
 	const login_form = superForm(login_data, {
 		validators: zodClient(LoginGebruikerSchema),
@@ -69,25 +74,24 @@
 	} = login_form;
 
 	import * as Accordion from '$lib/components/ui/accordion';
+	import { onMount } from 'svelte';
+	import Image from './image.svelte';
+	import Profielmodal from './profielmodal.svelte';
 
-	let homeraad_dropdown_open = false;
-	let info_dropdown_open = false;
+	let homeraad_dropdown_open = $state(false);
+	let info_dropdown_open = $state(false);
+	let ingelogd_lid = $derived(praesidium_leden?.find((v) => v.functie == functie_id));
 </script>
 
 <nav class="fixed z-50 h-[64px] w-full bg-background shadow-sm dark:bg-gray-950/90">
-	<Dialog.Root bind:open={profiel_open}>
-		<Dialog.Content>
-			<Dialog.Header>
-				<Dialog.Title>Profiel bewerken</Dialog.Title>
-			</Dialog.Header>
-			<Profielform bind:profiel_open data={profiel_form} {ingelogd_lid} />
-		</Dialog.Content>
-	</Dialog.Root>
+	{#if $page.state.profiel}
+		<Profielmodal data={profiel_form} {ingelogd_lid} />
+	{/if}
 	<div class="w-full max-w-7xl mx-auto px-4">
 		<div class="flex justify-between h-14 items-center">
 			<Sheet.Root>
-				<Sheet.Trigger asChild let:builder>
-					<Button builders={[builder]} size="icon" variant="outline" class="sm:hidden">
+				<Sheet.Trigger>
+					<Button size="icon" variant="outline" class="sm:hidden">
 						<PanelLeft class="h-5 w-5" />
 						<span class="sr-only">Toon navigatiemenu</span>
 					</Button>
@@ -210,22 +214,23 @@
 					>
 					<DropdownMenu.Content>
 						<DropdownMenu.Group>
-							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/leden"
+							<DropdownMenu.Item onSelect={() => goto('/homeraad/leden')}
 								>Homeraadsleden</DropdownMenu.Item
 							>
-							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/werking"
+							<DropdownMenu.Item onSelect={() => goto('/homeraad/werking')}
 								>Werking</DropdownMenu.Item
 							>
-							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/verslagen"
+
+							<DropdownMenu.Item onSelect={() => goto('/homeraad/verslagen')}
 								>Verslagen</DropdownMenu.Item
 							>
-							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/clublied"
+							<DropdownMenu.Item onSelect={() => goto('/homeraad/clublied')}
 								>Clublied</DropdownMenu.Item
 							>
-							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/sponsors">
+							<DropdownMenu.Item onSelect={() => goto('/homeraad/sponsors')}>
 								Sponsors</DropdownMenu.Item
 							>
-							<DropdownMenu.Item data-sveltekit-reload href="/homeraad/contact"
+							<DropdownMenu.Item onSelect={() => goto('/homeraad/contact')}
 								>Contact</DropdownMenu.Item
 							>
 						</DropdownMenu.Group>
@@ -241,10 +246,10 @@
 					>
 					<DropdownMenu.Content>
 						<DropdownMenu.Group>
-							<DropdownMenu.Item data-sveltekit-reload href="/info/faq"
+							<DropdownMenu.Item onSelect={() => goto('/info/faq')}
 								>Veelgestelde Vragen</DropdownMenu.Item
 							>
-							<DropdownMenu.Item data-sveltekit-reload href="/info/geschiedenis"
+							<DropdownMenu.Item onSelect={() => goto('/info/geschiedenis')}
 								>Geschiedenis</DropdownMenu.Item
 							>
 						</DropdownMenu.Group>
@@ -274,28 +279,26 @@
 									>{ingelogd_lid?.voornaam} {ingelogd_lid?.familienaam}</DropdownMenu.Label
 								>
 								<DropdownMenu.Separator />
-								<DropdownMenu.Item
-									class="flex gap-1 items-center"
-									href="/beheer"
-									data-sveltekit-reload
+								<DropdownMenu.Item class="flex gap-1 items-center" onSelect={() => goto('/beheer')}
 									><LucideEarthLock class="h-4 w-4" /> Beheerspagina</DropdownMenu.Item
 								>
 								<DropdownMenu.Item
 									class="flex gap-1 items-center"
-									on:click={() => (profiel_open = true)}
+									onSelect={() => pushState('', { profiel: true })}
 									><UserCog class="h-4 w-4" /> Profiel</DropdownMenu.Item
 								>
-								<DropdownMenu.Item class="flex gap-1 items-center" href="/logout"
-									><LucideLogOut class="h-4 w-4" /> Uitloggen</DropdownMenu.Item
+								<DropdownMenu.Item
+									class="flex gap-1 items-center"
+									onSelect={() => {
+										goto('/logout');
+									}}><LucideLogOut class="h-4 w-4" /> Uitloggen</DropdownMenu.Item
 								>
 							</DropdownMenu.Group>
 						</DropdownMenu.Content>
 					</DropdownMenu.Root>
-				{:else if $isDesktop}
+				{:else if isDesktop}
 					<Dialog.Root bind:open={login_open}>
-						<Dialog.Trigger asChild let:builder>
-							<Button builders={[builder]}>Inloggen</Button>
-						</Dialog.Trigger>
+						<Dialog.Trigger class={buttonVariants({ variant: 'default' })}>Inloggen</Dialog.Trigger>
 						<Dialog.Content class="sm:max-w-[425px]">
 							<Dialog.Header>
 								<Dialog.Title>Inloggen</Dialog.Title>
@@ -314,8 +317,8 @@
 					</Dialog.Root>
 				{:else}
 					<Drawer.Root bind:open={login_open}>
-						<Drawer.Trigger asChild let:builder>
-							<Button builders={[builder]}>Inloggen</Button>
+						<Drawer.Trigger>
+							<Button class={buttonVariants({ variant: 'default' })}>Inloggen</Button>
 						</Drawer.Trigger>
 						<Drawer.Content>
 							<Drawer.Header>
