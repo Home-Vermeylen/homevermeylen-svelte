@@ -1,16 +1,4 @@
 <script lang="ts">
-	import {
-		Earth,
-		Flame,
-		Heart,
-		Home,
-		LogOut,
-		PanelLeft,
-		Settings,
-		UserCog,
-		Vote
-	} from 'lucide-svelte';
-
 	import { page } from '$app/stores';
 	import ProfielModal from '$lib/components/profielmodal.svelte';
 	import * as Avatar from '$lib/components/ui/avatar/';
@@ -21,6 +9,10 @@
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import '../../app.postcss';
 	import type { PageData } from './$types';
+	import BeheerSidebar from '$lib/components/beheer-sidebar.svelte';
+	import * as Sidebar from '$lib/components/ui/sidebar';
+	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
+	import { Separator } from '$lib/components/ui/separator';
 
 	interface Props {
 		data: PageData;
@@ -30,227 +22,50 @@
 	let { data, children }: Props = $props();
 
 	let huidige_pagina = $page.url.toString().includes('fakkels_bakken')
-		? 'FAKKELS_BAKKEN'
+		? 'Fakkels & Bakken'
 		: $page.url.toString().includes('vriendschapsnetwerk')
-			? 'VRIENDSCHAPSNETWERK'
+			? 'Vriendschapsnetwerk'
 			: $page.url.toString().includes('verkiezingen')
-				? 'VERKIEZINGEN'
-				: 'PUBLIEKE_GEGEVENS';
+				? 'Verkieziengen'
+				: $page.url.toString().includes('activiteiten')
+					? 'Activiteiten'
+					: $page.url.toString().includes('verslagen')
+						? 'Verslagen'
+						: $page.url.toString().includes('augustjes')
+							? 'Augustjes'
+							: '';
 
 	let ingelogd_lid = $derived(data.praesidium_leden?.find((v) => v.functie == data.functie_id));
-
-	const children_render = $derived(children);
 </script>
 
-<div class="flex min-h-screen flex-col bg-muted/40">
-	{#if $page.state.profiel}
-		<ProfielModal data={data.profiel_form} {ingelogd_lid} />
-	{/if}
-	<aside class="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
-		<nav class="flex flex-col items-center gap-4 px-2 sm:py-5">
-			<Tooltip.Provider>
-				<Tooltip.Root>
-					<Tooltip.Trigger>
-						<a
-							href="/"
-							class="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
-						>
-							<Home class="h-4 w-4 transition-all group-hover:scale-110" />
-							<span class="sr-only">Terug naar thuispagina</span>
-						</a>
-					</Tooltip.Trigger>
-					<Tooltip.Content side="right">Terug naar thuispagina</Tooltip.Content>
-				</Tooltip.Root>
-			</Tooltip.Provider>
-			<Tooltip.Provider>
-				<Tooltip.Root>
-					<Tooltip.Trigger>
-						<a
-							href="/beheer/fakkels_bakken"
-							class="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8"
-							class:text-muted-foreground={huidige_pagina != 'FAKKELS_BAKKEN'}
-							class:text-accent-foreground={huidige_pagina == 'FAKKELS_BAKKEN'}
-							class:bg-accent={huidige_pagina == 'FAKKELS_BAKKEN'}
-						>
-							<Flame class="h-5 w-5" />
-							<span class="sr-only">Fakkels & Bakken</span>
-						</a>
-					</Tooltip.Trigger>
-					<Tooltip.Content side="right">Fakkels & Bakken</Tooltip.Content>
-				</Tooltip.Root>
-			</Tooltip.Provider>
-			<Tooltip.Provider>
-				<Tooltip.Root>
-					<Tooltip.Trigger>
-						<a
-							href="/beheer"
-							class="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8"
-							class:text-muted-foreground={huidige_pagina != 'PUBLIEKE_GEGEVENS'}
-							class:text-accent-foreground={huidige_pagina == 'PUBLIEKE_GEGEVENS'}
-							class:bg-accent={huidige_pagina == 'PUBLIEKE_GEGEVENS'}
-						>
-							<Earth class="h-5 w-5" />
-							<span class="sr-only">Publieke Gegevens</span>
-						</a>
-					</Tooltip.Trigger>
-					<Tooltip.Content side="right">Publieke Gegevens</Tooltip.Content>
-				</Tooltip.Root>
-			</Tooltip.Provider>
-			<Tooltip.Provider>
-				<Tooltip.Root>
-					<Tooltip.Trigger>
-						<a
-							href="/beheer/vriendschapsnetwerk"
-							class="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:text-foreground md:h-8 md:w-8"
-							class:text-muted-foreground={huidige_pagina != 'VRIENDSCHAPSNETWERK'}
-							class:text-accent-foreground={huidige_pagina == 'VRIENDSCHAPSNETWERK'}
-							class:bg-accent={huidige_pagina == 'VRIENDSCHAPSNETWERK'}
-						>
-							<Heart class="h-5 w-5" />
-							<span class="sr-only">Vriendschapsnetwerk</span>
-						</a>
-					</Tooltip.Trigger>
-					<Tooltip.Content side="right">Vriendschapsnetwerk</Tooltip.Content>
-				</Tooltip.Root>
-			</Tooltip.Provider>
-			<Tooltip.Provider>
-				<Tooltip.Root>
-					<Tooltip.Trigger>
-						<a
-							href="/beheer/verkiezingen"
-							class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-							class:text-muted-foreground={huidige_pagina != 'VERKIEZINGEN'}
-							class:text-accent-foreground={huidige_pagina == 'VERKIEZINGEN'}
-							class:bg-accent={huidige_pagina == 'VERKIEZINGEN'}
-						>
-							<Vote class="h-5 w-5" />
-							<span class="sr-only">Verkiezingen</span>
-						</a>
-					</Tooltip.Trigger>
-					<Tooltip.Content side="right">Verkiezingen</Tooltip.Content>
-				</Tooltip.Root>
-			</Tooltip.Provider>
-		</nav>
-		<nav class="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
-			<Tooltip.Provider>
-				<Tooltip.Root>
-					<Tooltip.Trigger>
-						<a
-							href="##"
-							class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-						>
-							<Settings class="h-5 w-5" />
-							<span class="sr-only">Instellingen</span>
-						</a>
-					</Tooltip.Trigger>
-					<Tooltip.Content side="right">Instellingen</Tooltip.Content>
-				</Tooltip.Root>
-			</Tooltip.Provider>
-		</nav>
-	</aside>
-	<div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+{#if $page.state.profiel}
+	<ProfielModal data={data.profiel_form} {ingelogd_lid} />
+{/if}
+
+<Sidebar.Provider>
+	<BeheerSidebar gebruiker={ingelogd_lid} />
+	<Sidebar.Inset>
 		<header
-			class="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
+			class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
 		>
-			<Sheet.Root>
-				<Sheet.Trigger>
-					<Button size="icon" variant="outline" class="sm:hidden">
-						<PanelLeft class="h-5 w-5" />
-						<span class="sr-only">Toon navigatiemenu</span>
-					</Button>
-				</Sheet.Trigger>
-				<Sheet.Content side="left" class="sm:max-w-xs">
-					<nav class="grid gap-6 text-lg font-medium">
-						<a
-							href="/"
-							class="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
-						>
-							<Home class="h-5 w-5 transition-all group-hover:scale-110" />
-							<span class="sr-only">Terug naar thuispagina</span>
-						</a>
-						<a
-							href="/beheer/fakkels_bakken"
-							class="flex items-center gap-4 px-2.5 hover:text-foreground"
-							class:text-muted-foreground={huidige_pagina != 'FAKKELS_BAKKEN'}
-							class:text-accent-foreground={huidige_pagina == 'FAKKELS_BAKKEN'}
-						>
-							<Flame class="h-5 w-5" />
-							Fakkels & Bakken
-						</a>
-						<a
-							href="/beheer"
-							class="flex items-center gap-4 px-2.5 hover:text-foreground"
-							class:text-muted-foreground={huidige_pagina != 'PUBLIEKE_GEGEVENS'}
-							class:text-accent-foreground={huidige_pagina == 'PUBLIEKE_GEGEVENS'}
-						>
-							<Earth class="h-5 w-5" />
-							Publieke Gegevens
-						</a>
-
-						<a
-							href="/beheer/vriendschapsnetwerk"
-							class="flex items-center gap-4 px-2.5 hover:text-foreground"
-							class:text-muted-foreground={huidige_pagina != 'VRIENDSCHAPSNETWERK'}
-							class:text-accent-foreground={huidige_pagina == 'VRIENDSCHAPSNETWERK'}
-						>
-							<Heart class="h-5 w-5" />
-							Vriendschapsnetwerk
-						</a>
-						<a
-							href="/beheer/verkiezingen"
-							class="flex items-center gap-4 px-2.5 hover:text-foreground"
-							class:text-muted-foreground={huidige_pagina != 'VERKIEZINGEN'}
-							class:text-accent-foreground={huidige_pagina == 'VERKIEZINGEN'}
-						>
-							<Vote class="h-5 w-5" />
-							Verkiezingen
-						</a>
-						<a
-							href="##"
-							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-						>
-							<Settings class="h-5 w-5" />
-							Instellingen
-						</a>
-					</nav>
-				</Sheet.Content>
-			</Sheet.Root>
-			<div class="relative ml-auto flex-1 md:grow-0"></div>
-			<DropdownMenu.Root>
-				<DropdownMenu.Trigger>
-					<Button variant="outline" size="icon" class="rounded-full">
-						<Avatar.Root>
-							<Avatar.Image
-								class="object-cover"
-								src={ingelogd_lid?.avatar}
-								alt={`${ingelogd_lid?.voornaam} ${ingelogd_lid?.familienaam}`}
-							/>
-							<Avatar.Fallback
-								>{ingelogd_lid?.voornaam?.at(0)}{ingelogd_lid?.familienaam?.at(0)}</Avatar.Fallback
-							>
-						</Avatar.Root>
-					</Button>
-				</DropdownMenu.Trigger>
-				<DropdownMenu.Content align="end">
-					<DropdownMenu.Label
-						>{ingelogd_lid?.voornaam} {ingelogd_lid?.familienaam}</DropdownMenu.Label
-					>
-					<DropdownMenu.Separator />
-					<DropdownMenu.Item class="flex gap-1 items-center" href="/" data-sveltekit-reload
-						><Home class="h-4 w-4" /> Thuispagina</DropdownMenu.Item
-					>
-					<DropdownMenu.Item class="flex gap-1 items-center" onclick={() => (profiel_open = true)}
-						><UserCog class="h-4 w-4" /> Profiel</DropdownMenu.Item
-					>
-					<DropdownMenu.Item class="flex gap-1 items-center" href="/logout"
-						><LogOut class="h-4 w-4" /> Uitloggen</DropdownMenu.Item
-					>
-				</DropdownMenu.Content>
-			</DropdownMenu.Root>
+			<div class="flex items-center gap-2 px-4">
+				<Sidebar.Trigger class="-ml-1" />
+				<Separator orientation="vertical" class="mr-2 h-4" />
+				<Breadcrumb.Root>
+					<Breadcrumb.List>
+						<Breadcrumb.Item class="hidden md:block">
+							<Breadcrumb.Link href="#">Beheerspagina</Breadcrumb.Link>
+						</Breadcrumb.Item>
+						<Breadcrumb.Separator class="hidden md:block" />
+						<Breadcrumb.Item>
+							<Breadcrumb.Page>{huidige_pagina}</Breadcrumb.Page>
+						</Breadcrumb.Item>
+					</Breadcrumb.List>
+				</Breadcrumb.Root>
+			</div>
 		</header>
-
-		<main class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-			{@render children_render?.()}
-		</main>
-	</div>
-</div>
+		<div class="flex flex-1 flex-col gap-4 p-4 pt-0">
+			{@render children?.()}
+		</div>
+	</Sidebar.Inset>
+</Sidebar.Provider>

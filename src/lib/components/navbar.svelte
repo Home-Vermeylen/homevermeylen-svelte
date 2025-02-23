@@ -83,116 +83,121 @@
 	let ingelogd_lid = $derived(praesidium_leden?.find((v) => v.functie == functie_id));
 </script>
 
+{#if $page.state.profiel}
+	<Profielmodal data={profiel_form} {ingelogd_lid} />
+{/if}
 <nav class="fixed z-50 h-[64px] w-full bg-background shadow-sm dark:bg-gray-950/90">
-	{#if $page.state.profiel}
-		<Profielmodal data={profiel_form} {ingelogd_lid} />
-	{/if}
 	<div class="w-full max-w-7xl mx-auto px-4">
-		<div class="flex justify-between h-14 items-center">
-			<Sheet.Root>
-				<Sheet.Trigger>
-					<Button size="icon" variant="outline" class="sm:hidden">
-						<PanelLeft class="h-5 w-5" />
-						<span class="sr-only">Toon navigatiemenu</span>
-					</Button>
-				</Sheet.Trigger>
-				<Sheet.Content side="left" class="sm:max-w-xs">
-					<nav class="grid gap-6 text-lg font-medium">
-						<a href="/" class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
-							<Home class="h-5 w-5" />
-							Thuispagina
-						</a>
-						<a
-							href="/activiteiten"
-							class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
-						>
-							<Calendar class="h-5 w-5" />
-							Activiteiten
-						</a>
-						<a href="/augustjes" class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
-							<Newspaper class="h-5 w-5" />
-							Augustjes
-						</a>
-						<Accordion.Root>
-							<Accordion.Item value="homeraad">
-								<Accordion.Trigger
-									><span class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
-										<Users class="h-5 w-5" />
-										Homeraad
-									</span></Accordion.Trigger
-								>
-								<Accordion.Content class="ml-8 grid gap-6 text-lg font-medium">
-									<a
-										href="/homeraad/leden"
-										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+		<div class="flex justify-evenly h-14 items-center">
+			<div class="sm:hidden">
+				<Sheet.Root>
+					<Sheet.Trigger>
+						<Button size="icon" variant="outline" class="sm:hidden">
+							<PanelLeft class="h-5 w-5" />
+							<span class="sr-only">Toon navigatiemenu</span>
+						</Button>
+					</Sheet.Trigger>
+					<Sheet.Content side="left" class="sm:max-w-xs">
+						<nav class="grid gap-6 text-lg font-medium">
+							<a href="/" class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
+								<Home class="h-5 w-5" />
+								Thuispagina
+							</a>
+							<a
+								href="/activiteiten"
+								class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+							>
+								<Calendar class="h-5 w-5" />
+								Activiteiten
+							</a>
+							<a
+								href="/augustjes"
+								class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+							>
+								<Newspaper class="h-5 w-5" />
+								Augustjes
+							</a>
+							<Accordion.Root>
+								<Accordion.Item value="homeraad">
+									<Accordion.Trigger
+										><span class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
+											<Users class="h-5 w-5" />
+											Homeraad
+										</span></Accordion.Trigger
 									>
-										<Users class="h-5 w-5" />
-										Homeraadsleden
-									</a>
-									<a
-										href="/homeraad/werking"
-										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+									<Accordion.Content class="ml-8 grid gap-6 text-lg font-medium">
+										<a
+											href="/homeraad/leden"
+											class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+										>
+											<Users class="h-5 w-5" />
+											Homeraadsleden
+										</a>
+										<a
+											href="/homeraad/werking"
+											class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+										>
+											<Rocket class="h-5 w-5" />
+											Werking
+										</a>
+										<a
+											href="/homeraad/verslagen"
+											class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+										>
+											<ScrollText class="h-5 w-5" />
+											Verslagen
+										</a>
+										<a
+											href="/homeraad/clublied"
+											class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+										>
+											<Music class="h-5 w-5" />
+											Clublied
+										</a>
+										<a
+											href="/homeraad/sponsors"
+											class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+										>
+											<HeartHandshake class="h-5 w-5" />
+										</a>
+										<a
+											href="/homeraad/contact"
+											class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+										>
+											<Mail class="h-5 w-5" />
+											Contact
+										</a>
+									</Accordion.Content>
+								</Accordion.Item>
+								<Accordion.Item value="info">
+									<Accordion.Trigger
+										><span class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
+											<Info class="h-5 w-5" />
+											Info
+										</span></Accordion.Trigger
 									>
-										<Rocket class="h-5 w-5" />
-										Werking
-									</a>
-									<a
-										href="/homeraad/verslagen"
-										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
-									>
-										<ScrollText class="h-5 w-5" />
-										Verslagen
-									</a>
-									<a
-										href="/homeraad/clublied"
-										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
-									>
-										<Music class="h-5 w-5" />
-										Clublied
-									</a>
-									<a
-										href="/homeraad/sponsors"
-										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
-									>
-										<HeartHandshake class="h-5 w-5" />
-									</a>
-									<a
-										href="/homeraad/contact"
-										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
-									>
-										<Mail class="h-5 w-5" />
-										Contact
-									</a>
-								</Accordion.Content>
-							</Accordion.Item>
-							<Accordion.Item value="info">
-								<Accordion.Trigger
-									><span class="flex items-center gap-4 px-2.5 hover:text-muted-foreground">
-										<Info class="h-5 w-5" />
-										Info
-									</span></Accordion.Trigger
-								>
-								<Accordion.Content class="ml-8 grid gap-6 text-lg font-medium">
-									<a
-										href="/info/geschiedenis"
-										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
-									>
-										<History class="h-5 w-5" />
-										Geschiedenis
-									</a>
-									<a
-										href="/info/faq"
-										class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
-									>
-										<MessageCircleQuestion class="h-5 w-5" />
-										Veelgestelde vragen
-									</a>
-								</Accordion.Content>
-							</Accordion.Item>
-						</Accordion.Root>
-					</nav>
-				</Sheet.Content>
-			</Sheet.Root>
+									<Accordion.Content class="ml-8 grid gap-6 text-lg font-medium">
+										<a
+											href="/info/geschiedenis"
+											class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+										>
+											<History class="h-5 w-5" />
+											Geschiedenis
+										</a>
+										<a
+											href="/info/faq"
+											class="flex items-center gap-4 px-2.5 hover:text-muted-foreground"
+										>
+											<MessageCircleQuestion class="h-5 w-5" />
+											Veelgestelde vragen
+										</a>
+									</Accordion.Content>
+								</Accordion.Item>
+							</Accordion.Root>
+						</nav>
+					</Sheet.Content>
+				</Sheet.Root>
+			</div>
 			<a href="/" class="flex items-center">
 				<img src="/logo.png" alt="Home Vermeylen" class="h-10 w-10 object-contain" />
 				<span class="sr-only">Home Vermeylen</span>
