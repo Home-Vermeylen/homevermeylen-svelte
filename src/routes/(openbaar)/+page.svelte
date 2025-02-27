@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { Button } from '$lib/components/ui/button';
 	import { ChevronRight, Euro, MapPin, Pin, Users } from 'lucide-svelte';
 </script>
@@ -20,13 +21,15 @@
 	<div class="w-full h-full overflow-hidden bg-fixed" style="background-color: rgba(0, 0, 0, 0.75)">
 		<div class="flex flex-col justify-center items-center h-full">
 			<div class="text-foreground px-6 md:px-12 items-center text-center">
-				<h1 class="text-center text-5xl font-bold tracking-tight mb-5">Home Vermeylen</h1>
-				<h2 class="text-xl md:text-2xl xl:text-3xl tracking-tight mb-12">
+				<h1 class="text-center text-5xl font-bold tracking-tight mb-5 text-white">
+					Home Vermeylen
+				</h1>
+				<h2 class="text-xl md:text-2xl xl:text-3xl tracking-tight mb-12 text-white">
 					Een gezellig kotgebouw gelegen in het hartje van Gent
 				</h2>
 				<div class="flex flex-col gap-2">
 					<Button href="#over">Nieuwe bewoners <ChevronRight class="h-4 w-4" /></Button>
-					<Button variant="outline" href="/homeraad/sponsors"
+					<Button variant="outline" onclick={() => goto('/homeraad/sponsors')}
 						>Ontdek onze sponsors <ChevronRight class="h-4 w-4" /></Button
 					>
 				</div>

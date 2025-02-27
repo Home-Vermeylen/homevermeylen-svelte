@@ -9,26 +9,19 @@
 	import { Input } from './ui/input';
 	import * as Popover from './ui/popover';
 
-	let {
-		login_enhance,
-		login_form,
-		login_formData,
-		login_submitting,
-		login_delayed,
-		login_timeout,
-		praesidium_leden
-	} = $props();
+	let { login_form, praesidium_leden } = $props();
 
 	let combobox_open = $state(false);
 
 	const isDesktop = useMediaQuery('(min-width: 768px)');
 
-	function closeAndFocusTrigger(triggerId: string) {
-		combobox_open = false;
-		tick().then(() => {
-			document.getElementById(triggerId)?.focus();
-		});
-	}
+	const {
+		form: login_formData,
+		enhance: login_enhance,
+		submitting: login_submitting,
+		delayed: login_delayed,
+		timeout: login_timeout
+	} = login_form;
 </script>
 
 <form
