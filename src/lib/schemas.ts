@@ -46,8 +46,8 @@ export const VerslagSchema = z.object({
 	pdf: z.instanceof(File).optional(),
 	naam: z.string({ required_error: 'Naam is een verplicht veld.' })
 });
-export const VerwijderVerslagenSchema = z.object({
-	ids: z.array(z.string())
+export const VerwijderVerslagSchema = z.object({
+	id: z.string()
 });
 
 export const AugustjesSchema = z.object({
@@ -55,8 +55,8 @@ export const AugustjesSchema = z.object({
 	pdf: z.instanceof(File).optional(),
 	naam: z.string({ required_error: 'Naam is een verplicht veld.' })
 });
-export const VerwijderAugustjesSchema = z.object({
-	ids: z.array(z.string())
+export const VerwijderAugustjeSchema = z.object({
+	id: z.string()
 });
 
 export const ActiviteitSchema = z.object({
@@ -70,8 +70,8 @@ export const ActiviteitSchema = z.object({
 	formlink: z.string().optional()
 });
 
-export const VerwijderActiviteitenSchema = z.object({
-	ids: z.array(z.string())
+export const VerwijderActiviteitSchema = z.object({
+	id: z.string()
 });
 
 export const ProfielSchema = z.object({
@@ -120,8 +120,7 @@ export const VerkiezingenSchema = z.object({
 	kandidaten: z.array(
 		z.object({
 			id: z.string(),
-			voornaam: z.string(),
-			familienaam: z.string(),
+			naam: z.string(),
 			ambitie: z.string(),
 			opties: z.array(
 				z.object({
@@ -133,17 +132,24 @@ export const VerkiezingenSchema = z.object({
 		})
 	),
 	praesidium: z.string(),
-	actief: z.boolean()
+	actief: z.boolean().default(false).optional()
 });
 
+export const VerwijderVerkiezingenSchema = z.object({
+	id: z.string()
+})
+
 export const KandidaatSchema = z.object({
-	voornaam: z.string(),
-	familienaam: z.string(),
+	naam: z.string(),
 	ambitie: z.string(),
 	opties: z.string(),
 	id: z.string(),
 	status: z.string()
 });
+
+export const VerwijderKandidaatSchema = z.object({
+	kandidaat_id: z.string()
+})
 
 export const StemSchema = z.object({
 	stemmer_id: z.string(),

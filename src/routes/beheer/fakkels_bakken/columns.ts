@@ -3,6 +3,7 @@ import { renderComponent, renderSnippet } from '$lib/components/ui/data-table';
 import DataTableSortButton from './data-table-sort-button.svelte';
 import { Button } from '$lib/components/ui/button';
 import { pushState } from '$app/navigation';
+import EditButton from './edit_button.svelte';
 export const columns: ColumnDef<any>[] = [
 	{
 		accessorKey: 'voornaam',
@@ -32,10 +33,8 @@ export const columns: ColumnDef<any>[] = [
 		id: 'acties',
 		header: 'Acties',
 		cell: ({ row, table }) => {
-			return renderComponent(Button, {
-				onclick: () => {
-					pushState('', { fakkels_bakken: row.original });
-				}
+			return renderComponent(EditButton, {
+				fakkels_bakken: row.original
 			});
 		}
 	}

@@ -19,23 +19,23 @@ export async function load({ locals, url }) {
 				return 15;
 			case 'Sport':
 				return 14;
-			case 'Feest':
-				return 13;
 			case 'Bar':
+				return 13;
+			case 'Feest':
 				return 12;
-			case 'PR-Intern':
+			case 'Cultuur':
 				return 11;
 			case 'PR-Extern':
 				return 10;
-			case 'Cultuur':
+			case 'PR-Intern':
 				return 9;
-			case 'Schachtentemmer':
-				return 8;
 			case 'Scriptor':
-				return 7;
-			case 'Zeden':
-				return 6;
+				return 8;
 			case 'Internationaal':
+				return 7;
+			case 'Schachtentemmer':
+				return 6;
+			case 'Zeden':
 				return 5;
 			case 'Cantor':
 				return 4;

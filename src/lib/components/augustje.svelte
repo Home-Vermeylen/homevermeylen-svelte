@@ -11,11 +11,16 @@
 </script>
 
 <Card.Root class="w-80 md:w-96">
-	<Card.Header class="text-center">
+	<Card.Header class="text-center pb-5">
 		<Card.Title>{augustje.naam}</Card.Title>
 	</Card.Header>
 	<Card.Footer class="flex justify-center">
-		<Button on:click={setGelezen} href={augustje.pdf} variant={gelezen ? 'outline' : 'default'} class="flex items-center gap-1">
+		<Button
+			on:click={setGelezen}
+			href={augustje.pdf}
+			variant={gelezen ? 'outline' : 'default'}
+			class="flex items-center gap-1"
+		>
 			{#if gelezen}
 				<BookOpenCheck class="h-4 w-4" /> Gelezen
 			{:else}

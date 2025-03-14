@@ -27,7 +27,7 @@
 			<DropdownMenu.Item onclick={() => updateGeselecteerdeActiviteit(activiteit)}
 				>Bewerken</DropdownMenu.Item
 			>
-			<DropdownMenu.Item onclick={() => pushState('', { verwijder_ids: [activiteit.id] })}
+			<DropdownMenu.Item onclick={() => pushState('', { verwijder_activiteit: activiteit.id })}
 				>Verwijder</DropdownMenu.Item
 			>
 		</DropdownMenu.Group>

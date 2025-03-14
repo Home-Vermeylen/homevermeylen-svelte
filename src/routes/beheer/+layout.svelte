@@ -26,7 +26,7 @@
 		: $page.url.toString().includes('vriendschapsnetwerk')
 			? 'Vriendschapsnetwerk'
 			: $page.url.toString().includes('verkiezingen')
-				? 'Verkieziengen'
+				? 'Verkiezingen'
 				: $page.url.toString().includes('activiteiten')
 					? 'Activiteiten'
 					: $page.url.toString().includes('verslagen')
@@ -37,6 +37,11 @@
 
 	let ingelogd_lid = $derived(data.praesidium_leden?.find((v) => v.functie == data.functie_id));
 </script>
+
+<svelte:head>
+	<title>Beheer</title>
+	<meta name="description" content="De beheerspagina van de website van Home Vermeylen" />
+</svelte:head>
 
 {#if $page.state.profiel}
 	<ProfielModal data={data.profiel_form} {ingelogd_lid} />

@@ -3,6 +3,7 @@ import { actionResult } from "sveltekit-superforms";
 export const POST = async (event) => {
     const origineleData = await event.request.clone().formData();
 
+    console.log(origineleData);
     let opties_object = [
         { titel: 'Voor', stemmen: 0 },
         { titel: 'Tegen', stemmen: 0 }
@@ -22,8 +23,12 @@ export const POST = async (event) => {
         const kandidaten = verkiezing.kandidaten.map((n) => {
             if (n.id === event.params.kandidaat_id) {
                 if (origineleData.get('status')) {
-                    return {...n, status: origineleData.get('status')}
+                    console.log(event.params.id, origineleData)
+                    return { ...n, status: origineleData.get('status') }
+                } else {
+                    return { ...n, naam: origineleData.get('naam') ?? n.naam, ambitie: origineleData.get('ambitie') ?? n.ambitie };
                 }
+
             } else {
                 return n;
             }

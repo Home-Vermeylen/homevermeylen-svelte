@@ -27,7 +27,7 @@ export const columns: ColumnDef<AugustjesRecord>[] = [
 		id: 'acties',
 		header: 'Acties',
 		cell: ({ row, table }) => {
-			return renderComponent(DataTableActions, { verslag: row.original });
+			return renderComponent(DataTableActions, { augustje: row.original });
 		}
 	}
 ];

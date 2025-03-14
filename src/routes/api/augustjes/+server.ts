@@ -33,7 +33,6 @@ export async function GET({ locals, url }) {
 export async function POST(event) {
 	const origineleData = await event.request.clone().formData();
 
-	console.log(origineleData.get('pdf'));
 	if ((origineleData.get('pdf') as File).size == 0) {
 		origineleData.delete('pdf');
 	}

@@ -3,7 +3,8 @@
 	import * as Card from '$lib/components/ui/card';
 	import { CircleAlert } from 'lucide-svelte';
 	import type { PageData } from './$types';
-	import Kandidaat from '../kandidaat.svelte';
+	import Kandidaat from './kandidaat.svelte';
+	import '../../../app.postcss';
 
 	interface Props {
 		data: PageData;
@@ -22,9 +23,9 @@
 		<h1
 			class="scroll-m-20 border-b text-2xl md:text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center pt-32 mb-8"
 		>
-			Stemmen via toegangscode
+			Stemmen als homeraadslid
 		</h1>
-		<Alert.Root variant="destructive" class="w-[300px]">
+		<Alert.Root variant="destructive" class="w-[300px] sm:w-[600px]">
 			<CircleAlert class="h-4 w-4" />
 			<Alert.Title>Belangrijk</Alert.Title>
 			<Alert.Description
@@ -57,7 +58,7 @@
 				{:else}
 					{#each verkiezing.kandidaten as kandidaat (kandidaat.id)}
 						{#if kandidaat.status == 'zichtbaar' && !kandidaat.gestemd.includes(data.functie_id)}
-							<Kandidaat {data} {kandidaat} {verkiezing} stemmer_id={data.stemmer_id} />
+							<Kandidaat {data} {kandidaat} {verkiezing} stemmer_id={data.functie_id} />
 						{/if}
 					{/each}
 				{/if}

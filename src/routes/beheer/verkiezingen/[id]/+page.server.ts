@@ -69,7 +69,7 @@ export const load = async ({ params, fetch, locals }) => {
 
 
     return {
-        verkiezing: fetch(`/api/verkiezingen/${params.id}`).then(r => r.json()),
+        verkiezing_promise: fetch(`/api/verkiezingen/${params.id}`).then(r => r.json()),
         form: await superValidate(zod(VerkiezingenSchema)),
         praesidium_leden
     }

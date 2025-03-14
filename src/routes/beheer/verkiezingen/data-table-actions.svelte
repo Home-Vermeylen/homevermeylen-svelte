@@ -3,12 +3,12 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { Ellipsis } from 'lucide-svelte';
-	import type { VerslagenRecord } from '../../../../types/pocketbase-types';
+	import type { AugustjesRecord, VerkiezingenRecord } from '../../../../types/pocketbase-types';
 
-	let { verslag }: { verslag: VerslagenRecord } = $props();
+	let { verkiezing }: { verkiezing: VerkiezingenRecord } = $props();
 
-	function updateGeselecteerdVerslag(verslag: VerslagenRecord) {
-		pushState('', { verslag });
+	function updateGeselecteerdeVerkiezing(augustje: AugustjesRecord) {
+		pushState('', { verkiezing });
 	}
 </script>
 
@@ -24,10 +24,10 @@
 	<DropdownMenu.Content>
 		<DropdownMenu.Group>
 			<DropdownMenu.GroupHeading>Acties</DropdownMenu.GroupHeading>
-			<DropdownMenu.Item onclick={() => updateGeselecteerdVerslag(verslag)}
+			<DropdownMenu.Item onclick={() => updateGeselecteerdeVerkiezing(verkiezing)}
 				>Bewerken</DropdownMenu.Item
 			>
-			<DropdownMenu.Item onclick={() => pushState('', { verwijder_verslag: verslag.id })}
+			<DropdownMenu.Item onclick={() => pushState('', { verwijder_id: verkiezing.id })}
 				>Verwijder</DropdownMenu.Item
 			>
 		</DropdownMenu.Group>

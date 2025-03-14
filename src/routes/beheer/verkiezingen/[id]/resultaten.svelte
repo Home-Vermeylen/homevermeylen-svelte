@@ -1,8 +1,11 @@
 <script lang="ts">
-    let { opties } = $props();
-
+	let { opties, status } = $props();
 </script>
 
-{#each opties as optie}
-    <h1>{optie.titel}: {optie.stemmen}</h1>
-{/each}
+{#if status == 'voltooid'}
+	{#each opties as optie}
+		<h1>{optie.titel}: {optie.stemmen}</h1>
+	{/each}
+{:else}
+	<h1>n.v.t</h1>
+{/if}

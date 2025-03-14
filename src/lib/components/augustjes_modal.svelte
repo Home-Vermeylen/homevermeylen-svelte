@@ -59,7 +59,7 @@
 			class="flex flex-col"
 			use:enhance
 			enctype="multipart/form-data"
-			action="/api/verslagen"
+			action="/api/augustjes"
 		>
 			<Form.Field {form} name="pdf">
 				<Form.Control>

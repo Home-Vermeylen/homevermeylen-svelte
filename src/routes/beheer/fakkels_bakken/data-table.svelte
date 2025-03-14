@@ -54,7 +54,7 @@
 	});
 </script>
 
-<div>
+<div class="overflow-x-auto">
 	<div class="rounded-md border">
 		<Table.Root>
 			<Table.Header>

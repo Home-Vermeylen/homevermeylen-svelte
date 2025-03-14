@@ -5,28 +5,63 @@
 	import { page } from '$app/stores';
 	import { columns } from './columns.js';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { CirclePlus } from 'lucide-svelte';
+	import { CirclePlus, LoaderCircle } from 'lucide-svelte';
 	import { pushState } from '$app/navigation';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
+	import * as Form from '$lib/components/ui/form';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { VerwijderAugustjeSchema } from '$lib/schemas.js';
+	import { zod } from 'sveltekit-superforms/adapters';
+	import { superForm } from 'sveltekit-superforms/client';
 
 	let { data } = $props();
+
+	const form = superForm(data.verwijder_augustje_form, {
+		validators: zod(VerwijderAugustjeSchema),
+		async onUpdated() {
+			if ($page.state.verwijder_augustje) {
+				history.back();
+			}
+		}
+	});
+
+	const { form: formData, enhance, delayed, isTainted, tainted } = form;
 </script>
 
-{#if $page.state.verwijder_ids}
+{#if $page.state.verwijder_augustje}
 	<AlertDialog.Root open={true}>
 		<AlertDialog.Content>
 			<AlertDialog.Header>
 				<AlertDialog.Title>Ben je zeker?</AlertDialog.Title>
 				<AlertDialog.Description>
-					Deze actie kan niet ongedaan gemaakt worden. Dit zal {$page.state.verwijder_ids.length} augustjes{$page
-						.state.verwijder_ids.length == 1
-						? ''
-						: 'en'} permanent verwijderen.
+					Deze actie kan niet ongedaan gemaakt worden. Dit zal het augustje permanent verwijderen.
 				</AlertDialog.Description>
 			</AlertDialog.Header>
 			<AlertDialog.Footer>
 				<AlertDialog.Cancel onclick={() => history.back()}>Annuleer</AlertDialog.Cancel>
-				<AlertDialog.Action>Verwijder</AlertDialog.Action>
+				{#if $delayed}<Button disabled>
+						<LoaderCircle class="animate-spin" />
+						Even geduld
+					</Button>
+				{:else}
+					<AlertDialog.Action onclick={() => form.submit()}>Verwijder</AlertDialog.Action>
+				{/if}
+				<form
+					method="POST"
+					class="flex flex-col"
+					use:enhance
+					enctype="multipart/form-data"
+					action="?/verwijder_augustje"
+				>
+					<Form.Field {form} name="id">
+						<Form.Control>
+							{#snippet children({ props })}
+								<Input {...props} type="hidden" value={$page.state.verwijder_augustje} />
+							{/snippet}
+						</Form.Control>
+						<Form.FieldErrors />
+					</Form.Field>
+				</form>
 			</AlertDialog.Footer>
 		</AlertDialog.Content>
 	</AlertDialog.Root>
@@ -48,5 +83,7 @@
 	<Button onclick={() => pushState('', { new_modal: true })}
 		><CirclePlus class="h-4 w-4" /> Nieuw Augustje</Button
 	>
-	<DataTable modelsPerPage={5} data={augustjes} {columns} />
+	<div>
+		<DataTable modelsPerPage={5} data={augustjes} {columns} />
+	</div>
 {/await}
