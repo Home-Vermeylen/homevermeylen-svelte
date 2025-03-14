@@ -1,5 +1,5 @@
 import { VerkiezingenSchema } from "$lib/schemas";
-import { json } from "@sveltejs/kit";
+import { fail, json, text } from "@sveltejs/kit";
 import { actionResult, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
@@ -40,3 +40,5 @@ export const POST = async ({ request, locals }) => {
 
     return actionResult('success', { form }, 200);
 };
+
+

@@ -2,12 +2,16 @@
 	import { Edit, Trash } from 'lucide-svelte';
 	import toast from 'svelte-french-toast';
 
-	export let activiteit: any;
-	export let dialog: HTMLDialogElement;
-	export let geselecteerde_activiteit: any | null;
+	interface Props {
+		activiteit: any;
+		dialog: HTMLDialogElement;
+		geselecteerde_activiteit: any | null;
+	}
+
+	let { activiteit, dialog, geselecteerde_activiteit = $bindable() }: Props = $props();
 
 	const datum = new Date(activiteit.datum);
-	let loading = false;
+	let loading = $state(false);
 
 	const bewerk_activiteit = () => {
 		geselecteerde_activiteit = activiteit;
@@ -48,12 +52,12 @@
 <tr>
 	<td>
 		<div class="flex flex-row gap-2">
-			<button class="btn btn-square h-7 w-7" on:click={bewerk_activiteit}>
+			<button class="btn btn-square h-7 w-7" onclick={bewerk_activiteit}>
 				<Edit class="h-4 w-4" />
 			</button>
 			<button
 				type="submit"
-				on:click={() => verwijder_activiteit(activiteit.id)}
+				onclick={() => verwijder_activiteit(activiteit.id)}
 				class={`btn btn-square btn-error h-7 w-7 ${loading ? 'loading-spinner loading' : ''}`}
 			>
 				<Trash class="h-4 w-4" />

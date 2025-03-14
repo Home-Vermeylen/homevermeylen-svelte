@@ -6,7 +6,11 @@
 	import type { PraesidiumLedenRecord } from '../../../types/pocketbase-types';
 	import Badge from './ui/badge/badge.svelte';
 
-	export let lid: PraesidiumLedenRecord;
+	interface Props {
+		lid: PraesidiumLedenRecord;
+	}
+
+	let { lid }: Props = $props();
 </script>
 
 <Card.Root class="w-[300px] md:w-[350px] flex flex-col items-center">

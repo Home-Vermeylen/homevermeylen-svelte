@@ -16,7 +16,11 @@
 	import * as Card from './ui/card';
 	import * as Sheet from './ui/sheet';
 
-	export let activiteit: any;
+	interface Props {
+		activiteit: any;
+	}
+
+	let { activiteit }: Props = $props();
 	const huidige_datum = new Date();
 	const activiteits_datum = new Date(activiteit.datum);
 </script>
@@ -55,7 +59,7 @@
 				<Badge variant="outline" class="flex gap-2 items-center justify-center w-24"
 					><PartyPopper class="h-4 w-4" /> Fuif</Badge
 				>
-				{:else if activiteit.activiteitstype == 'ANDERE'}
+			{:else if activiteit.activiteitstype == 'ANDERE'}
 				<Badge variant="outline" class="flex gap-2 items-center justify-center w-36"
 					><Ellipsis class="h-4 w-4" /> Diverse activiteit</Badge
 				>
@@ -84,13 +88,6 @@
 				day: 'numeric',
 				month: 'long',
 				year: 'numeric'
-			})}
-		</span>
-		<span class="flex flex-row gap-2 items-center justify-center"
-			><CalendarClock class="h-4 w-4" />
-			{activiteits_datum.toLocaleTimeString(undefined, {
-				hour: '2-digit',
-				minute: '2-digit'
 			})}
 		</span>
 	</Card.Content>

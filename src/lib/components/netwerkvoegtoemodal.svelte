@@ -7,23 +7,25 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { NieuweConnectieSchema, NieuwePersoonSchema } from '$lib/schemas';
 	import { cn } from '$lib/utils.js';
-	import { Check, ChevronsUpDown } from 'lucide-svelte';
+	import { Check, ChevronsUpDown, LoaderCircle } from 'lucide-svelte';
 	import { tick } from 'svelte';
 	import { type Infer, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { buttonVariants } from './ui/button';
+	import { Button, buttonVariants } from './ui/button';
 	import { Input } from './ui/input';
 
-	export let nieuwe_connectie_data: SuperValidated<Infer<typeof NieuweConnectieSchema>>;
-	export let nieuwe_persoon_data: SuperValidated<Infer<typeof NieuwePersoonSchema>>;
+	interface Props {
+		nieuwe_connectie_data: SuperValidated<Infer<typeof NieuweConnectieSchema>>;
+		nieuwe_persoon_data: SuperValidated<Infer<typeof NieuwePersoonSchema>>;
+		personen: any;
+	}
 
-	export let modal_open = false;
-	export let personen: any;
+	let { nieuwe_connectie_data, nieuwe_persoon_data, personen }: Props = $props();
 
 	const nieuwe_connectie_form = superForm(nieuwe_connectie_data, {
 		validators: zodClient(NieuweConnectieSchema),
 		onUpdated: async () => {
-			modal_open = false;
+			history.back();
 		},
 		invalidateAll: true
 	});
@@ -31,86 +33,96 @@
 	const nieuwe_persoon_form = superForm(nieuwe_persoon_data, {
 		validators: zodClient(NieuwePersoonSchema),
 		onUpdated: () => {
-			modal_open = false
+			history.back();
 		},
 		invalidateAll: true
-	})
+	});
 
-	const { form: nieuwe_connectie_formData, enhance: nieuwe_connectie_enhance } =
-		nieuwe_connectie_form;
+	const {
+		form: nieuwe_connectie_formData,
+		enhance: nieuwe_connectie_enhance,
+		delayed: nieuwe_connectie_delayed,
+		isTainted: nieuwe_connectie_isTainted,
+		tainted: nieuwe_connectie_tainted
+	} = nieuwe_connectie_form;
 
-	const { form: nieuwe_persoon_formData, enhance: nieuwe_persoon_enhance } =
-		nieuwe_persoon_form;
+	const {
+		form: nieuwe_persoon_formData,
+		enhance: nieuwe_persoon_enhance,
+		delayed: nieuwe_persoon_delayed,
+		isTainted: nieuwe_persoon_isTainted,
+		tainted: nieuwe_persoon_tainted
+	} = nieuwe_persoon_form;
 
-	let id1_open = false;
-	let id2_open = false;
+	let id1_open = $state(false);
+	let id2_open = $state(false);
 
-	$: id1_selectedValue =
-		personen.find((f) => f.id === $nieuwe_connectie_formData.id1)?.label ?? 'Selecteer een persoon...';
+	let id1_selectedValue = $derived(
+		personen.find((f) => f.id === $nieuwe_connectie_formData.id1)?.label ??
+			'Selecteer een persoon...'
+	);
 
-	$: id2_selectedValue =
-		personen.find((f) => f.id === $nieuwe_connectie_formData.id2)?.label ?? 'Selecteer een persoon...';
+	let id2_selectedValue = $derived(
+		personen.find((f) => f.id === $nieuwe_connectie_formData.id2)?.label ??
+			'Selecteer een persoon...'
+	);
 
-	$: geselecteerd_connectietype = $nieuwe_connectie_formData.type
-		? {
-				label: $nieuwe_connectie_formData.type,
-				value: $nieuwe_connectie_formData.type
-		  }
-		: undefined;
-	// We want to refocus the trigger button when the user selects
-	// an item from the list so users can continue navigating the
-	// rest of the form with the keyboard.
-	function id_1_closeAndFocusTrigger(triggerId: string) {
-		id1_open = false;
-		tick().then(() => {
-			document.getElementById(triggerId)?.focus();
-		});
-	}
-	function id_2_closeAndFocusTrigger(triggerId: string) {
-		id2_open = false;
-		tick().then(() => {
-			document.getElementById(triggerId)?.focus();
-		});
-	}
+	let geselecteerd_connectietype = $derived(
+		$nieuwe_connectie_formData.type
+			? {
+					label: $nieuwe_connectie_formData.type,
+					value: $nieuwe_connectie_formData.type
+				}
+			: undefined
+	);
 	let pagina: 'PERSOON' | 'CONNECTIE' = 'CONNECTIE';
 </script>
 
-<Dialog.Root bind:open={modal_open}>
+<Dialog.Root
+	open={true}
+	onOpenChange={(open) => {
+		if (open == false) {
+			history.back();
+		}
+	}}
+>
 	<Dialog.Content>
 		<Dialog.Header>
 			<Dialog.Title>Connectie / persoon toevoegen</Dialog.Title>
 		</Dialog.Header>
-		<Tabs.Root value="connectie" class="w-[400px] flex flex-col items-center">
-			<Tabs.List>
+		<Tabs.Root value="connectie" class="flex flex-col">
+			<Tabs.List class="self-center">
 				<Tabs.Trigger value="connectie">Connectie</Tabs.Trigger>
 				<Tabs.Trigger value="persoon">Persoon</Tabs.Trigger>
 			</Tabs.List>
-			<Tabs.Content value="connectie" class="">
+			<Tabs.Content value="connectie">
 				<form
 					method="POST"
-					class="space-y-6"
 					action="/api/vriendschapsnetwerk/nieuwe_connectie"
+					class="flex flex-col"
 					use:nieuwe_connectie_enhance
 				>
 					<Form.Field form={nieuwe_connectie_form} name="id1" class="flex flex-col">
-						<Popover.Root bind:open={id1_open} let:ids>
-							<Form.Control let:attrs>
-								<Form.Label>Persoon 1</Form.Label>
-								<Popover.Trigger
-									class={cn(
-										buttonVariants({ variant: 'outline' }),
-										'w-[200px] justify-between',
-										!$nieuwe_connectie_formData.id1 && 'text-muted-foreground'
-									)}
-									role="combobox"
-									{...attrs}
-								>
-									{id1_selectedValue}
-									<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-								</Popover.Trigger>
-								<input hidden value={$nieuwe_connectie_formData.id1} name={attrs.name} />
+						<Popover.Root bind:open={id1_open}>
+							<Form.Control>
+								{#snippet children({ props })}
+									<Form.Label>Persoon 1</Form.Label>
+									<Popover.Trigger
+										class={cn(
+											buttonVariants({ variant: 'outline' }),
+											'justify-between',
+											!$nieuwe_connectie_formData.id1 && 'text-muted-foreground'
+										)}
+										role="combobox"
+										{...props}
+									>
+										{id1_selectedValue}
+										<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+									</Popover.Trigger>
+									<input hidden value={$nieuwe_connectie_formData.id1} name={props.name} />
+								{/snippet}
 							</Form.Control>
-							<Popover.Content class="w-[200px] p-0">
+							<Popover.Content class="p-0">
 								<Command.Root>
 									<Command.Input autofocus placeholder="Selecteer persoon..." class="h-9" />
 									<Command.Empty>Geen personen gevonden...</Command.Empty>
@@ -120,7 +132,7 @@
 												value={persoon.label}
 												onSelect={() => {
 													$nieuwe_connectie_formData.id1 = persoon.id;
-													id_1_closeAndFocusTrigger(ids.trigger);
+													id1_open = false;
 												}}
 											>
 												{persoon.label}
@@ -139,24 +151,26 @@
 						<Form.FieldErrors />
 					</Form.Field>
 					<Form.Field form={nieuwe_connectie_form} name="id2" class="flex flex-col">
-						<Popover.Root bind:open={id2_open} let:ids>
-							<Form.Control let:attrs>
-								<Form.Label>Persoon 2</Form.Label>
-								<Popover.Trigger
-									class={cn(
-										buttonVariants({ variant: 'outline' }),
-										'w-[200px] justify-between',
-										!$nieuwe_connectie_formData.id2 && 'text-muted-foreground'
-									)}
-									role="combobox"
-									{...attrs}
-								>
-									{id2_selectedValue}
-									<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-								</Popover.Trigger>
-								<input hidden bind:value={$nieuwe_connectie_formData.id2} name={attrs.name} />
+						<Popover.Root bind:open={id2_open}>
+							<Form.Control>
+								{#snippet children({ props })}
+									<Form.Label>Persoon 2</Form.Label>
+									<Popover.Trigger
+										class={cn(
+											buttonVariants({ variant: 'outline' }),
+											'justify-between',
+											!$nieuwe_connectie_formData.id2 && 'text-muted-foreground'
+										)}
+										role="combobox"
+										{...props}
+									>
+										{id2_selectedValue}
+										<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+									</Popover.Trigger>
+									<input hidden bind:value={$nieuwe_connectie_formData.id2} name={props.name} />
+								{/snippet}
 							</Form.Control>
-							<Popover.Content class="w-[200px] p-0">
+							<Popover.Content class="p-0">
 								<Command.Root>
 									<Command.Input autofocus placeholder="Selecteer persoon..." class="h-9" />
 									<Command.Empty>Geen personen gevonden...</Command.Empty>
@@ -166,7 +180,7 @@
 												value={persoon.label}
 												onSelect={() => {
 													$nieuwe_connectie_formData.id2 = persoon.id;
-													id_2_closeAndFocusTrigger(ids.trigger);
+													id2_open = false;
 												}}
 											>
 												{persoon.label}
@@ -186,169 +200,98 @@
 					</Form.Field>
 
 					<Form.Field form={nieuwe_connectie_form} name="type">
-						<Form.Control let:attrs>
-							<Form.Label>Connectietype</Form.Label>
-							<Select.Root
-								selected={geselecteerd_connectietype}
-								onSelectedChange={(v) => {
-									v && ($nieuwe_connectie_formData.type = v.value);
-								}}
-							>
-								<Select.Trigger {...attrs}>
-									<Select.Value placeholder="Selecteer een connectietype" />
-								</Select.Trigger>
-								<Select.Content>
-									<Select.Item value="GEMUILD" label="GEMUILD" />
-									<Select.Item value="SEKS" label="SEKS" />
-									<Select.Item value="RELATIE" label="RELATIE" />
-								</Select.Content>
-							</Select.Root>
-							<input hidden bind:value={$nieuwe_connectie_formData.type} name={attrs.name} />
+						<Form.Control>
+							{#snippet children({ props })}
+								<Form.Label>Connectietype</Form.Label>
+								<Select.Root type="single" bind:value={$nieuwe_connectie_formData.type}>
+									<Select.Trigger {...props}>
+										{$nieuwe_connectie_formData.type
+											? $nieuwe_connectie_formData.type
+											: 'Selecteer een connectietype...'}
+									</Select.Trigger>
+									<Select.Content>
+										<Select.Item value="GEMUILD" label="GEMUILD" />
+										<Select.Item value="SEKS" label="SEKS" />
+										<Select.Item value="RELATIE" label="RELATIE" />
+									</Select.Content>
+								</Select.Root>
+								<input hidden bind:value={$nieuwe_connectie_formData.type} name={props.name} />
+							{/snippet}
 						</Form.Control>
 						<Form.Description />
 						<Form.FieldErrors />
 					</Form.Field>
 					<Form.Field form={nieuwe_connectie_form} name="commentaar">
-						<Form.Control let:attrs>
-						  <Form.Label>Commentaar</Form.Label>
-						  <Input {...attrs} bind:value={$nieuwe_connectie_formData.commentaar} />
+						<Form.Control>
+							{#snippet children({ props })}
+								<Form.Label>Commentaar</Form.Label>
+								<Input {...props} bind:value={$nieuwe_connectie_formData.commentaar} />
+							{/snippet}
 						</Form.Control>
 						<Form.Description />
 						<Form.FieldErrors />
-					  </Form.Field>
-					  <Form.Field form={nieuwe_connectie_form} name="locatie">
-						<Form.Control let:attrs>
-						  <Form.Label>Locatie</Form.Label>
-						  <Input {...attrs} bind:value={$nieuwe_connectie_formData.locatie} />
+					</Form.Field>
+					<Form.Field form={nieuwe_connectie_form} name="locatie">
+						<Form.Control>
+							{#snippet children({ props })}
+								<Form.Label>Locatie</Form.Label>
+								<Input {...props} bind:value={$nieuwe_connectie_formData.locatie} />
+							{/snippet}
 						</Form.Control>
 						<Form.Description />
 						<Form.FieldErrors />
-					  </Form.Field>
-					<Form.Button>Opslaan</Form.Button>
+					</Form.Field>
+					{#if $nieuwe_connectie_delayed}<Button class="self-center" disabled>
+							<LoaderCircle class="animate-spin" />
+							Even geduld
+						</Button>
+					{:else}
+						<Form.Button
+							disabled={!nieuwe_connectie_isTainted($nieuwe_connectie_tainted)}
+							class="self-center">Opslaan</Form.Button
+						>
+					{/if}
 				</form>
 			</Tabs.Content>
-			<Tabs.Content value="persoon"
-				>
+			<Tabs.Content value="persoon">
 				<form
 					method="POST"
-					class="space-y-6"
+					class="flex flex-col"
 					action="/api/vriendschapsnetwerk/nieuwe_persoon"
 					use:nieuwe_persoon_enhance
-				>	
+				>
 					<Form.Field form={nieuwe_persoon_form} name="naam">
-						<Form.Control let:attrs>
-						  <Form.Label>Naam</Form.Label>
-						  <Input {...attrs} bind:value={$nieuwe_persoon_formData.naam} />
+						<Form.Control>
+							{#snippet children({ props })}
+								<Form.Label>Naam</Form.Label>
+								<Input {...props} bind:value={$nieuwe_persoon_formData.naam} />
+							{/snippet}
 						</Form.Control>
 						<Form.Description />
 						<Form.FieldErrors />
-					  </Form.Field>
-					  <Form.Field form={nieuwe_persoon_form} name="club">
-						<Form.Control let:attrs>
-						  <Form.Label>Club</Form.Label>
-						  <Input {...attrs} bind:value={$nieuwe_persoon_formData.club} />
+					</Form.Field>
+					<Form.Field form={nieuwe_persoon_form} name="club">
+						<Form.Control>
+							{#snippet children({ props })}
+								<Form.Label>Club</Form.Label>
+								<Input {...props} bind:value={$nieuwe_persoon_formData.club} />
+							{/snippet}
 						</Form.Control>
 						<Form.Description />
 						<Form.FieldErrors />
-					  </Form.Field>
-					<Form.Button>Opslaan</Form.Button>
+					</Form.Field>
+					{#if $nieuwe_persoon_delayed}<Button class="self-center" disabled>
+							<LoaderCircle class="animate-spin" />
+							Even geduld
+						</Button>
+					{:else}
+						<Form.Button
+							disabled={!nieuwe_persoon_isTainted($nieuwe_persoon_tainted)}
+							class="self-center">Opslaan</Form.Button
+						>
+					{/if}
 				</form></Tabs.Content
 			>
 		</Tabs.Root>
-
 	</Dialog.Content>
 </Dialog.Root>
-<!-- <dialog bind:this={dialog} class="modal">
-	<div class="modal-box flex flex-col gap-5 items-center align-middle">
-		
-		<div class="tabs">
-			<button
-				on:click={() => (pagina = 'CONNECTIE')}
-				class={`tab tab-bordered ${pagina == 'CONNECTIE' ? 'tab-active' : ''}`}
-			>
-				Connectie
-			</button>
-			<button
-				on:click={() => (pagina = 'PERSOON')}
-				class={`tab tab-bordered ${pagina == 'PERSOON' ? 'tab-active' : ''}`}
-			>
-				Persoon
-			</button>
-		</div>
-		{#if pagina == 'CONNECTIE'}
-			<form
-				method="post"
-				use:enhance={updateNetwerk}
-				action="/api/vriendschapsnetwerk/nieuwe_connectie"
-				class="flex flex-col gap-5 items-center"
-			>
-				<div class="flex flex-row items-center">
-					<span>Persoon 1:</span>
-					<select required name="id1" class="select w-full max-w-xs">
-						<option disabled selected> Kies een persoon </option>
-						{#each personen as persoon (persoon.id)}
-							<option value={persoon.id}>{persoon.label}</option>
-						{/each}
-					</select>
-				</div>
-				<div class="flex flex-row items-center">
-					<span>Persoon 2:</span>
-					<select required name="id2" class="select w-full max-w-xs">
-						<option disabled selected> Kies een persoon </option>
-						{#each personen as persoon (persoon.id)}
-							<option value={persoon.id}>{persoon.label}</option>
-						{/each}
-					</select>
-				</div>
-				<div class="flex flex-row gap-2 items-center">
-					<span>Type: </span>
-					<select required name="type" class="select w-full max-w-xs">
-						<option value="GEMUILD" selected> Gemuild </option>
-						<option value="SEKS">Seks</option>
-						<option value="RELATIE">Relatie</option>
-					</select>
-				</div>
-				<Input id="locatie" label="Locatie" placeholder="Geef hier de locatie in." errors={null} />
-				<Input
-					id="commentaar"
-					label="Commentaar"
-					placeholder="Geef hier commentaar in."
-					errors={null}
-				/>
-				<div class="modal-action">
-					<button type="submit" formmethod="dialog" class="btn btn-ghost">Annuleer</button>
-					<button
-						type="submit"
-						class={`btn btn-outline ${loading ? 'loading loading-spinner' : ''}`}>Opslaan</button
-					>
-				</div>
-			</form>
-		{:else}
-			<form
-				method="post"
-				use:enhance={updateNetwerk}
-				action="/api/vriendschapsnetwerk/nieuwe_persoon"
-			>
-				<Input
-					id="naam"
-					label="Naam"
-					errors={null}
-					placeholder="Geef hier de naam van de persoon in."
-				/>
-				<Input
-					id="club"
-					label="Club"
-					errors={null}
-					placeholder="Geef hier de club van de persoon in."
-				/>
-				<div class="modal-action">
-					<button type="submit" formmethod="dialog" class="btn btn-ghost">Annuleer</button>
-					<button
-						type="submit"
-						class={`btn btn-outline ${loading ? 'loading loading-spinner' : ''}`}>Opslaan</button
-					>
-				</div>
-			</form>
-		{/if}
-	</div>
-</dialog> -->

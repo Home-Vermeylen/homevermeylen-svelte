@@ -1,7 +1,11 @@
 <script lang="ts">
 	import Badge from "./ui/badge/badge.svelte";
 
-	export let functie: string;
+	interface Props {
+		functie: string;
+	}
+
+	let { functie }: Props = $props();
 
 	const map = [
 		{

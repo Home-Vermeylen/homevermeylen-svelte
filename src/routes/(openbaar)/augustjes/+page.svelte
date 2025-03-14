@@ -6,7 +6,7 @@
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 	import { LucideAlertCircle, LucideLoader, Squirrel } from 'lucide-svelte';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <svelte:head>

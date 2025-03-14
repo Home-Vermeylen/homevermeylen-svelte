@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { page } from '$app/stores';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { QRCode } from '@castlenine/svelte-qrcode';
@@ -7,10 +9,14 @@
 	import { v4 } from 'uuid';
 	import { Button } from './ui/button';
 
-	export let modal_open = false;
-	export let verkiezing_id;
+	interface Props {
+		modal_open?: boolean;
+		verkiezing_id: any;
+	}
 
-	let code: string | undefined = undefined;
+	let { modal_open = $bindable(false), verkiezing_id }: Props = $props();
+
+	let code: string | undefined = $state(undefined);
 	
 	const genereerNieuweCode = async () => {
 		if (modal_open) {
@@ -36,7 +42,9 @@
 		}
 	};
 
-	$: modal_open ? genereerNieuweCode() : false;
+	run(() => {
+		modal_open ? genereerNieuweCode() : false;
+	});
 </script>
 
 <Dialog.Root bind:open={modal_open}>
@@ -49,7 +57,7 @@
 		</Dialog.Header>
 		{#if code}
 			{#key code}
-				<div class="self-center" on:dblclick={() => {navigator.clipboard.writeText(`http://www.${$page.url.host}/stem/${code}`); toast('URL gekopieërd naar klembord')}}>
+				<div class="self-center" ondblclick={() => {navigator.clipboard.writeText(`http://www.${$page.url.host}/stem/${code}`); toast('URL gekopieërd naar klembord')}}>
 					<QRCode waitForLogo data={`http://www.${$page.url.host}/stem/${code}`}/>
 				</div>
 			{/key}

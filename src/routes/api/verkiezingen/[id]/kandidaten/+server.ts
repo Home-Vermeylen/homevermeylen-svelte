@@ -34,8 +34,7 @@ export const POST = async (event) => {
                 const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
                 return v.toString(16);
             }),
-            voornaam: origineleData.get('voornaam'),
-            familienaam: origineleData.get('familienaam'),
+            naam: origineleData.get('naam'),
             ambitie: origineleData.get('ambitie'),
             opties: opties_object,
             status: 'onzichtbaar',
