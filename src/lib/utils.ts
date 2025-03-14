@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { readable } from 'svelte/store';
+import type { ZodSchema } from 'zod';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -22,4 +23,24 @@ export const useMediaQuery = (mediaQueryString: string) => {
 	});
 	//then we return the readable
 	return matches;
+};
+
+export const valideerData = async (formData: FormData, schema: ZodSchema) => {
+	const body = Object.fromEntries(formData);
+
+	try {
+		const data = schema.parse(body);
+
+		return {
+			formData: data,
+			errors: null
+		};
+	} catch (err: unknown) {
+		const errors = err.flatten();
+
+		return {
+			formData: body,
+			errors
+		};
+	}
 };
