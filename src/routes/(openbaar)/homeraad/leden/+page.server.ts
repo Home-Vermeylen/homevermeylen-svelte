@@ -21,9 +21,9 @@ export async function load({ locals, url }) {
 				return 14;
 			case 'Bar':
 				return 13;
-			case 'Feest':
-				return 12;
 			case 'Cultuur':
+				return 12;
+			case 'Feest':
 				return 11;
 			case 'PR-Extern':
 				return 10;
