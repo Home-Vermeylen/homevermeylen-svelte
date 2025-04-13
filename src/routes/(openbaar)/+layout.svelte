@@ -124,7 +124,6 @@
 {/if}
 {#if $page.state.login}
 	<Dialog.Root open>
-		<Dialog.Trigger class={buttonVariants({ variant: 'default' })}>Inloggen</Dialog.Trigger>
 		<Dialog.Content class="sm:max-w-[425px]">
 			<Dialog.Header>
 				<Dialog.Title>Inloggen</Dialog.Title>
@@ -265,8 +264,9 @@
 							>
 						</DropdownMenu.Group>
 					</DropdownMenu.Content>
-				</DropdownMenu.Root>{:else}<Button onclick={() => pushState('', { login: true })}
-					>Log In</Button
+				</DropdownMenu.Root>{:else}<Button
+					class="sm:hidden"
+					onclick={() => pushState('', { login: true })}>Log In</Button
 				>{/if}
 		</header>
 		{@render children?.()}
@@ -279,7 +279,7 @@
 				src="/logo.png"
 			/>
 			<p class="font-bold text-center">Homeraad Vermeylen</p>
-			<p class="text-center">© 2024 Homeraad Vermeylen. Alle rechten voorbehouden</p>
+			<p class="text-center">Deze webpagina is opgemaakt door de vrijwilligers van de Homeraad</p>
 			<div class="grid grid-flow-col gap-4 justify-evenly">
 				<a class="btn btn-ghost" href="https://www.facebook.com/Home-Vermeylen-845283782203005/"
 					><Facebook /></a
@@ -300,10 +300,3 @@
 		</footer>
 	</Sidebar.Inset>
 </Sidebar.Provider>
-
-<!--<Navbar
-	profiel_form={data.profiel_form}
-	login_data={data.login_data}
-	praesidium_leden={data.praesidium_leden}
-	functie_id={data.functie_id}
-/> -->

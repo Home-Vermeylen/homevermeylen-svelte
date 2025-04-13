@@ -8,7 +8,6 @@
 <ModeWatcher />
 
 <svelte:head>
-	<meta charset="utf8" />
 	{#if import.meta.env.PROD}
 		<script
 			async
