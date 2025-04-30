@@ -1,13 +1,12 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { Button } from '$lib/components/ui/button';
 	import * as Form from '$lib/components/ui/form';
 	import * as RadioGroup from '$lib/components/ui/radio-group';
+	import { LoaderCircle, Send } from 'lucide-svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { VerkiezingState } from './verkiezing-beheer-state.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { LoaderCircle, Send } from 'lucide-svelte';
 
-	let { status, kandidaat_id } = $props();
+	let { status, stemming_id } = $props();
 
 	const form = superForm(
 		{ status },
@@ -19,9 +18,8 @@
 </script>
 
 <form
-	action={`/api/verkiezingen/${VerkiezingState.verkiezing?.id}/kandidaten/${kandidaat_id}`}
+	action={`/api/verkiezingen/${VerkiezingState.verkiezing?.id}/stemmingen/${stemming_id}`}
 	method="post"
-	aria-disabled={!VerkiezingState.verkiezing?.actief}
 	class="flex flex-row gap-2 justify-evenly items-center"
 	use:enhance
 >
@@ -58,7 +56,7 @@
 			</div>
 		</RadioGroup.Root>
 		<Form.FieldErrors />
-	</Form.Fieldset><Button disabled={!$tainted} onclick={() => form.submit()}
+	</Form.Fieldset><Button disabled={!$tainted || !VerkiezingState.verkiezing?.actief} onclick={() => form.submit()}
 		>{#if $delayed}<LoaderCircle class="animate-spin" />
 		{:else}<Send />{/if}</Button
 	>

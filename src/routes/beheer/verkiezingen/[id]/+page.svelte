@@ -1,19 +1,19 @@
 <script lang="ts">
+	import { pushState } from '$app/navigation';
+	import { page } from '$app/stores';
+	import DataTable from '$lib/components/data-table.svelte';
 	import Praesidiumlidselector from '$lib/components/praesidiumlidselector.svelte';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Card from '$lib/components/ui/card';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import { ChevronLeft, ExternalLink, IdCard, QrCode } from 'lucide-svelte';
-	import type { PageData } from './$types';
 	import { Skeleton } from '$lib/components/ui/skeleton';
-	import DataTable from '$lib/components/data-table.svelte';
-	import { kandidaten_columns } from './kandidaten-columns';
-	import { resultaten_columns } from './resultaten-columns';
-	import { page } from '$app/stores';
-	import { VerkiezingState } from './verkiezing-beheer-state.svelte';
-	import { pushState } from '$app/navigation';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import { ChevronLeft, ExternalLink, QrCode } from 'lucide-svelte';
+	import type { PageData } from './$types';
 	import QrCodeModal from './qr-code-modal.svelte';
+	import { resultaten_columns } from './resultaten-columns';
+	import { stemmingen_columns } from './stemmingen-columns';
+	import { VerkiezingState } from './verkiezing-beheer-state.svelte';
 
 	interface Props {
 		data: PageData;
@@ -65,34 +65,34 @@
 			<div class="grid gap-4">
 				<div class="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
 					<Tabs.Root
-						value={van_toegang ? 'toegang' : 'kandidaten'}
+						value={van_toegang ? 'toegang' : 'stemmingen'}
 						class="max-w-[300px] md:max-w-[600px] lg:max-w-[900px] lg:w-[900px]"
 					>
 						<Tabs.List>
-							<Tabs.Trigger value="kandidaten">Kandidaten</Tabs.Trigger>
+							<Tabs.Trigger value="stemmingen">Stemmingen</Tabs.Trigger>
 							<Tabs.Trigger value="resultaten">Resultaten</Tabs.Trigger>
 							<Tabs.Trigger value="toegang">Toegang</Tabs.Trigger>
 						</Tabs.List>
-						<Tabs.Content value="kandidaten">
+						<Tabs.Content value="stemmingen">
 							<Card.Root>
 								<Card.Header>
-									<Card.Title>Kandidaten</Card.Title>
+									<Card.Title>Stemmingen</Card.Title>
 									<Card.Description>
-										Kandidaten worden weergeven in volgorde van verkiezing
+										Stemmingen worden weergeven in volgorde van toevoegen
 									</Card.Description>
 								</Card.Header>
 								<Card.Content class="flex flex-col gap-2">
 									<div class="flex flex-col md:flex-row justify-between">
 										<Button
-											href={`/beheer/verkiezingen/${verkiezing.id}/kandidaten`}
+											href={`/beheer/verkiezingen/${verkiezing.id}/stemmingen`}
 											class="flex items-center gap-2 self-center"
-											><ExternalLink class="h-4 w-4" /> Bewerk kandidaten</Button
-										>
+											><ExternalLink class="h-4 w-4" /> Stemmingen
+										</Button>
 									</div>
 									<DataTable
 										modelsPerPage={5}
-										data={verkiezing.kandidaten}
-										columns={kandidaten_columns}
+										data={verkiezing.stemmingen}
+										columns={stemmingen_columns}
 									/>
 								</Card.Content>
 							</Card.Root>
@@ -106,7 +106,7 @@
 								<Card.Content class="flex flex-col gap-2">
 									<DataTable
 										modelsPerPage={5}
-										data={verkiezing.kandidaten}
+										data={verkiezing.stemmingen}
 										columns={resultaten_columns}
 									/>
 								</Card.Content>

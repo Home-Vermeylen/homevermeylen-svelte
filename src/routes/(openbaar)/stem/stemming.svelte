@@ -1,26 +1,26 @@
 <script lang="ts">
+	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import * as Form from '$lib/components/ui/form';
-	import * as RadioGroup from '$lib/components/ui/radio-group';
 	import { Input } from '$lib/components/ui/input';
-	import { superForm } from 'sveltekit-superforms';
-	import type { PageData } from './$types';
+	import * as RadioGroup from '$lib/components/ui/radio-group';
 	import { StemSchema } from '$lib/schemas';
-	import { toast } from 'svelte-sonner';
-	import { Button } from '$lib/components/ui/button';
 	import { LoaderCircle, Send } from 'lucide-svelte';
+	import { toast } from 'svelte-sonner';
+	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
+	import type { PageData } from './$types';
 	interface Props {
 		data: PageData;
-		kandidaat: object;
+		stemming: object;
 		verkiezing: object;
 		stemmer_id: object;
 	}
 
-	let { data = $bindable(), kandidaat, verkiezing, stemmer_id }: Props = $props();
+	let { data = $bindable(), stemming, verkiezing, stemmer_id }: Props = $props();
 
 	const form = superForm(data.stem_form, {
-		id: kandidaat.id,
+		id: stemming.id,
 		validators: zodClient(StemSchema),
 		onUpdated: ({ form }) => {
 			if (form.message) {
@@ -36,9 +36,9 @@
 
 <Card.Root class="w-[250px] sm:w-[350px]">
 	<Card.Header>
-		<Card.Title>{kandidaat.naam}</Card.Title>
+		<Card.Title>{stemming.naam}</Card.Title>
 		<Card.Description
-			>Stelt zich kandidaat voor <strong>{kandidaat.ambitie}</strong></Card.Description
+			>Stem op één van de {stemming.opties.length} opties</Card.Description
 		>
 	</Card.Header>
 	<Card.Content class="p-0 px-6 pb-6">
@@ -56,10 +56,10 @@
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
-			<Form.Field {form} name="kandidaat_id">
+			<Form.Field {form} name="stemming_id">
 				<Form.Control>
 					{#snippet children({ props })}
-						<Input {...props} type="hidden" bind:value={kandidaat.id} />
+						<Input {...props} type="hidden" bind:value={stemming.id} />
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors />
@@ -72,19 +72,19 @@
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
-			<Form.Fieldset {form} name="optie_titel" class="space-y-3">
+			<Form.Fieldset {form} name="optie" class="space-y-3">
 				<Form.Legend>Breng je stem uit</Form.Legend>
 				<RadioGroup.Root
-					bind:value={$formData.optie_titel}
+					bind:value={$formData.optie}
 					class="flex flex-col space-y-1"
-					name="optie_titel"
+					name="optie"
 				>
-					{#each kandidaat.opties as optie (optie.titel)}
+					{#each stemming.opties as optie (optie.id)}
 						<div class="flex items-center space-x-3 space-y-0">
 							<Form.Control>
 								{#snippet children({ props })}
-									<RadioGroup.Item value={optie.titel} {...props} />
-									<Form.Label class="font-normal">{optie.titel}</Form.Label>
+									<RadioGroup.Item value={optie.id} {...props} />
+									<Form.Label class="font-normal">{optie.naam}</Form.Label>
 								{/snippet}
 							</Form.Control>
 						</div>

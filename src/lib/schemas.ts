@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { type DateValue } from '@internationalized/date';
 
 export const gebruikersnamen = [
 	'Lustrum2',
@@ -111,49 +110,43 @@ export const NieuwePersoonSchema = z.object({
 	club: z.string()
 });
 
-export const VerkiezingenSchema = z.object({
-	id: z.string(),
-	naam: z.string(),
-	type: z.string(),
-	stemgerechtigde_homeraadsleden: z.array(z.string()).optional(),
-	toegangscodes: z.array(z.string()),
-	kandidaten: z.array(
-		z.object({
-			id: z.string(),
-			naam: z.string(),
-			ambitie: z.string(),
-			opties: z.array(
-				z.object({
-					titel: z.string(),
-					stemmen: z.number()
-				})
-			),
-			gestemd: z.array(z.string())
-		})
-	),
-	praesidium: z.string(),
-	actief: z.boolean().default(false).optional()
-});
+
 
 export const VerwijderVerkiezingenSchema = z.object({
 	id: z.string()
 })
 
-export const KandidaatSchema = z.object({
-	naam: z.string(),
-	ambitie: z.string(),
-	opties: z.string(),
+export const StemmingSchema = z.object({
 	id: z.string(),
-	status: z.string()
+	ambitie: z.string(),
+	status: z.string(),
+	opties: z.array(
+		z.object({
+			id: z.string(),
+			naam: z.string(),
+			stemmen: z.number()
+		})
+	),
+	gestemd: z.array(z.string())
 });
 
-export const VerwijderKandidaatSchema = z.object({
-	kandidaat_id: z.string()
+export const VerwijderStemmingSchema = z.object({
+	stemming_id: z.string()
 })
+
+export const VerkiezingenSchema = z.object({
+	id: z.string(),
+	naam: z.string(),
+	stemgerechtigde_homeraadsleden: z.array(z.string()),
+	toegangscodes: z.array(z.string()),
+	stemmingen: z.array(StemmingSchema),
+	praesidium: z.string(),
+	actief: z.boolean()
+});
 
 export const StemSchema = z.object({
 	stemmer_id: z.string(),
 	verkiezing_id: z.string(),
-	kandidaat_id: z.string(),
-	optie_titel: z.string()
+	stemming_id: z.string(),
+	optie: z.string()
 });

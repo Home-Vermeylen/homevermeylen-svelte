@@ -2,8 +2,9 @@
 	import * as Alert from '$lib/components/ui/alert';
 	import * as Card from '$lib/components/ui/card';
 	import { CircleAlert } from 'lucide-svelte';
+	import '../../../../app.postcss';
+	import Stemming from '../stemming.svelte';
 	import type { PageData } from './$types';
-	import Kandidaat from '../kandidaat.svelte';
 
 	interface Props {
 		data: PageData;
@@ -22,9 +23,9 @@
 		<h1
 			class="scroll-m-20 border-b text-2xl md:text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center pt-32 mb-8"
 		>
-			Stemmen via toegangscode
+			Stemmen met toegangscode
 		</h1>
-		<Alert.Root variant="destructive" class="w-[300px]">
+		<Alert.Root variant="destructive" class="w-[300px] sm:w-[600px]">
 			<CircleAlert class="h-4 w-4" />
 			<Alert.Title>Belangrijk</Alert.Title>
 			<Alert.Description
@@ -39,25 +40,25 @@
 				<Card.Title>{verkiezing.naam}</Card.Title>
 				<Card.Description
 					><strong
-						>{verkiezing.kandidaten.filter((kandidaat) => {
-							if (kandidaat.status == 'zichtbaar' && !kandidaat.gestemd.includes(data.functie_id)) {
+						>{verkiezing.stemmingen.filter((stemming) => {
+							if (stemming.status == 'zichtbaar' && !stemming.gestemd.includes(data.stemmer_id)) {
 								return true;
 							}
 
 							return false;
 						}).length}
-					</strong> kandidaten beschikbaar voor stemming</Card.Description
+					</strong> stemmingen beschikbaar</Card.Description
 				>
 			</Card.Header>
 			<Card.Content class="flex flex-col gap-2 items-center">
-				{#if verkiezing.kandidaten.filter((a) => a.status == 'zichtbaar').length == 0}
+				{#if verkiezing.stemmingen.filter((a) => a.status == 'zichtbaar').length == 0}
 					<h3 class="scroll-m-20 text-sm font-semibold tracking-tight">
 						Momenteel zijn er nog geen stemmingen geopend
 					</h3>
 				{:else}
-					{#each verkiezing.kandidaten as kandidaat (kandidaat.id)}
-						{#if kandidaat.status == 'zichtbaar' && !kandidaat.gestemd.includes(data.functie_id)}
-							<Kandidaat {data} {kandidaat} {verkiezing} stemmer_id={data.stemmer_id} />
+					{#each verkiezing.stemmingen as stemming (stemming.id)}
+						{#if stemming.status == 'zichtbaar' && !stemming.gestemd.includes(data.stemmer_id)}
+							<Stemming {data} {stemming} {verkiezing} stemmer_id={data.stemmer_id} />
 						{/if}
 					{/each}
 				{/if}

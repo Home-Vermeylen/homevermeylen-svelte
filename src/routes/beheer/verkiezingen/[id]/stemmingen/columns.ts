@@ -1,5 +1,6 @@
-import type { ColumnDef } from '@tanstack/table-core';
 import { renderComponent } from '$lib/components/ui/data-table';
+import type { ColumnDef } from '@tanstack/table-core';
+import { v4 } from 'uuid';
 import DataTableActions from './data-table-actions.svelte';
 
 export const columns: ColumnDef<any>[] = [
@@ -8,22 +9,20 @@ export const columns: ColumnDef<any>[] = [
     header: 'Naam'
   },
   {
-    accessorKey: 'ambitie',
-    header: 'Ambitie'
-  },
-  {
     accessorKey: 'opties',
     header: 'Opties',
     cell: ({ row }) => {
-      return row.getValue('opties').length == 3 ? "Voor, Tegen, Onthouding" : "Voor, Tegen"
-
+      if (row.getValue('opties')?.length > 0) {
+        return ''.concat(row.getValue('opties').map(optie => optie.naam))
+      }
+      return 'Geen opties.'
     }
   },
   {
     id: 'acties',
     header: 'Acties',
     cell: ({ row }) => {
-      return renderComponent(DataTableActions, { kandidaat: row.original, id: 'joe' });
+      return renderComponent(DataTableActions, { stemming: row.original, id: v4() });
     }
   }
 ];

@@ -24,7 +24,6 @@ export const POST: RequestHandler = async (event) => {
     try {
         const verkiezing = await event.fetch(`/api/verkiezingen/${event.params.id}`).then(async (r) => await r.json());
 
-        console.log(origineleData)
         await event.locals.pb.collection('verkiezingen').update(event.params.id, { ...verkiezing, naam: origineleData.has('naam') ? origineleData.get('naam') : verkiezing.naam, actief: origineleData.has('actief') ? (origineleData.get('actief') == 'on' ? true : false) : false, stemgerechtigde_functies: origineleData.get('geselecteerde_functies')?.toString().split(',') });
     } catch (err) {
         return actionResult('error', { form }, 500);

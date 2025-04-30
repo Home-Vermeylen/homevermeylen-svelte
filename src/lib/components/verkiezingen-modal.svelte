@@ -1,14 +1,13 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Form from '$lib/components/ui/form';
-	import * as Select from '$lib/components/ui/select';
+	import { VerkiezingenSchema } from '$lib/schemas';
 	import { LoaderCircle } from 'lucide-svelte';
-	import Button from './ui/button/button.svelte';
-	import { Input } from './ui/input';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { VerkiezingenSchema } from '$lib/schemas';
-	import { page } from '$app/stores';
+	import Button from './ui/button/button.svelte';
+	import { Input } from './ui/input';
 	import { Switch } from './ui/switch';
 	interface Props {
 		data: SuperValidated<Infer<typeof VerkiezingenSchema>>;
@@ -36,7 +35,6 @@
 		}
 	});
 
-	$effect(() => console.log($formData.actief));
 </script>
 
 <Dialog.Root
@@ -79,25 +77,6 @@
 					{#snippet children({ props })}
 						<Form.Label>Naam</Form.Label>
 						<Input {...props} bind:value={$formData.naam} />
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Field {form} name="type">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label>Activiteitstype</Form.Label>
-						<Select.Root type="single" bind:value={$formData.type} name={props.name}>
-							<Select.Trigger {...props}>
-								{$formData.type == ''
-									? 'Selecteer een verkiezingstype.'
-									: $formData.type}</Select.Trigger
-							>
-							<Select.Content>
-								<Select.Item value="NORMAAL">Normaal</Select.Item>
-								<Select.Item value="">Andere</Select.Item>
-							</Select.Content>
-						</Select.Root>
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors />

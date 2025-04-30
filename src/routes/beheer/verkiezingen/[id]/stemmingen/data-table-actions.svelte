@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { invalidateAll, pushState } from '$app/navigation';
+	import { pushState } from '$app/navigation';
 	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { Ellipsis } from 'lucide-svelte';
 
-	let { kandidaat, id } = $props();
+	let { stemming, id } = $props();
 </script>
 
 <DropdownMenu.Root>
@@ -16,9 +16,7 @@
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content>
 		<DropdownMenu.Label>Acties</DropdownMenu.Label>
-		<DropdownMenu.Separator />
-		<DropdownMenu.Item>Bewerk</DropdownMenu.Item>
-		<DropdownMenu.Item onclick={() => pushState('', { verwijder_kandidaat: kandidaat.id })}
+		<DropdownMenu.Item onclick={() => pushState('', { verwijder_stemming: stemming.id })}
 			>Verwijder</DropdownMenu.Item
 		>
 	</DropdownMenu.Content>

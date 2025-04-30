@@ -1,19 +1,18 @@
 <script lang="ts">
-	import AugustjesModal from '$lib/components/augustjes_modal.svelte';
-	import DataTable from '$lib/components/data-table.svelte';
-	import Skeleton from '$lib/components/ui/skeleton/skeleton.svelte';
-	import { page } from '$app/stores';
-	import { columns } from './columns.js';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import { CirclePlus, LoaderCircle } from 'lucide-svelte';
 	import { pushState } from '$app/navigation';
+	import { page } from '$app/stores';
+	import DataTable from '$lib/components/data-table.svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
+	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Form from '$lib/components/ui/form';
-	import VerkiezingenModal from '$lib/components/verkiezingen-modal.svelte';
-	import { superForm } from 'sveltekit-superforms/client';
-	import { VerwijderVerkiezingenSchema } from '$lib/schemas.js';
-	import { zod } from 'sveltekit-superforms/adapters';
 	import { Input } from '$lib/components/ui/input/index.js';
+	import Skeleton from '$lib/components/ui/skeleton/skeleton.svelte';
+	import VerkiezingenModal from '$lib/components/verkiezingen-modal.svelte';
+	import { VerwijderVerkiezingenSchema } from '$lib/schemas.js';
+	import { CirclePlus, LoaderCircle } from 'lucide-svelte';
+	import { zod } from 'sveltekit-superforms/adapters';
+	import { superForm } from 'sveltekit-superforms/client';
+	import { columns } from './columns.js';
 
 	let { data } = $props();
 

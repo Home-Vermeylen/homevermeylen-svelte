@@ -1,5 +1,5 @@
 import { VerkiezingenSchema } from "$lib/schemas";
-import { fail, json, text } from "@sveltejs/kit";
+import { json } from "@sveltejs/kit";
 import { actionResult, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
@@ -27,10 +27,9 @@ export const POST = async ({ request, locals }) => {
     try {
         await locals.pb.collection('verkiezingen').create({
             naam: origineleData.get('naam'),
-            type: origineleData.get('type'),
             stemgerechtigde_homeraadsleden: [],
             toegangscodes: [],
-            kandidaten: [],
+            stemmingen: [],
             praesidium: locals.praesidium?.id,
             actief: false
         });

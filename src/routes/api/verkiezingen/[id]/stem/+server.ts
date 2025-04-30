@@ -13,26 +13,29 @@ export async function POST(event) {
         return actionResult('failure', { form }, 400);
     }
 
-
     try {
         const verkiezing = await event.locals.pb.collection('verkiezingen').getOne(form.data.verkiezing_id);;
 
-        const kandidaten = verkiezing.kandidaten.map((a) => {
-            if (a.id == form.data.kandidaat_id) {
-                return {...a, opties: a.opties.map((b) => {
-                    if (b.titel === form.data.optie_titel) {
-                        
-                        return { ...b, stemmen: b.stemmen + 1 }
-                    }
+        const stemmingen = verkiezing.stemmingen.map((a) => {
+            if (a.id == form.data.stemming_id) {
+                return {
+                    ...a, 
+                    opties: a.opties.map((b) => {
+                        if (b.id === form.data.optie) {    
+                            return { ...b, stemmen: b.stemmen + 1 }
+                        }
 
-                    return b;
-                }), gestemd: [...a.gestemd, form.data.stemmer_id]}
+                        return b;
+                    }
+                    ), 
+                    gestemd: [...a.gestemd, form.data.stemmer_id]
+                }
             }
 
             return a;
         })
 
-        await event.locals.pb.collection('verkiezingen').update(form.data.verkiezing_id, {kandidaten, stemmer_id: form.data.stemmer_id});
+        await event.locals.pb.collection('verkiezingen').update(form.data.verkiezing_id, {stemmingen});
     } catch (err) {
         form.message = { type: 'error', text: 'Stemmen mislukt!' };
         return actionResult('error', { form }, 500);
