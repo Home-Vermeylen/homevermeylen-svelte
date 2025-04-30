@@ -1,4 +1,7 @@
 <script lang="ts" generics="TData, TValue">
+	import { Button } from '$lib/components/ui/button';
+	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
+	import * as Table from '$lib/components/ui/table/index.js';
 	import {
 		type ColumnDef,
 		getCoreRowModel,
@@ -7,9 +10,6 @@
 		type PaginationState,
 		type SortingState
 	} from '@tanstack/table-core';
-	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
-	import * as Table from '$lib/components/ui/table/index.js';
-	import { Button } from '$lib/components/ui/button';
 
 	type DataTableProps<TData, TValue> = {
 		columns: ColumnDef<TData, TValue>[];
@@ -107,7 +107,7 @@
 			onclick={() => table.nextPage()}
 			disabled={!table.getCanNextPage()}
 		>
-			Vorige
+			Volgende
 		</Button>
 	</div>
 </div>

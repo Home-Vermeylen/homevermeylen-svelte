@@ -1,8 +1,6 @@
+import { renderComponent } from '$lib/components/ui/data-table';
 import type { ColumnDef } from '@tanstack/table-core';
-import { renderComponent, renderSnippet } from '$lib/components/ui/data-table';
 import DataTableSortButton from './data-table-sort-button.svelte';
-import { Button } from '$lib/components/ui/button';
-import { pushState } from '$app/navigation';
 import EditButton from './edit_button.svelte';
 export const columns: ColumnDef<any>[] = [
 	{
@@ -26,7 +24,7 @@ export const columns: ColumnDef<any>[] = [
 		header: ({ column }) =>
 			renderComponent(DataTableSortButton, {
 				onclick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
-				text: 'Bakkels'
+				text: 'Bakken'
 			})
 	},
 	{
