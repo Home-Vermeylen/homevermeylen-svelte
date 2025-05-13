@@ -94,9 +94,9 @@
 			tekst: 'LUSTRUM'
 		},
 		{
-			functie: 'Internationaal',
+			functie: 'International',
 			color: 'badge-warning',
-			tekst: 'INTERNATIONAAL'
+			tekst: 'INTERNATIONAL'
 		},
 		{
 			functie: 'Meter',
@@ -112,6 +112,11 @@
 			functie: 'VM',
 			color: 'badge-ghost',
 			tekst: 'VM'
+		},
+		{
+			functie: 'Keizer-Sport',
+			color: 'badge-error',
+			tekst: 'KEIZER SPORT'
 		}
 	];
 </script>

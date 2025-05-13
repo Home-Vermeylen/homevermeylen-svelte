@@ -6,16 +6,18 @@ export async function load({ locals, url }) {
 	const functie_rank = (functie: string) => {
 		switch (functie) {
 			case 'Praeses':
-				return 20;
+				return 21;
 			case 'Vice-Praeses':
-				return 19;
+				return 20;
 			case 'Penning':
-				return 18;
+				return 19;
 			case 'Secretaris':
-				return 17;
+				return 18;
 			case 'ICT':
-				return 16;
+				return 17;
 			case 'Milieu':
+				return 16;
+			case 'Keizer-Sport' :
 				return 15;
 			case 'Sport':
 				return 14;
@@ -39,11 +41,11 @@ export async function load({ locals, url }) {
 				return 5;
 			case 'Cantor':
 				return 4;
-			case 'Meter':
-				return 3;
-			case 'Peter':
-				return 2;
 			case 'Lustrum':
+				return 3;
+			case 'Meter':
+				return 2;
+			case 'Peter':
 				return 1;
 			case 'VM':
 				return 0;
