@@ -1,8 +1,9 @@
 <script lang="ts">
+	import Academiejaarselector from '$lib/components/academiejaarselector.svelte';
 	import Activiteit from '$lib/components/activiteit.svelte';
 	import * as Alert from '$lib/components/ui/alert';
 	import { Skeleton } from '$lib/components/ui/skeleton';
-	import { LucideAlertCircle, Squirrel } from 'lucide-svelte';
+	import { LucideAlertCircle, LucideLoader, Squirrel } from 'lucide-svelte';
 	import type { PageData } from './$types';
 
 	interface Props {
@@ -18,15 +19,34 @@
 		name="description"
 		content="Een lijst van de geplande en reeds afgelopen activiteiten georganiseerd door Home Vermeylen."
 	/>
-	<link rel="canonical" href="https://homevermeylen.be/activiteiten"/>
+	<link rel="canonical" href="https://homevermeylen.be/activiteiten" />
 </svelte:head>
 
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center">
+	<div class="py-6">
+		{#await data.academiejaren}
+			<Alert.Root>
+				<LucideLoader class="h-4 w-4 animate-spin" />
+				<Alert.Title>Academiejaren laden...</Alert.Title>
+			</Alert.Root>
+		{:then academiejaren}
+			<Academiejaarselector
+				{academiejaren}
+				geselecteerd_academiejaar={data.academiejaar_query ?? data.academiejaar}
+			/>
+		{:catch}
+			<Alert.Root variant="destructive">
+				<LucideAlertCircle class="h-4 w-4" />
+				<Alert.Title>Fout bij het laden van academiejaren.</Alert.Title>
+			</Alert.Root>
+		{/await}
+	</div>
 	<h1
-		class="scroll-m-20 border-b text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center pt-24 mb-8"
+		class="scroll-m-20 border-b text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center mb-8"
 	>
 		Opkomende activiteiten
 	</h1>
+
 	{#await data.activiteiten}
 		<div class="flex items-center space-x-4">
 			<Skeleton class="h-12 w-12 rounded-full" />
@@ -82,9 +102,9 @@
 			</div>
 		{/if}
 	{:catch}
-	<Alert.Root variant="destructive" class="w-64">
-		<LucideAlertCircle class="h-4 w-4" />
-		<Alert.Title>Er is een probleem opgetreden bij het ophalen van de activiteiten.</Alert.Title>
-	  </Alert.Root>
+		<Alert.Root variant="destructive" class="w-64">
+			<LucideAlertCircle class="h-4 w-4" />
+			<Alert.Title>Er is een probleem opgetreden bij het ophalen van de activiteiten.</Alert.Title>
+		</Alert.Root>
 	{/await}
 </div>
