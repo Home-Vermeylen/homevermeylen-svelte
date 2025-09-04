@@ -21,7 +21,7 @@
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center mx-5">
 	<div class="flex flex-col items-center">
 		<h1
-			class="scroll-m-20 border-b text-2xl md:text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center pt-32 mb-8"
+			class="scroll-m-20 border-b text-2xl md:text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center pt-[2.5dvh] mb-[2.5dvh]"
 		>
 			Stemmen als homeraadslid
 		</h1>

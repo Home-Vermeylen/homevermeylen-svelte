@@ -16,7 +16,7 @@
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center">
 	<div class="flex flex-col items-center text-center">
 		<h1
-			class="scroll-m-20 border-b text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center pt-24 mb-8"
+			class="scroll-m-20 border-b text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center pt-[2.5dvh] mb-[2.5dvh]"
 		>
             Veelgestelde vragen
 		</h1>

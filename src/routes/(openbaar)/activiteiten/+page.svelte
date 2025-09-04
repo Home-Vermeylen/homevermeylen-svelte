@@ -23,7 +23,7 @@
 </svelte:head>
 
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center">
-	<div class="py-6">
+	<div class="pt-[2.5dvh]">
 		{#await data.academiejaren}
 			<Alert.Root>
 				<LucideLoader class="h-4 w-4 animate-spin" />
@@ -44,7 +44,7 @@
 
 	{#await data.activiteiten}
 		<h1
-			class="scroll-m-20 border-b text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center mb-8"
+			class="scroll-m-20 border-b text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center pb-[2.5dvh]"
 		>
 			Opkomende activiteiten
 		</h1>
