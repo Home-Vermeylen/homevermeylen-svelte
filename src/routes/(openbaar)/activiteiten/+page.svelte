@@ -41,13 +41,13 @@
 			</Alert.Root>
 		{/await}
 	</div>
-	<h1
-		class="scroll-m-20 border-b text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center mb-8"
-	>
-		Opkomende activiteiten
-	</h1>
 
 	{#await data.activiteiten}
+		<h1
+			class="scroll-m-20 border-b text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center mb-8"
+		>
+			Opkomende activiteiten
+		</h1>
 		<div class="flex items-center space-x-4">
 			<Skeleton class="h-12 w-12 rounded-full" />
 			<div class="space-y-2">
@@ -56,12 +56,12 @@
 			</div>
 		</div>
 	{:then activiteiten}
-		{#if activiteiten.opkomende_activiteiten.length == 0}
-			<Alert.Root class="w-80">
-				<Squirrel class="h-4 w-4" />
-				<Alert.Title>Het is hier nogal stil...</Alert.Title>
-			</Alert.Root>
-		{:else if activiteiten.opkomende_activiteiten.length > 1}
+		{#if activiteiten.opkomende_activiteiten.length > 1}
+			<h1
+				class="scroll-m-20 border-b text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center mb-8"
+			>
+				Opkomende activiteiten
+			</h1>
 			<div
 				class="flex flex-col gap-2 items-center md:flex-none md:grid md:grid-cols-2 md:items-baseline"
 			>
@@ -70,6 +70,11 @@
 				{/each}
 			</div>
 		{:else if activiteiten.opkomende_activiteiten.length == 1}
+			<h1
+				class="scroll-m-20 border-b text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center mb-8"
+			>
+				Opkomende activiteit
+			</h1>
 			<div class="items-center">
 				{#each activiteiten.opkomende_activiteiten as activiteit (activiteit.id)}
 					<Activiteit {activiteit} />
