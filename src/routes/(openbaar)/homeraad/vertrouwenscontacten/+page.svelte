@@ -20,18 +20,18 @@
 </script>
 
 <svelte:head>
-	<title>Homeraad - Vertrouwenspersonen</title>
-	<meta name="description" content="Vertrouwenspersonen Home Vermeylen" />
-	<link rel="canonical" href="https://homevermeylen.be/homeraad/vertrouwenspersonen" />
+	<title>Homeraad - Vertrouwenscontacten</title>
+	<meta name="description" content="Vertrouwenscontacten Home Vermeylen" />
+	<link rel="canonical" href="https://homevermeylen.be/homeraad/vertrouwenscontacten" />
 </svelte:head>
 
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center mx-5">
 	<div class="flex flex-col items-center text-center w-full">
 		<h1 class="scroll-m-20 border-b text-3xl font-semibold tracking-tight transition-colors first:mt-0 text-center pt-24 mb-8">
-			Vertrouwenspersonen
+			Vertrouwenscontacten
 		</h1>
 		<p class="leading-7 [&:not(:first-child)]:mt-6">
-			De vertrouwenspersonen voor dit academiejaar zijn Jutta Van Daele 
+			De vertrouwenscontacten voor dit academiejaar zijn Jutta Van Daele 
 			en Flip Pronk.
 		</p>
 	</div>
@@ -46,7 +46,7 @@
 				/>
 
 				<h2 class="text-xl font-semibold text-center mb-2">{lid.voornaam} {lid.familienaam}</h2>
-				<p class="text-sm text-gray-500 mb-2">Vertrouwenspersoon</p>
+				<p class="text-sm text-gray-500 mb-2">Vertrouwenscontact</p>
 				<a href={`mailto:${lid.email}`} class="text-sm text-blue-600 hover:underline mb-2">{lid.email}</a>
 				<p class="text-sm text-gray-600">Kamer {lid.kamernummer}</p>
 			</div>

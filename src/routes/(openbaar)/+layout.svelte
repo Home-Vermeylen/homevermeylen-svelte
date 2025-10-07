@@ -35,8 +35,8 @@
 					url: '/homeraad/contact'
 				},
 				{
-					title: 'Vertrouwenspersonen',
-					url: '/homeraad/vertrouwenspersonen'
+					title: 'Vertrouwenscontacten',
+					url: '/homeraad/vertrouwenscontacten'
 				},
 				{
 					title: 'Statuten',

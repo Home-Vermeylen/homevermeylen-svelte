@@ -20,42 +20,82 @@
 		<div class="grid gap-x-10 gap-y-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 			<Card.Root>
 				<Card.Header>
-					<Card.Title>Kingslize</Card.Title>
+					<Card.Title>Benji's</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					<img src="/kingslize.jpg" alt="Logo Kingslize" width="250" height="250" />
+					<img src="/benjis.png" alt="Logo Benji's" width="250" height="250" />
 				</Card.Content>
 			</Card.Root>
 			<Card.Root>
 				<Card.Header>
-					<Card.Title>Stefano's Place</Card.Title>
+					<Card.Title>Delilunch</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					<img src="/stefanos.png" alt="Logo Stefanos" width="250" height="250" />
+					<img src="/delilunch.png" alt="Logo Delilunch" width="250" height="250" />
 				</Card.Content>
 			</Card.Root>
 			<Card.Root>
 				<Card.Header>
-					<Card.Title>Papier & Co</Card.Title>
+					<Card.Title>Cappuccino</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					<img src="/papier&co.jpg" alt="Logo Papier&Co" width="250" height="250" />
+					<img src="/cappuccino.png" alt="Logo Cappuccino" width="250" height="250" />
 				</Card.Content>
 			</Card.Root>
 			<Card.Root>
 				<Card.Header>
-					<Card.Title>Bocca</Card.Title>
+					<Card.Title>Studentendrukker</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					<img src="/bocca.png" alt="Logo Bocca" width="250" height="250" />
+					<img src="/studentendrukker.png" alt="Logo Studentendrukker" width="250" height="250" />
 				</Card.Content>
 			</Card.Root>
 			<Card.Root>
 				<Card.Header>
-					<Card.Title>Bioshop</Card.Title>
+					<Card.Title>Snack Tosi</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					<img src="/bioshop.jpg" alt="Logo Bioshop" width="250" height="250" />
+					<img src="/snacktosi.png" alt="Logo Snack Tosi" width="250" height="250" />
+				</Card.Content>
+			</Card.Root>
+			<Card.Root>
+				<Card.Header>
+					<Card.Title>Panotto</Card.Title>
+				</Card.Header>
+				<Card.Content>
+					<img src="/panotto.png" alt="Logo Panotto" width="250" height="250" />
+				</Card.Content>
+			</Card.Root>
+			<Card.Root>
+				<Card.Header>
+					<Card.Title>Mayana</Card.Title>
+				</Card.Header>
+				<Card.Content>
+					<img src="/mayana.png" alt="Logo Mayana" width="250" height="250" />
+				</Card.Content>
+			</Card.Root>
+			<Card.Root>
+				<Card.Header>
+					<Card.Title>Kuiperskano</Card.Title>
+				</Card.Header>
+				<Card.Content>
+					<img src="/kuiperskano.png" alt="Logo Kuiperskano" width="250" height="250" />
+				</Card.Content>
+			</Card.Root>
+			<Card.Root>
+				<Card.Header>
+					<Card.Title>Overpoort Bowl</Card.Title>
+				</Card.Header>
+				<Card.Content>
+					<img src="/overpoortbowl.png" alt="Logo Overpoort Bowl" width="250" height="250" />
+				</Card.Content>
+			</Card.Root>
+			<Card.Root>
+				<Card.Header>
+					<Card.Title>Paul's Boutique</Card.Title>
+				</Card.Header>
+				<Card.Content>
+					<img src="/paulsboutique.png" alt="Logo Paul's Boutique" width="250" height="250" />
 				</Card.Content>
 			</Card.Root>
 		</div>
