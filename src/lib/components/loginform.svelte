@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { cn } from '$lib/utils';
 	import { Check, ChevronsUpDown, LoaderCircle } from 'lucide-svelte';
-	import { tick } from 'svelte';
 	import { useMediaQuery } from '$lib/utils';
 	import { Button, buttonVariants } from './ui/button';
 	import * as Command from './ui/command';
@@ -12,16 +11,15 @@
 	let { login_form, praesidium_leden } = $props();
 
 	let combobox_open = $state(false);
-
 	const isDesktop = useMediaQuery('(min-width: 768px)');
 
-	const {
-		form: login_formData,
-		enhance: login_enhance,
-		submitting: login_submitting,
-		delayed: login_delayed,
-		timeout: login_timeout
-	} = login_form;
+	const { form: login_formData, enhance: login_enhance, delayed: login_delayed } = login_form;
+
+	// --- NIEUW: leden sorteren volgens gedeelde functie_rank ---
+	import { sorteer_door_functie } from '$lib/utils/functieSort';
+	const sorted_praesidium_leden = [...praesidium_leden].sort((a, b) =>
+		sorteer_door_functie(a.expand?.functie?.username, b.expand?.functie?.username)
+	);
 </script>
 
 <form
@@ -60,12 +58,13 @@
 					<input hidden value={$login_formData.gebruikersnaam} name={props.name} />
 				{/snippet}
 			</Form.Control>
+
 			<Popover.Content class="w-[250px] md:w-[400px] max-h-52 overflow-scroll p-0">
 				<Command.Root>
 					<Command.Input autofocus placeholder="Zoek homeraadslid..." class="h-9" />
 					<Command.Empty>Geen homeraadsleden gevonden.</Command.Empty>
 					<Command.Group>
-						{#each praesidium_leden as praesidium_lid}
+						{#each sorted_praesidium_leden as praesidium_lid}
 							<Command.Item
 								value={`${praesidium_lid.expand.functie.username.replace(/[0-9]/g, '')} (${
 									praesidium_lid.voornaam
@@ -93,6 +92,7 @@
 		</Popover.Root>
 		<Form.FieldErrors />
 	</Form.Field>
+
 	<Form.Field class={`${isDesktop ? '' : 'w-80 self-center'}`} form={login_form} name="wachtwoord">
 		<Form.Control>
 			{#snippet children({ props })}
@@ -103,6 +103,7 @@
 		<Form.Description />
 		<Form.FieldErrors />
 	</Form.Field>
+
 	{#if !$login_delayed}
 		<Button class="my-5" type="submit">Verzenden</Button>
 	{:else}
