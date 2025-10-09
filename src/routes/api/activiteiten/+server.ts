@@ -32,16 +32,24 @@ export async function GET({ locals, url }) {
 			}))
 		);
 
-	const opkomende_activiteiten = a
-		.filter((a) => {
-			return new Date(a.datum).getTime() >= new Date().getTime();
-		})
-		.sort((a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime());
-	const afgelopen_activiteiten = a
-		.filter((a) => {
-			return new Date(a.datum).getTime() < new Date().getTime();
-		})
-		.sort((a, b) => new Date(b.datum).getTime() - new Date(a.datum).getTime());
+	const vandaag = new Date();
+vandaag.setHours(0, 0, 0, 0); // alleen de datum telt
+
+const opkomende_activiteiten = a
+	.filter((a) => {
+		const datum = new Date(a.datum);
+		datum.setHours(0, 0, 0, 0);
+		return datum >= vandaag; // vandaag of later = opkomend
+	})
+	.sort((a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime());
+
+const afgelopen_activiteiten = a
+	.filter((a) => {
+		const datum = new Date(a.datum);
+		datum.setHours(0, 0, 0, 0);
+		return datum < vandaag; // enkel echt oudere datums = afgelopen
+	})
+	.sort((a, b) => new Date(b.datum).getTime() - new Date(a.datum).getTime());
 
 	return json({ opkomende_activiteiten, afgelopen_activiteiten });
 }
