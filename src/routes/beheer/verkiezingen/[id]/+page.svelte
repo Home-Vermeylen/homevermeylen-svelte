@@ -52,22 +52,17 @@
 						<ChevronLeft class="h-4 w-4" />
 						<span class="sr-only">Terug</span>
 					</Button>
-					<h1
-						class="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0"
-					>
+					<h1 class="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
 						{verkiezing.naam}
 					</h1>
 				</div>
-				<Badge variant="outline" class="ml-auto sm:ml-0"
-					>{verkiezing.actief ? 'Actief' : 'Inactief'}</Badge
-				>
+				<Badge variant="outline" class="ml-auto sm:ml-0">
+					{verkiezing.actief ? 'Actief' : 'Inactief'}
+				</Badge>
 			</div>
 			<div class="grid gap-4">
 				<div class="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-					<Tabs.Root
-						value={van_toegang ? 'toegang' : 'stemmingen'}
-						class="max-w-[300px] md:max-w-[600px] lg:max-w-[900px] lg:w-[900px]"
-					>
+					<Tabs.Root value={van_toegang ? 'toegang' : 'stemmingen'} class="max-w-[300px] md:max-w-[600px] lg:max-w-[900px] lg:w-[900px]">
 						<Tabs.List>
 							<Tabs.Trigger value="stemmingen">Stemmingen</Tabs.Trigger>
 							<Tabs.Trigger value="resultaten">Resultaten</Tabs.Trigger>
@@ -86,7 +81,8 @@
 										<Button
 											href={`/beheer/verkiezingen/${verkiezing.id}/stemmingen`}
 											class="flex items-center gap-2 self-center"
-											><ExternalLink class="h-4 w-4" /> Stemmingen
+										>
+											<ExternalLink class="h-4 w-4" /> Stemmingen
 										</Button>
 									</div>
 									<DataTable
@@ -130,8 +126,8 @@
 										class="flex gap-2 items-center"
 										onclick={() => pushState('', { qr: true })}
 									>
-										<QrCode />Toevoegen via QR-Code</Button
-									>
+										<QrCode />Toevoegen via QR-Code
+									</Button>
 								</Card.Content>
 							</Card.Root>
 						</Tabs.Content>
