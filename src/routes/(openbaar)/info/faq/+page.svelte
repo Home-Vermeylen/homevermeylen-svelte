@@ -65,7 +65,7 @@
 					</p>
 					<p class="leading-7 [&:not(:first-child)]:mt-6">
 						Nog problemen? De ICT-verantwoordelijke van de Homeraad en de mensen aan het onthaal van
-						de Home helpen je graag verder :)
+						het Home helpen je graag verder :)
 					</p>
 				</Accordion.Content>
 			</Accordion.Item>
