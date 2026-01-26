@@ -1,52 +1,73 @@
-import dirTree from 'directory-tree';
-import * as fs from "fs";
+// scripts/generate_sitemap.ts
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const baseRoute = "/";
-const routes: string[] = [baseRoute]
-const date = new Date().toISOString().split('T')[0]
+// ===== Config =====
+const baseRoute = '/';
+const routes: string[] = [baseRoute];
+const date = new Date().toISOString().split('T')[0];
+const DOMAIN = 'https://homevermeylen.org';
 
-function getSitemapXML(domain: string, routes: string[]) {
-    let sitemap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    sitemap += "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n"
-    routes.forEach(route => {
-        sitemap += getSitemapUrl(domain + route)
-    })
-    sitemap += "\n</urlset>"
-    return sitemap;
+// ===== Pad-resolutie =====
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const srcRoutesPath = path.resolve(__dirname, '../src/routes');
+const staticPath = path.resolve(__dirname, '../static');
+
+if (!fs.existsSync(srcRoutesPath)) {
+  console.error('Fout: src/routes bestaat niet op', srcRoutesPath);
+  process.exit(1);
 }
 
-function getSitemapUrl(location: string) {
-    const url =
-        "<url>\n" +
-        `<loc>${location}</loc>\n` +
-        `<lastmod>${date}</lastmod>\n` +
-        "</url>";
-    return url
+// ===== Recursieve functie =====
+function walkDir(dir: string, routePrefix = '/') {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      let route = path.join(routePrefix, entry.name).replace(/\\/g, '/');
+
+      // Verwijder SvelteKit groepfolders zoals (openbaar)
+      route = route.replace(/\([^)]+\)/g, '');
+
+      const fullPath = path.join(dir, entry.name);
+      const files = fs.readdirSync(fullPath);
+
+      // +page.svelte aanwezig?
+      const hasPage = files.includes('+page.svelte');
+
+      // ⚠️ Skip routes die ergens [xxx] bevatten
+      if (hasPage && !route.includes('[')) {
+        routes.push(route.endsWith('/') ? route : route + '/');
+      }
+
+      // Recursief verder
+      walkDir(fullPath, route);
+    }
+  }
 }
 
-function getEndpoints(tree: dirTree.DirectoryTree, route: string) {
-    tree.children?.forEach(child => {
-        if (child.children != undefined && child.children.length != 0) {
-            const childRoute = route + child.name;
-            if (child.children.some(e => e.name === '+page.svelte')) {
-                routes.push(childRoute)
-            }
-            getEndpoints(child, childRoute + "/");
-        }
-    })
+// ===== Run =====
+walkDir(srcRoutesPath);
+
+// Alleen unieke routes behouden
+const uniqueRoutes = Array.from(new Set(routes));
+
+// Genereer sitemap XML
+let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
+sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+for (const r of uniqueRoutes) {
+  sitemap += `<url>\n<loc>${DOMAIN}${r}</loc>\n<lastmod>${date}</lastmod>\n</url>\n`;
 }
+sitemap += '</urlset>';
 
-const tree = dirTree("./src/routes")
+// Static map check
+if (!fs.existsSync(staticPath)) fs.mkdirSync(staticPath, { recursive: true });
 
-getEndpoints(tree, baseRoute);
+// Schrijf sitemap
+fs.writeFileSync(path.join(staticPath, 'sitemap.xml'), sitemap);
 
-// YOUR_DOMAIN should be like https://example.com
-const sitemap = getSitemapXML("https://homevermeylen.org", routes)
-
-// If you use the script in postbuild mode use
-// For vercel deployment use:
-//fs.writeFileSync('.vercel/output/static/sitemap.xml', sitemap);
-fs.writeFileSync('static/sitemap.xml', sitemap);
-
-// If you use the script in prebuild mode use
-//fs.writeFileSync('static/sitemap.xml', sitemap);
+console.log('✅ Sitemap gegenereerd in static/sitemap.xml');
+console.log('Gevonden routes:', uniqueRoutes);
