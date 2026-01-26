@@ -22,7 +22,7 @@
 <svelte:head>
 	<title>Homeraad - Vertrouwenscontacten</title>
 	<meta name="description" content="Vertrouwenscontacten Home Vermeylen" />
-	<link rel="canonical" href="https://homevermeylen.be/homeraad/vertrouwenscontacten" />
+	<link rel="canonical" href="https://homevermeylen.org/homeraad/vertrouwenscontacten" />
 </svelte:head>
 
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center mx-5">

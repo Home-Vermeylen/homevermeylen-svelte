@@ -2,12 +2,37 @@
 	import { goto } from '$app/navigation';
 	import { Button } from '$lib/components/ui/button';
 	import { ChevronRight, Euro, MapPin, Pin, Users } from 'lucide-svelte';
+
+	// JSON-LD voor homepage
+	const homepageStructuredData = {
+		"@context": "https://schema.org",
+		"@type": "Organization",
+		"name": "Home Vermeylen",
+		"url": "https://homevermeylen.org",
+		"description": "Studentenhome van de Universiteit Gent, gelegen in Gent.",
+		"logo": "https://homevermeylen.org/logo.png",
+		"address": {
+			"@type": "PostalAddress",
+			"streetAddress": "Stalhof 6",
+			"addressLocality": "Gent",
+			"postalCode": "9000",
+			"addressCountry": "BE"
+		},
+		"sameAs": [
+			"https://www.facebook.com/Home-Vermeylen-845283782203005/",
+			"https://www.instagram.com/homevermeylen/"
+		]
+	};
 </script>
 
 <svelte:head>
 	<title>Thuispagina</title>
 	<meta name="description" content="Thuispagina Home Vermeylen" />
-	<link rel="canonical" href="https://homevermeylen.be" />
+	<link rel="canonical" href="https://homevermeylen.org" />
+
+	<script type="application/ld+json">
+		{JSON.stringify(homepageStructuredData)}
+	</script>
 </svelte:head>
 
 <div

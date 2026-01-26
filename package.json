@@ -6,7 +6,7 @@
 		"dev": "vite dev",
 		"db": "./db/pocketbase serve",
 		"build": "vite build",
-		"postbuild": "npx svelte-sitemap --domain https://homevermeylen.be",
+		"postbuild": "npx svelte-sitemap --domain https://homevermeylen.org",
 		"preview": "vite preview",
 		"test": "npm run test:integration && npm run test:unit",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",

@@ -5,7 +5,7 @@
 <svelte:head>
 	<title>Homeraad - Sponsors</title>
 	<meta name="description" content="Sponsors homeraad Home Vermeylen" />
-	<link rel="canonical" href="https://homevermeylen.be/homeraad/sponsors" />
+	<link rel="canonical" href="https://homevermeylen.org/homeraad/sponsors" />
 </svelte:head>
 
 <div class="flex flex-col min-h-[calc(100vh)] gap-2 items-center mx-5">

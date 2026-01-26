@@ -41,12 +41,12 @@ const tree = dirTree("./src/routes")
 getEndpoints(tree, baseRoute);
 
 // YOUR_DOMAIN should be like https://example.com
-const sitemap = getSitemapXML("https://homevermeylen.be", routes)
+const sitemap = getSitemapXML("https://homevermeylen.org", routes)
 
 // If you use the script in postbuild mode use
 // For vercel deployment use:
 //fs.writeFileSync('.vercel/output/static/sitemap.xml', sitemap);
-fs.writeFileSync('.svelte-kit/output/client/sitemap.xml', sitemap);
+fs.writeFileSync('static/sitemap.xml', sitemap);
 
 // If you use the script in prebuild mode use
 //fs.writeFileSync('static/sitemap.xml', sitemap);
