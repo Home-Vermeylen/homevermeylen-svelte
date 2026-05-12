@@ -57,7 +57,7 @@
 	}}
 	open={true}
 >
-	<Dialog.Content>
+	<Dialog.Content class="overflow-y-auto max-h-[90vh]">
 		<Dialog.Header>
 			<Dialog.Title>Profiel bewerken</Dialog.Title>
 		</Dialog.Header>

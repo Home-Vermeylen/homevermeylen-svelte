@@ -8,52 +8,44 @@
 	import { goto, pushState } from '$app/navigation';
 	import { useSidebar } from '$lib/components/ui/sidebar';
 
-	const data = {
-		navMain: [
-			{
-				title: 'Fakkels & Bakken',
-				url: '/beheer',
-				icon: Flame,
-				isActive: true
-			},
-			{
-				title: 'Publieke Gegevens',
-				url: '#',
-				icon: Globe,
-				items: [
-					{
-						title: 'Activiteiten',
-						url: '/beheer/activiteiten'
-					},
-					{
-						title: 'Verslagen',
-						url: '/beheer/verslagen'
-					},
-					{
-						title: 'Augustjes',
-						url: '/beheer/augustjes'
-					}
-				]
-			},
-			{
-				title: 'Vriendschapsnetwerk',
-				url: '/beheer/vriendschapsnetwerk',
-				icon: Heart
-			},
-			{
-				title: 'Verkiezingen',
-				url: '/beheer/verkiezingen',
-				icon: Vote
-			}
-		]
-	};
+	const data = $derived({
+    navMain: [
+        {
+            title: 'Fakkels & Bakken',
+            url: '/beheer',
+            icon: Flame,
+            isActive: true
+        },
+        {
+            title: 'Publieke Gegevens',
+            url: '#',
+            icon: Globe,
+            items: [
+                { title: 'Activiteiten', url: '/beheer/activiteiten' },
+                { title: 'Verslagen', url: '/beheer/verslagen' },
+                { title: 'Augustjes', url: '/beheer/augustjes' }
+            ]
+        },
+        {
+            title: 'Vriendschapsnetwerk',
+            url: '/beheer/vriendschapsnetwerk',
+            icon: Heart
+        },
+        ...(kiescomite ? [{
+            title: 'Verkiezingen',
+            url: '/beheer/verkiezingen',
+            icon: Vote
+        }] : [])
+    ]
+});
 
 	let {
-		ref = $bindable(null),
-		collapsible = 'icon',
-		gebruiker,
-		...restProps
-	}: ComponentProps<typeof Sidebar.Root> = $props();
+    ref = $bindable(null),
+    collapsible = 'icon',
+    gebruiker,
+    kiescomite = false,
+    ...restProps
+}: ComponentProps<typeof Sidebar.Root> = $props();
 
 	const sidebar = useSidebar();
 </script>

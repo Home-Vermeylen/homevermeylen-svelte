@@ -17,14 +17,17 @@
 	let { praesidium_leden, geselecteerde_functies, verkiezing_id }: Props = $props();
 
 	const form = superForm(
-		{ geselecteerde_functies },
-		{
-			invalidateAll: true
-		}
+    { geselecteerde_functies },
+    {
+        invalidateAll: true
+    }
 	);
-
 	const { form: formData, enhance, delayed, isTainted, tainted } = form;
 	let open = $state(false);
+
+	$effect(() => {
+    	$formData.geselecteerde_functies = geselecteerde_functies;
+	});
 </script>
 
 <form method="POST" use:enhance action={`/api/verkiezingen/${verkiezing_id}`}>

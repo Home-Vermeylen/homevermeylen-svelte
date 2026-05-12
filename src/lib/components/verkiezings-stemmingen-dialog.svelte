@@ -9,34 +9,41 @@
 	import { Input } from './ui/input';
 
 	interface Props {
-		data: SuperValidated<Infer<typeof StemmingSchema>>;
-		verkiezing_id: string;
+    	data: SuperValidated<Infer<typeof StemmingSchema>>;
+    	verkiezing_id: string;
+    	stemming?: any;
 	}
-
-	let { data, verkiezing_id }: Props = $props();
+	let { data, verkiezing_id, stemming }: Props = $props();
 
 	const form = superForm(data, {
-		async onUpdated() {
-			if ($page.state.stemming) {
-				history.back();
-			}
-		}
+    	async onUpdated() {
+        	if ($page.state.stemming || $page.state.bewerk_stemming) {
+            	history.back();
+        	}
+    	}
 	});
-
 	const { form: formData, enhance, delayed, isTainted, tainted } = form;
+
+	$effect(() => {
+    	if (stemming) {
+        	$formData.id = stemming.id;
+        	$formData.naam = stemming.naam;
+        	$formData.opties = stemming.opties?.map((o: any) => o.naam).join(', ');
+    	}
+	});
 </script>
 
 <Dialog.Root
 	onOpenChange={(open) => {
-		if (open == false) {
-			history.back();
-		}
+    	if (open == false) {
+        	history.back();
+    	}
 	}}
-	open={true}
+	open={$page.state.stemming != null || $page.state.bewerk_stemming != null}
 >
 	<Dialog.Content>
 		<Dialog.Header>
-			<Dialog.Title>Stemming toevoegen</Dialog.Title>
+			<Dialog.Title>{stemming ? 'Stemming bewerken' : 'Stemming toevoegen'}</Dialog.Title>
 		</Dialog.Header>
 		<form
 			method="POST"

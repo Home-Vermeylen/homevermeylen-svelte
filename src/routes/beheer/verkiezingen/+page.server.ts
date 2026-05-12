@@ -2,8 +2,27 @@ import { VerkiezingenSchema, VerwijderVerkiezingenSchema } from '$lib/schemas.js
 import { fail } from '@sveltejs/kit';
 import { zod } from 'sveltekit-superforms/adapters';
 import { actionResult, message, superValidate } from 'sveltekit-superforms/server';
+import { redirect } from '@sveltejs/kit';
 
-export const load = async ({ fetch }) => {
+export const load = async ({ fetch, locals }) => {
+    const user = locals.pb.authStore.model;
+
+    if (!user) {
+        redirect(303, '/login');
+    }
+
+    const recentsteAcademiejaar = await locals.pb
+    .collection('praesidia')
+    .getFirstListItem('', { sort: '-academiejaar' });
+
+    const praesidiumLid = await locals.pb
+    .collection('praesidium_leden')
+    .getFirstListItem(`functie = "${user.id}" && praesidium = "${recentsteAcademiejaar.id}"`);
+
+    if (!praesidiumLid?.kiescomite) {
+        redirect(303, '/');
+    }
+
     return {
         verkiezingen_promise: fetch('/api/verkiezingen').then(async (data) => data.json()),
         form: await superValidate(zod(VerkiezingenSchema)),

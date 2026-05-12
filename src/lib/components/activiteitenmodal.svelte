@@ -55,7 +55,7 @@
 	}}
 	open={true}
 >
-	<Dialog.Content>
+	<Dialog.Content class="overflow-y-auto max-h-[90vh]">
 		<Dialog.Header>
 			<Dialog.Title>
 				{#if $page.state.activiteit != null}

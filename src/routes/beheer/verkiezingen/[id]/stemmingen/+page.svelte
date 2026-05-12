@@ -83,7 +83,10 @@
 	{/if}
 
 	{#if $page.state.stemming}
-		<VerkiezingsStemmingenDialog data={data.form} verkiezing_id={verkiezing.id} />
+    <VerkiezingsStemmingenDialog data={data.form} verkiezing_id={verkiezing.id} />
+	{/if}
+	{#if $page.state.bewerk_stemming}
+    	<VerkiezingsStemmingenDialog data={data.form} verkiezing_id={verkiezing.id} stemming={$page.state.bewerk_stemming} />
 	{/if}<div class="flex flex-row gap-2 w-full"><Button variant="outline" href={`/beheer/verkiezingen/${verkiezing.id}`}><ChevronLeft /></Button><Button onclick={() => pushState('', { stemming: true })}
 		><UserPlus class="h-4 w-4" /> Nieuwe stemming</Button
 	></div>

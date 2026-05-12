@@ -15,9 +15,12 @@
 		</Button>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content>
-		<DropdownMenu.Label>Acties</DropdownMenu.Label>
-		<DropdownMenu.Item onclick={() => pushState('', { verwijder_stemming: stemming.id })}
-			>Verwijder</DropdownMenu.Item
-		>
-	</DropdownMenu.Content>
+    <DropdownMenu.Label>Acties</DropdownMenu.Label>
+    <DropdownMenu.Item onclick={() => pushState('', { verwijder_stemming: stemming.id })}
+        >Verwijder</DropdownMenu.Item
+    >
+    <DropdownMenu.Item onclick={() => pushState('', { bewerk_stemming: stemming })}
+        >Bewerk</DropdownMenu.Item
+    >
+</DropdownMenu.Content>
 </DropdownMenu.Root>

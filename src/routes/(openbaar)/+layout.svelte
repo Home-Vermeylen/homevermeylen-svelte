@@ -74,7 +74,8 @@
 		Music2,
 		Newspaper,
 		UserCog,
-		Users
+		Users,
+		Vote
 	} from 'lucide-svelte';
 	import '../../app.postcss';
 	import type { PageData } from './$types';
@@ -215,6 +216,11 @@
 											><UserCog class="h-4 w-4" /> Profiel</DropdownMenu.Item
 										>
 										<DropdownMenu.Item
+   											class="flex gap-1 items-center"
+   											onSelect={() => goto('/stem')}
+  											><Vote class="h-4 w-4" /> Stemmen</DropdownMenu.Item
+										>
+										<DropdownMenu.Item
 											class="flex gap-1 items-center"
 											onSelect={() => {
 												goto('/logout');
@@ -255,6 +261,11 @@
 								class="flex gap-1 items-center"
 								onSelect={() => pushState('', { profiel: true })}
 								><UserCog class="h-4 w-4" /> Profiel</DropdownMenu.Item
+							>
+							<DropdownMenu.Item
+							    class="flex gap-1 items-center"
+							    onSelect={() => goto('/stem')}
+							    ><Vote class="h-4 w-4" /> Stemmen</DropdownMenu.Item
 							>
 							<DropdownMenu.Item
 								class="flex gap-1 items-center"

@@ -48,7 +48,7 @@
 {/if}
 
 <Sidebar.Provider>
-	<BeheerSidebar gebruiker={ingelogd_lid} />
+	<BeheerSidebar gebruiker={ingelogd_lid} kiescomite={ingelogd_lid?.kiescomite ?? false} />
 	<Sidebar.Inset>
 		<header
 			class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
