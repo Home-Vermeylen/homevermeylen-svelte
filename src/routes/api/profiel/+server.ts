@@ -5,8 +5,9 @@ import { zod } from "sveltekit-superforms/adapters";
 export async function POST(event) {
 	const origineleData = await event.request.clone().formData();
 
-	if ((origineleData.get('avatar') as File).size == 0) {
-		origineleData.delete('avatar');
+	const avatar = origineleData.get('avatar') as File;
+	if (!avatar || avatar.size == 0 || avatar.name == '') {
+    	origineleData.delete('avatar');
 	}
 
 	const form = await superValidate(event, zod(ProfielSchema));

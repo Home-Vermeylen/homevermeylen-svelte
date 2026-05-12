@@ -4,7 +4,7 @@
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
 	import { ProfielSchema } from '$lib/schemas';
-	import { type Infer, superForm, type SuperValidated } from 'sveltekit-superforms';
+	import { fileProxy, type Infer, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import type { PraesidiumLedenRecord } from '../../../types/pocketbase-types';
 	import * as Dialog from '$lib/components/ui/dialog';
@@ -44,6 +44,7 @@
 		woonplaats: ingelogd_lid?.woonplaats
 	});
 
+	let avatar = fileProxy(form, 'avatar');
 	let avatar_url: string | null = $state(null);
 
 	const { form: formData, enhance, delayed, isTainted, tainted } = form;
@@ -82,15 +83,18 @@
 			<Form.Field {form} name="avatar">
 				<Form.Control>
 					{#snippet children({ props })}
-						<Input
-							{...props}
-							type="file"
-							onInput={(e) => {
-								$formData.avatar = e.currentTarget.files?.item(0) ?? undefined;
-								avatar_url =
-									$formData.avatar != undefined ? URL.createObjectURL($formData.avatar) : null;
-							}}
-							accept="image/png, image/jpeg, image/jpg"
+						<input
+    						{...props}
+    						type="file"
+    						accept="image/png, image/jpeg, image/jpg"
+    						bind:files={$avatar}
+    						oninput={(e) => {
+        						avatar_url =
+            						e.currentTarget.files?.item(0) != undefined
+                						? URL.createObjectURL(e.currentTarget.files?.item(0))
+                						: null;
+    						}}
+    						class="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 						/>
 					{/snippet}
 				</Form.Control>
