@@ -1,20 +1,20 @@
 <script lang="ts">
 	let vertrouwensleden = [
 		{
-			id: 'jutta',
-			voornaam: 'Jutta',
-			familienaam: 'Van Daele',
-			avatar: '/jutta.jpg',
-			email: 'jutta.vandaele@ugent.be',
-			kamernummer: 'nr. 63 - Home Heymans'
+			id: 'nefeli',
+			voornaam: 'Nefeli',
+			familienaam: 'Syngelakis',
+			avatar: '/nefeli.jpeg',
+			email: 'nefeli.syngelakis@ugent.be',
+			kamernummer: '7, gang 4 - Home Heymans'
 		},
 		{
-			id: 'flip',
-			voornaam: 'Flip',
-			familienaam: 'Pronk',
-			avatar: '/flip.jpg',
-			email: 'flip.pronk@ugent.be',
-			kamernummer: '19, gang 8 - Home Vermeylen'
+			id: 'kyano',
+			voornaam: 'Kyano',
+			familienaam: 'Monteny',
+			avatar: '/kyano.jpg',
+			email: 'kyano.monteny@ugent.be',
+			kamernummer: '43, gang 4 - Home Vermeylen'
 		}
 	];
 </script>
@@ -31,8 +31,8 @@
 			Vertrouwenscontacten
 		</h1>
 		<p class="leading-7 [&:not(:first-child)]:mt-6">
-			De vertrouwenscontacten voor dit academiejaar zijn Jutta Van Daele 
-			en Flip Pronk.
+			De vertrouwenscontacten voor dit academiejaar zijn Nefeli Syngelakis 
+			en Kyano Monteny.
 		</p>
 	</div>
 
