@@ -1,6 +1,5 @@
-import { redirect } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
 
-export function load() {
-	redirect(307, '/beheer/fakkels_bakken');
-}
-
+export const load: PageServerLoad = async () => {
+	return {};
+};

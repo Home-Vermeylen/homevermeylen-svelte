@@ -1,32 +1,52 @@
 import { AugustjesSchema, VerwijderAugustjeSchema } from '$lib/schemas';
 import { message, superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
+import type { Actions, PageServerLoad } from './$types';
 
-export async function load({ fetch }) {
+export const load: PageServerLoad = async ({ fetch }) => {
 	return {
-		augustjes_promise: fetch('/api/augustjes').then(async (data) => {
-			return await data.json();
+		breadcrumb: {
+			label: 'Augustjes',
+			href: '/beheer/augustjes'
+		},
+		augustjes_promise: fetch('/api/augustjes').then(async (response) => {
+			return await response.json();
 		}),
-		augustjes_form: await superValidate(zod(AugustjesSchema)),
-		verwijder_augustje_form: await superValidate(zod(VerwijderAugustjeSchema))
+		augustjes_form: await superValidate(zod4(AugustjesSchema)),
+		verwijder_augustje_form: await superValidate(zod4(VerwijderAugustjeSchema))
 	};
-}
+};
 
-export const actions = {
-	verwijder_augustje: async ({ fetch, request, locals }) => {
+export const actions: Actions = {
+	verwijder_augustje: async ({ request, locals }) => {
 		const origineleData = await request.clone().formData();
-		const form = await superValidate(request, zod(VerwijderAugustjeSchema));
-
+		const form = await superValidate(request, zod4(VerwijderAugustjeSchema));
 
 		if (!form.valid) {
-			return message(form, 'ID niet correct');
+			return message(form, {
+				text: 'ID niet correct',
+				type: 'error'
+			});
 		}
 
 		try {
-			await locals.pb.collection('augustjes').delete(origineleData.get('id'));
+			await locals.pb
+				.collection('augustjes')
+				.delete(String(origineleData.get('id')));
 		} catch {
-			return message(form, 'Fout bij verwijderen augustje', { status: 500 })
+			return message(
+				form,
+				{
+					text: 'Fout bij verwijderen Augustje',
+					type: 'error'
+				},
+				{ status: 500 }
+			);
 		}
-		return message(form, 'ID correct', { status: 200 })
+
+		return message(form, {
+			text: 'ID correct',
+			type: 'success'
+		});
 	}
-}
+};

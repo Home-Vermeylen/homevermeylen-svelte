@@ -7,7 +7,7 @@ export async function load({ locals, url }) {
 	const academiejaren = await locals.pb
 		.collection('praesidia')
 		.getFullList({ fields: 'academiejaar', sort: '-academiejaar' })
-		.then(r => r.map(a => a.academiejaar));
+		.then((r) => r.map((a) => a.academiejaar));
 
 	// Leden ophalen en sorteren
 	const praesidium_leden = await locals.pb
@@ -16,15 +16,23 @@ export async function load({ locals, url }) {
 			filter: `praesidium.academiejaar = '${academiejaar_query ?? locals.praesidium?.academiejaar}'`,
 			expand: 'functie'
 		})
-		.then(r =>
+		.then((r) =>
 			r
-				.sort((a, b) =>
-					sorteer_door_functie(
-						a.expand?.functie?.username.replace(/[0-9]/g, ''),
-						b.expand?.functie?.username.replace(/[0-9]/g, '')
-					)
-				)
-				.map(a => ({
+				.sort((a, b) => {
+					const functieA = (
+						a.expand as { functie?: { username?: string } } | undefined
+					)?.functie?.username ?? '';
+
+					const functieB = (
+						b.expand as { functie?: { username?: string } } | undefined
+					)?.functie?.username ?? '';
+
+					return sorteer_door_functie(
+						functieA.replace(/[0-9]/g, ''),
+						functieB.replace(/[0-9]/g, '')
+					);
+				})
+				.map((a) => ({
 					...a,
 					avatar: locals.pb.files.getUrl(a, a.avatar)
 				}))

@@ -2,50 +2,67 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Avatar from '$lib/components/ui/avatar';
-	import { ChevronsUpDown, Flame, Globe, Heart, LogOut, UserCog, Vote } from 'lucide-svelte';
+	import { Beer, ChevronsUpDown, CupSoda, Flame, Globe, Heart, LogOut, UserCog, Vote } from 'lucide-svelte';
 	import type { ComponentProps } from 'svelte';
 	import BeheerNavMain from './beheer_nav_main.svelte';
 	import { goto, pushState } from '$app/navigation';
 	import { useSidebar } from '$lib/components/ui/sidebar';
 
-	const data = $derived({
-    navMain: [
-        {
-            title: 'Fakkels & Bakken',
-            url: '/beheer',
-            icon: Flame,
-            isActive: true
-        },
-        {
-            title: 'Publieke Gegevens',
-            url: '#',
-            icon: Globe,
-            items: [
-                { title: 'Activiteiten', url: '/beheer/activiteiten' },
-                { title: 'Verslagen', url: '/beheer/verslagen' },
-                { title: 'Augustjes', url: '/beheer/augustjes' }
-            ]
-        },
-        {
-            title: 'Vriendschapsnetwerk',
-            url: '/beheer/vriendschapsnetwerk',
-            icon: Heart
-        },
-        ...(kiescomite ? [{
-            title: 'Verkiezingen',
-            url: '/beheer/verkiezingen',
-            icon: Vote
-        }] : [])
-    ]
-});
-
 	let {
-    ref = $bindable(null),
-    collapsible = 'icon',
-    gebruiker,
-    kiescomite = false,
-    ...restProps
-}: ComponentProps<typeof Sidebar.Root> = $props();
+	ref = $bindable(null),
+	collapsible = 'icon',
+	gebruiker,
+	kiescomite = false,
+	...restProps
+}: ComponentProps<typeof Sidebar.Root> & {
+	gebruiker: any;
+	kiescomite?: boolean;
+} = $props();
+
+	const data = $derived({
+	navMain: [
+		{
+			title: 'Baravonden',
+			url: '/beheer/baravonden',
+			icon: Beer
+		},
+		{
+			title: 'Drankjes',
+			url: '/beheer/drankjes',
+			icon: CupSoda
+		},
+		{
+			title: 'Fakkels & Bakken',
+			url: '/beheer',
+			icon: Flame,
+			isActive: true
+		},
+		{
+			title: 'Publieke Gegevens',
+			url: '#',
+			icon: Globe,
+			items: [
+				{ title: 'Activiteiten', url: '/beheer/activiteiten' },
+				{ title: 'Verslagen', url: '/beheer/verslagen' },
+				{ title: 'Augustjes', url: '/beheer/augustjes' }
+			]
+		},
+		{
+			title: 'Vriendschapsnetwerk',
+			url: '/beheer/vriendschapsnetwerk',
+			icon: Heart
+		},
+		...(kiescomite
+			? [
+					{
+						title: 'Verkiezingen',
+						url: '/beheer/verkiezingen',
+						icon: Vote
+					}
+				]
+			: [])
+	]
+});
 
 	const sidebar = useSidebar();
 </script>

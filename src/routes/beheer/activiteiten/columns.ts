@@ -6,6 +6,8 @@ import Activiteitstypebadge from '$lib/components/activiteitstypebadge.svelte';
 import DataTableActions from './data-table-actions.svelte';
 import DataTableDatumButton from './data-table-datum-button.svelte';
 
+type Activiteitstype = 'SPORT' | 'CANTUS' | 'BAR' | 'FEEST' | 'CULTUUR' | 'ANDERE';
+
 export const columns: ColumnDef<ActiviteitenRecord>[] = [
 	{
 		accessorKey: 'banner',
@@ -19,7 +21,7 @@ export const columns: ColumnDef<ActiviteitenRecord>[] = [
 				};
 			});
 
-			return renderSnippet(bannerCellSnippet, row.getValue('banner'));
+			return renderSnippet(bannerCellSnippet, row.getValue('banner') as string);
 		}
 	},
 	{
@@ -33,7 +35,7 @@ export const columns: ColumnDef<ActiviteitenRecord>[] = [
 				onclick: () => column.toggleSorting(column.getIsSorted() === 'asc')
 			}),
 		cell: ({ row }) => {
-			return new Date(row.getValue('datum')).toLocaleDateString('nl-BE', {
+			return new Date(row.getValue('datum') as string).toLocaleDateString('nl-BE', {
 				day: 'numeric',
 				month: 'short',
 				year: 'numeric'
@@ -45,7 +47,7 @@ export const columns: ColumnDef<ActiviteitenRecord>[] = [
 		header: 'Activiteitstype',
 		cell: ({ row }) => {
 			return renderComponent(Activiteitstypebadge, {
-				activiteitstype: row.getValue('activiteitstype')
+				activiteitstype: row.getValue('activiteitstype') as Activiteitstype
 			});
 		}
 	},
@@ -53,7 +55,7 @@ export const columns: ColumnDef<ActiviteitenRecord>[] = [
 		accessorKey: 'omschrijving',
 		header: 'Omschrijving',
 		cell: ({ row }) => {
-			const value = row.getValue('omschrijving');
+			const value = row.getValue('omschrijving') as string;
 
 			return value.length > 25 ? value.slice(0, 24) + '...' : value;
 		}
@@ -65,7 +67,7 @@ export const columns: ColumnDef<ActiviteitenRecord>[] = [
 	{
 		id: 'acties',
 		header: 'Acties',
-		cell: ({ row, table }) => {
+		cell: ({ row }) => {
 			return renderComponent(DataTableActions, { activiteit: row.original });
 		}
 	}

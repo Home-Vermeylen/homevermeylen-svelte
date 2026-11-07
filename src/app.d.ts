@@ -23,14 +23,24 @@ declare global {
 			// interface Platform {}
 		}
 		interface PageState {
-			activiteit: ActiviteitenRecord;
-			verslag: VerslagenRecord;
-			new_modal: boolean;
-			verwijder_ids: string[];
-			profiel: boolean;
-			netwerk_detail_modal: boolean;
-			fakkels_bakken: any;
-		}
+	activiteit?: ActiviteitenRecord;
+	verslag?: VerslagenRecord;
+	augustje?: any;
+	new_modal?: boolean;
+	verwijder_ids?: string[];
+	profiel?: boolean;
+	netwerk_detail_modal?: boolean;
+	fakkels_bakken?: any;
+	baravond_modal?: boolean;
+	verkiezing?: any;
+	verwijder_activiteit?: any;
+	verwijder_augustje?: any;
+	verwijder_stemming?: any;
+	bewerk_stemming?: any;
+	verwijder_id?: string;
+	stemming?: any;
+	verwijder_verslag?: any;
+}
 	}
 }
 

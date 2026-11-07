@@ -1,10 +1,19 @@
-import { FakkelsBakkenSchema } from '$lib/schemas.js';
-import { zod } from 'sveltekit-superforms/adapters';
-import { superValidate } from 'sveltekit-superforms/client';
+import { FakkelsBakkenSchema } from '$lib/schemas';
+import { superValidate } from 'sveltekit-superforms';
+import { zod4 } from 'sveltekit-superforms/adapters';
+import type { PageServerLoad } from './$types';
 
-export async function load({ fetch }) {
-    return {
-        fakkels_bakken: fetch('/api/fakkels_bakken').then(r => r.json()),
-        fakkels_bakken_form: await superValidate(zod(FakkelsBakkenSchema))
-    }
-}
+export const load: PageServerLoad = async ({ fetch }) => {
+	return {
+		breadcrumb: {
+			label: 'Fakkels & Bakken',
+			href: '/beheer/fakkels_bakken'
+		},
+		fakkels_bakken_form: await superValidate(zod4(FakkelsBakkenSchema)),
+		fakkels_bakken: fetch('/api/fakkels_bakken').then(
+			async (response) => {
+				return await response.json();
+			}
+		)
+	};
+};

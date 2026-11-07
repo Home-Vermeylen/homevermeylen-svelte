@@ -13,6 +13,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import { Separator } from '$lib/components/ui/separator';
+	import { ArrowLeft, ArrowRight } from 'lucide-svelte';
 
 	interface Props {
 		data: PageData;
@@ -21,21 +22,36 @@
 
 	let { data, children }: Props = $props();
 
-	let huidige_pagina = $page.url.toString().includes('fakkels_bakken')
-		? 'Fakkels & Bakken'
-		: $page.url.toString().includes('vriendschapsnetwerk')
-			? 'Vriendschapsnetwerk'
-			: $page.url.toString().includes('verkiezingen')
-				? 'Verkiezingen'
-				: $page.url.toString().includes('activiteiten')
-					? 'Activiteiten'
-					: $page.url.toString().includes('verslagen')
-						? 'Verslagen'
-						: $page.url.toString().includes('augustjes')
-							? 'Augustjes'
-							: '';
+	let huidige_pagina = $derived.by(() => {
+	const breadcrumb = ($page.data as PageData & {
+		breadcrumb?: {
+			label: string;
+			href?: string;
+		};
+	}).breadcrumb;
 
-	let ingelogd_lid = $derived(data.praesidium_leden?.find((v) => v.functie == data.functie_id));
+	if (breadcrumb) {
+		return breadcrumb.label;
+	}
+
+	return '';
+});
+
+	let baravond = $derived(
+	($page.data as PageData & {
+		baravond?: { id: string; naam: string };
+	}).baravond
+);
+
+	type PraesidiumLidMetKiescomite = NonNullable<PageData['praesidium_leden']>[number] & {
+		kiescomite?: boolean;
+	};
+
+	let ingelogd_lid = $derived(
+		data.praesidium_leden?.find(
+			(v) => v.functie == data.functie_id
+		) as PraesidiumLidMetKiescomite | undefined
+	);
 </script>
 
 <svelte:head>
@@ -54,21 +70,106 @@
 			class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
 		>
 			<div class="flex items-center gap-2 px-4">
-				<Sidebar.Trigger class="-ml-1" />
-				<Separator orientation="vertical" class="mr-2 h-4" />
+	<Sidebar.Trigger class="-ml-1" />
+
+	<Separator orientation="vertical" class="mr-2 h-4" />
+
+	<Button
+		variant="ghost"
+		size="icon"
+		class="h-8 w-8"
+		onclick={() => window.history.back()}
+		aria-label="Ga terug"
+		title="Ga terug"
+	>
+		<ArrowLeft class="h-4 w-4" />
+	</Button>
+
+	<Button
+		variant="ghost"
+		size="icon"
+		class="h-8 w-8"
+		onclick={() => window.history.forward()}
+		aria-label="Ga vooruit"
+		title="Ga vooruit"
+	>
+		<ArrowRight class="h-4 w-4" />
+	</Button>
+
+	<Separator orientation="vertical" class="mr-2 h-4" />
+
 				<Breadcrumb.Root>
-					<Breadcrumb.List>
-						<Breadcrumb.Item class="hidden md:block">
-							<Breadcrumb.Link href="#">Beheerspagina</Breadcrumb.Link>
-						</Breadcrumb.Item>
-						<Breadcrumb.Separator class="hidden md:block" />
-						<Breadcrumb.Item>
-							<Breadcrumb.Page>{huidige_pagina}</Breadcrumb.Page>
-						</Breadcrumb.Item>
-					</Breadcrumb.List>
-				</Breadcrumb.Root>
+	<Breadcrumb.List>
+		<!-- Beheerspagina -->
+		<Breadcrumb.Item>
+			{#if huidige_pagina || baravond}
+				<Breadcrumb.Link href="/beheer">Beheerspagina</Breadcrumb.Link>
+			{:else}
+				<Breadcrumb.Page>Beheerspagina</Breadcrumb.Page>
+			{/if}
+		</Breadcrumb.Item>
+
+				<!-- Hoofdpagina -->
+{#if baravond || huidige_pagina === 'Druktebarometer'}
+	<Breadcrumb.Separator />
+	<Breadcrumb.Item>
+		<Breadcrumb.Link href="/beheer/baravonden">
+			Baravonden
+		</Breadcrumb.Link>
+	</Breadcrumb.Item>
+	{#if huidige_pagina === 'Druktebarometer'}
+		<Breadcrumb.Separator />
+		<Breadcrumb.Item>
+			<Breadcrumb.Page>Druktebarometer</Breadcrumb.Page>
+		</Breadcrumb.Item>
+	{/if}
+{:else if huidige_pagina}
+	<Breadcrumb.Separator />
+	<Breadcrumb.Item>
+		{#if ($page.data as PageData & {
+			breadcrumb?: {
+				label: string;
+				href?: string;
+			};
+		}).breadcrumb?.href}
+			<Breadcrumb.Link
+				href={($page.data as PageData & {
+					breadcrumb?: {
+						label: string;
+						href?: string;
+					};
+				}).breadcrumb?.href}
+			>
+				{huidige_pagina}
+			</Breadcrumb.Link>
+		{:else}
+			<Breadcrumb.Page>{huidige_pagina}</Breadcrumb.Page>
+		{/if}
+	</Breadcrumb.Item>
+{/if}
+
+		<!-- Specifieke baravond -->
+		{#if baravond}
+			<Breadcrumb.Separator />
+			<Breadcrumb.Item>
+				<Breadcrumb.Link href={`/beheer/baravonden/${baravond.id}`}>
+					{baravond.naam}
+				</Breadcrumb.Link>
+			</Breadcrumb.Item>
+		{/if}
+
+		<!-- Verkoopoverzicht -->
+		{#if $page.url.pathname.endsWith('/overzicht')}
+			<Breadcrumb.Separator />
+			<Breadcrumb.Item>
+				<Breadcrumb.Page>Verkoopoverzicht</Breadcrumb.Page>
+			</Breadcrumb.Item>
+		{/if}
+	</Breadcrumb.List>
+</Breadcrumb.Root>
 			</div>
 		</header>
+
 		<div class="flex flex-1 flex-col gap-4 p-4 pt-0">
 			{@render children?.()}
 		</div>

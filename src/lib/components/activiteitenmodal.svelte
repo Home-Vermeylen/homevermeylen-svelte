@@ -4,7 +4,7 @@
 	import * as Select from '$lib/components/ui/select';
 	import { ActiviteitSchema } from '$lib/schemas';
 	import { fileProxy, superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
+	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { Input } from './ui/input';
 	import { Textarea } from './ui/textarea';
 	import * as Accordion from '$lib/components/ui/accordion';
@@ -21,7 +21,7 @@
 	let { data }: Props = $props();
 
 	const form = superForm(data, {
-		validators: zod(ActiviteitSchema),
+		validators: zod4(ActiviteitSchema),
 		async onUpdated() {
 			if ($page.state.activiteit) {
 				history.back();
@@ -100,11 +100,10 @@
 								type="file"
 								bind:files={$banner}
 								oninput={(e) => {
-									banner_url =
-										e.currentTarget.files?.item(0) != undefined
-											? URL.createObjectURL(e.currentTarget.files?.item(0))
-											: null;
-								}}
+	const file = e.currentTarget.files?.item(0);
+
+	banner_url = file ? URL.createObjectURL(file) : null;
+}}
 							/>
 						{/snippet}
 					</Form.Control>

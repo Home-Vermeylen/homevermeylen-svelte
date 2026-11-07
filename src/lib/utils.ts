@@ -1,31 +1,39 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { readable } from 'svelte/store';
-import type { ZodSchema } from 'zod';
+import { ZodError, type ZodType } from 'zod';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
 export const useMediaQuery = (mediaQueryString: string) => {
-	const matches = readable(null, (set) => {
+	const matches = readable<boolean | null>(null, (set) => {
+		if (typeof window === 'undefined') return;
+
 		const m = window.matchMedia(mediaQueryString);
-		//we set the value of the reader to the matches property
+
+		// Stel de beginwaarde in
 		set(m.matches);
-		//we create the event listener that will set the new value on change
-		const el = (e) => set(e.matches);
-		//we add the new event listener
+
+		// Luister naar wijzigingen
+		const el = (e: MediaQueryListEvent) => set(e.matches);
+
 		m.addEventListener('change', el);
-		//we return the stop function that will clean the event listener
+
+		// Verwijder de eventlistener bij het opruimen
 		return () => {
 			m.removeEventListener('change', el);
 		};
 	});
-	//then we return the readable
+
 	return matches;
 };
 
-export const valideerData = async (formData: FormData, schema: ZodSchema) => {
+export const valideerData = async <T>(
+	formData: FormData,
+	schema: ZodType<T>
+) => {
 	const body = Object.fromEntries(formData);
 
 	try {
@@ -36,11 +44,15 @@ export const valideerData = async (formData: FormData, schema: ZodSchema) => {
 			errors: null
 		};
 	} catch (err: unknown) {
-		const errors = err.flatten();
+		if (err instanceof ZodError) {
+			const errors = err.flatten();
 
-		return {
-			formData: body,
-			errors
-		};
+			return {
+				formData: body,
+				errors
+			};
+		}
+
+		throw err;
 	}
 };

@@ -10,14 +10,14 @@
 	import VerkiezingenModal from '$lib/components/verkiezingen-modal.svelte';
 	import { VerwijderVerkiezingenSchema } from '$lib/schemas.js';
 	import { CirclePlus, LoaderCircle } from 'lucide-svelte';
-	import { zod } from 'sveltekit-superforms/adapters';
+	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { superForm } from 'sveltekit-superforms/client';
 	import { columns } from './columns.js';
 
 	let { data } = $props();
 
 	const form = superForm(data.verwijder_form, {
-		validators: zod(VerwijderVerkiezingenSchema),
+		validators: zod4(VerwijderVerkiezingenSchema),
 		async onUpdated() {
 			if ($page.state.verwijder_id) {
 				history.back();

@@ -1,34 +1,45 @@
 import { ActiviteitSchema, VerwijderActiviteitSchema } from '$lib/schemas';
 import { message, superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
+import type { PageServerLoad, Actions } from './$types';
 
-export async function load({ fetch }) {
+export const load: PageServerLoad = async ({ fetch }) => {
 	return {
-		activiteiten_promise: fetch('/api/activiteiten').then(async (data) => {
-			return await data
+		breadcrumb: {
+			label: 'Activiteiten',
+			href: '/beheer/activiteiten'
+		},
+		activiteiten_promise: fetch('/api/activiteiten').then(async (response) => {
+			return await response
 				.json()
 				.then((a) => [...a.opkomende_activiteiten, ...a.afgelopen_activiteiten]);
 		}),
-		activiteiten_form: await superValidate(zod(ActiviteitSchema)),
-		verwijder_activiteit_form: await superValidate(zod(VerwijderActiviteitSchema))
+		activiteiten_form: await superValidate(zod4(ActiviteitSchema)),
+		verwijder_activiteit_form: await superValidate(zod4(VerwijderActiviteitSchema))
 	};
-}
+};
 
-export const actions = {
-	verwijder_activiteit: async ({ fetch, request, locals }) => {
+export const actions: Actions = {
+	verwijder_activiteit: async ({ request, locals }) => {
 		const origineleData = await request.clone().formData();
-		const form = await superValidate(request, zod(VerwijderActiviteitSchema));
-
+		const form = await superValidate(request, zod4(VerwijderActiviteitSchema));
 
 		if (!form.valid) {
-			return message(form, 'ID niet correct');
+			return message(form, { text: 'ID niet correct', type: 'error' });
 		}
 
 		try {
-			await locals.pb.collection('activiteiten').delete(origineleData.get('id'));
+			await locals.pb.collection('activiteiten').delete(String(origineleData.get('id')));
 		} catch {
-			return message(form, 'Fout bij verwijderen activiteit', { status: 500 })
+			return message(form, {
+				text: 'Fout bij verwijderen activiteit',
+				type: 'error'
+			});
 		}
-		return message(form, 'ID correct', { status: 200 })
+
+		return message(form, {
+			text: 'ID correct',
+			type: 'success'
+		});
 	}
-}
+};

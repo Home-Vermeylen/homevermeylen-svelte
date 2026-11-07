@@ -5,7 +5,7 @@
 	import { VerkiezingenSchema } from '$lib/schemas';
 	import { LoaderCircle } from 'lucide-svelte';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
+	import { zod4 } from 'sveltekit-superforms/adapters';
 	import Button from './ui/button/button.svelte';
 	import { Input } from './ui/input';
 	import { Switch } from './ui/switch';
@@ -16,7 +16,7 @@
 	let { data }: Props = $props();
 
 	const form = superForm(data, {
-		validators: zod(VerkiezingenSchema),
+		validators: zod4(VerkiezingenSchema),
 		async onUpdated() {
 			if ($page.state.verkiezing) {
 				history.back();
@@ -27,13 +27,12 @@
 	const { form: formData, enhance, delayed, isTainted, tainted } = form;
 
 	$effect(() => {
-		if ($page.state.verkiezing) {
-			$formData.naam = $page.state.verkiezing.naam ?? '';
-			$formData.type = $page.state.verkiezing.type as string;
-			$formData.actief = $page.state.verkiezing.actief;
-			$formData.id = $page.state.verkiezing.id;
-		}
-	});
+	if ($page.state.verkiezing) {
+		$formData.naam = $page.state.verkiezing.naam ?? '';
+		$formData.actief = $page.state.verkiezing.actief;
+		$formData.id = $page.state.verkiezing.id;
+	}
+});
 
 </script>
 

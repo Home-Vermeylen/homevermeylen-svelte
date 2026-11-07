@@ -19,28 +19,37 @@
 	import { Input } from './ui/input';
 
 	type DateTableProps<TData, TValue> = {
-		columns: ColumnDef<TData, TValue>[];
-		data: TData[];
-		modelsPerPage: number;
-	};
+	columns: ColumnDef<TData, TValue>[];
+	data: TData[];
+	modelsPerPage: number;
+	initialSorting?: SortingState;
+	onRowClick?: (row: TData) => void;
+	hidePagination?: boolean;
+};
 
-	let { data, columns, modelsPerPage = 10 }: DateTableProps<TData, TValue> = $props();
+	let {
+	data,
+	columns,
+	modelsPerPage = 10,
+	initialSorting = [
+		{ id: 'datum', desc: true },
+		{ id: 'created', desc: true }
+	],
+	onRowClick,
+	hidePagination = false
+}: DateTableProps<TData, TValue> = $props();
+
+	let tabelData = $derived(data);
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: modelsPerPage });
-	let sorting = $state<SortingState>([
-		{
-			id: 'datum',
-			desc: true
-		},
-		{ id: 'created', desc: true }
-	]);
+	let sorting = $state<SortingState>(initialSorting);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let rowSelection = $state<RowSelectionState>({});
 
 	const table = createSvelteTable({
 		get data() {
-			return data;
+			return tabelData;
 		},
 		columns,
 		state: {
@@ -126,7 +135,6 @@
 				{#each table.getAllColumns().filter((col) => col.getCanHide()) as column (column.id)}
 					<DropdownMenu.CheckboxItem
 						class="capitalize"
-						controlledChecked
 						checked={column.getIsVisible()}
 						onCheckedChange={(value) => column.toggleVisibility(!!value)}
 					>
@@ -157,7 +165,11 @@
 			</Table.Header>
 			<Table.Body>
 				{#each table.getRowModel().rows as row (row.id)}
-					<Table.Row data-state={row.getIsSelected() && 'selected'}>
+					<Table.Row
+	data-state={row.getIsSelected() && 'selected'}
+	onclick={() => onRowClick?.(row.original)}
+	class={onRowClick ? 'cursor-pointer' : ''}
+>
 						{#each row.getVisibleCells() as cell (cell.id)}
 							<Table.Cell>
 								{#if cell.column}
@@ -185,23 +197,25 @@
 				</div>
 			</div>
 		{/if}
-		<div class="flex items-center justify-end space-x-2 py-4">
-			<Button
-				variant="outline"
-				size="sm"
-				onclick={() => table.previousPage()}
-				disabled={!table.getCanPreviousPage()}
-			>
-				Vorige
-			</Button>
-			<Button
-				variant="outline"
-				size="sm"
-				onclick={() => table.nextPage()}
-				disabled={!table.getCanNextPage()}
-			>
-				Volgende
-			</Button>
-		</div>
+		{#if !hidePagination}
+	<div class="flex items-center justify-end space-x-2 py-4">
+		<Button
+			variant="outline"
+			size="sm"
+			onclick={() => table.previousPage()}
+			disabled={!table.getCanPreviousPage()}
+		>
+			Vorige
+		</Button>
+		<Button
+			variant="outline"
+			size="sm"
+			onclick={() => table.nextPage()}
+			disabled={!table.getCanNextPage()}
+		>
+			Volgende
+		</Button>
+	</div>
+{/if}
 	</div>
 </div>

@@ -11,7 +11,7 @@
 	import { VerwijderStemmingSchema } from '$lib/schemas';
 	import { ChevronLeft, LoaderCircle, UserPlus } from 'lucide-svelte';
 	import { superForm } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
+	import { zod4 } from 'sveltekit-superforms/adapters';
 	import type { PageData } from './$types';
 	import { columns } from './columns';
 
@@ -22,7 +22,7 @@
 	let { data }: Props = $props();
 
 	const form = superForm(data.verwijder_stemming_form, {
-		validators: zod(VerwijderStemmingSchema),
+		validators: zod4(VerwijderStemmingSchema),
 		async onUpdated() {
 			if ($page.state.verwijder_stemming) {
 				history.back();

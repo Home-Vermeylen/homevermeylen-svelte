@@ -5,8 +5,8 @@
 	import { Input } from '$lib/components/ui/input';
 	import { ProfielSchema } from '$lib/schemas';
 	import { fileProxy, type Infer, superForm, type SuperValidated } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
-	import type { PraesidiumLedenRecord } from '../../../types/pocketbase-types';
+	import { zod4 } from 'sveltekit-superforms/adapters';
+	import type { PraesidiumLedenResponse } from '../../../types/pocketbase-types';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Root } from 'postcss';
 	import { Button } from './ui/button';
@@ -15,34 +15,35 @@
 
 	interface Props {
 		data: SuperValidated<Infer<typeof ProfielSchema>>;
-		ingelogd_lid: PraesidiumLedenRecord | undefined;
+		ingelogd_lid: PraesidiumLedenResponse | undefined;
 	}
 
 	let { data, ingelogd_lid }: Props = $props();
 
 	const form = superForm(data, {
-		validators: zod(ProfielSchema),
+		validators: zod4(ProfielSchema),
 		onUpdated(event) {
 			goto('/', { invalidateAll: true });
 		}
 	});
 
 	$effect(() => {
-		if ($page.state.profiel) {
-			$formData.voornaam = ingelogd_lid.voornaam ?? '';
-			$formData.familienaam = ingelogd_lid?.familienaam ?? '';
-			$formData.studierichting = ingelogd_lid?.studierichting ?? '';
-			$formData.woonplaats = ingelogd_lid?.woonplaats ?? '';
-			$formData.id = ingelogd_lid?.id;
-		}
-	});
+	if ($page.state.profiel && ingelogd_lid) {
+		$formData.voornaam = ingelogd_lid.voornaam ?? '';
+		$formData.familienaam = ingelogd_lid.familienaam ?? '';
+		$formData.studierichting = ingelogd_lid.studierichting ?? '';
+		$formData.woonplaats = ingelogd_lid.woonplaats ?? '';
+	}
+});
+	if (ingelogd_lid) {
 	form.form.set({
-		voornaam: ingelogd_lid?.voornaam,
-		familienaam: ingelogd_lid?.familienaam,
-		id: ingelogd_lid?.id,
-		studierichting: ingelogd_lid?.studierichting,
-		woonplaats: ingelogd_lid?.woonplaats
+		id: ingelogd_lid.id,
+		voornaam: ingelogd_lid.voornaam ?? '',
+		familienaam: ingelogd_lid.familienaam ?? '',
+		studierichting: ingelogd_lid.studierichting ?? '',
+		woonplaats: ingelogd_lid.woonplaats ?? ''
 	});
+}
 
 	let avatar = fileProxy(form, 'avatar');
 	let avatar_url: string | null = $state(null);
@@ -89,11 +90,10 @@
     						accept="image/png, image/jpeg, image/jpg"
     						bind:files={$avatar}
     						oninput={(e) => {
-        						avatar_url =
-            						e.currentTarget.files?.item(0) != undefined
-                						? URL.createObjectURL(e.currentTarget.files?.item(0))
-                						: null;
-    						}}
+	const file = e.currentTarget.files?.item(0);
+
+	avatar_url = file ? URL.createObjectURL(file) : null;
+}}
     						class="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 						/>
 					{/snippet}

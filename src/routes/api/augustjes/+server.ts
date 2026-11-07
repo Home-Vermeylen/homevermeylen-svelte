@@ -1,7 +1,7 @@
 import { AugustjesSchema } from '$lib/schemas';
 import type { PRAESIDIUM } from '$lib/types';
 import { error, fail, json } from '@sveltejs/kit';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { actionResult, superValidate } from 'sveltekit-superforms/server';
 
 /// Mapping met ´augustje´ in de database
@@ -37,7 +37,7 @@ export async function POST(event) {
 		origineleData.delete('pdf');
 	}
 
-	const form = await superValidate(event, zod(AugustjesSchema));
+	const form = await superValidate(event, zod4(AugustjesSchema));
 	form.data.pdf = undefined;
 
 	if (!form.valid) {

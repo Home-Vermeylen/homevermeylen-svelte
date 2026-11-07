@@ -11,13 +11,13 @@
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { VerwijderAugustjeSchema } from '$lib/schemas.js';
-	import { zod } from 'sveltekit-superforms/adapters';
+	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { superForm } from 'sveltekit-superforms/client';
 
 	let { data } = $props();
 
 	const form = superForm(data.verwijder_augustje_form, {
-		validators: zod(VerwijderAugustjeSchema),
+		validators: zod4(VerwijderAugustjeSchema),
 		async onUpdated() {
 			if ($page.state.verwijder_augustje) {
 				history.back();

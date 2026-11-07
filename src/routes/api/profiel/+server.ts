@@ -1,6 +1,6 @@
 import { ProfielSchema } from "$lib/schemas.js";
 import { actionResult, superValidate } from "sveltekit-superforms";
-import { zod } from "sveltekit-superforms/adapters";
+import { zod4 } from "sveltekit-superforms/adapters";
 
 export async function POST(event) {
 	const origineleData = await event.request.clone().formData();
@@ -10,7 +10,7 @@ export async function POST(event) {
     	origineleData.delete('avatar');
 	}
 
-	const form = await superValidate(event, zod(ProfielSchema));
+	const form = await superValidate(event, zod4(ProfielSchema));
 	form.data.avatar = undefined;
 
 	if (origineleData.get('oud_wachtwoord') != '') {
@@ -27,8 +27,8 @@ export async function POST(event) {
 				return actionResult('error', { form }, 500);
 			}
 		} else {
-			return actionResult('failure', { form }, { message: 'Fout bij verwerken wachtwoorden.' });
-		}
+	return actionResult('failure', { form }, 400);
+}
 	}
 
 	if (!form.valid) {

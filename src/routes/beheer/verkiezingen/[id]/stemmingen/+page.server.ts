@@ -1,33 +1,65 @@
-import { StemmingSchema, VerwijderStemmingSchema } from "$lib/schemas"
-import { message, superValidate } from "sveltekit-superforms"
-import { zod } from "sveltekit-superforms/adapters"
+import { StemmingSchema, VerwijderStemmingSchema } from '$lib/schemas';
+import { message, superValidate } from 'sveltekit-superforms';
+import { zod4 } from 'sveltekit-superforms/adapters';
+import type { PageServerLoad, Actions } from './$types';
 
-export const load = async ({ params, fetch }) => {
-    return {
-        verkiezing: fetch(`/api/verkiezingen/${params.id}`).then(r => r.json()),
-        form: await superValidate(zod(StemmingSchema)),
-        verwijder_stemming_form: await superValidate(zod(VerwijderStemmingSchema))
-    }
-}
+type Stemming = {
+	id: string;
+	naam: string;
+	[key: string]: unknown;
+};
 
-export const actions = {
-    verwijder_stemming: async ({ fetch, request, locals, params}) => {
-        const origineleData = await request.clone().formData();
-        const form = await superValidate(request, zod(VerwijderStemmingSchema));
-        const verkiezing = await fetch(`/api/verkiezingen/${params.id}`).then(r => r.json());
+type Verkiezing = {
+	stemmingen: Stemming[];
+};
 
-        if (!form.valid) {
-            return message(form, 'ID niet correct');
-        }
+export const load: PageServerLoad = async ({ params, fetch }) => {
+	return {
+		breadcrumb: {
+			label: 'Verkiezingen',
+			href: '/beheer/verkiezingen'
+		},
+		verkiezing: fetch(`/api/verkiezingen/${params.id}`).then((r) => r.json()),
+		form: await superValidate(zod4(StemmingSchema)),
+		verwijder_stemming_form: await superValidate(zod4(VerwijderStemmingSchema))
+	};
+};
 
-        try {
-            await locals.pb.collection('verkiezingen').update(params.id, {
-                stemmingen: verkiezing.stemmingen.filter((a) => { return a.id != origineleData.get('stemming_id') })
-            });
+export const actions: Actions = {
+	verwijder_stemming: async ({ request, locals, params, fetch }) => {
+		const origineleData = await request.clone().formData();
+		const form = await superValidate(request, zod4(VerwijderStemmingSchema));
+		const verkiezing = (await fetch(`/api/verkiezingen/${params.id}`).then((r) =>
+			r.json()
+		)) as Verkiezing;
 
-        } catch {
-            return message(form, 'Fout bij verwijderen stemming', { status: 500 })
-        }
-        return message(form, 'ID correct', { status: 200 })
-    }
-}
+		if (!form.valid) {
+			return message(form, {
+				text: 'ID niet correct',
+				type: 'error'
+			});
+		}
+
+		try {
+			await locals.pb.collection('verkiezingen').update(params.id, {
+				stemmingen: verkiezing.stemmingen.filter(
+					(stemming) => stemming.id !== origineleData.get('stemming_id')
+				)
+			});
+		} catch {
+			return message(
+				form,
+				{
+					text: 'Fout bij verwijderen stemming',
+					type: 'error'
+				},
+				{ status: 500 }
+			);
+		}
+
+		return message(form, {
+			text: 'ID correct',
+			type: 'success'
+		});
+	}
+};

@@ -1,29 +1,87 @@
-import { actionResult } from "sveltekit-superforms";
+import { json } from '@sveltejs/kit';
+import { actionResult } from 'sveltekit-superforms';
+import type { RequestHandler } from './$types';
 
-export const POST = async (event) => {
-    const origineleData = await event.request.clone().formData();
+	type Verkiezing = {
+	id: string;
+	stemmingen: {
+		id: string;
+		naam: string;
+		status: string;
+		opties: {
+			id: string;
+			naam: string;
+			stemmen: number;
+		}[];
+		gestemd: string[];
+	}[];
+};
 
-    try {
-        const verkiezing = await event.fetch(`/api/verkiezingen/${event.params.id}`).then(async (r) => await r.json());
+async function controleerKiescomite(locals: App.Locals): Promise<boolean> {
+	const user = locals.pb.authStore.model;
 
-        const stemmingen = verkiezing.stemmingen.map((n) => {
-            if (n.id === event.params.stemming_id) {
-                if (origineleData.get('status')) {
-                    return { ...n, status: origineleData.get('status') }
-                } else {
-                    return { ...n, naam: origineleData.get('naam') ?? n.naam };
-                }
+	if (!user) return false;
 
-            } else {
-                return n;
-            }
-        })
+	try {
+		const recentsteAcademiejaar = await locals.pb
+			.collection('praesidia')
+			.getFirstListItem('', { sort: '-academiejaar' });
 
-        await event.locals.pb.collection('verkiezingen').update(event.params.id, { ...verkiezing, stemmingen });
-    } catch (err) {
-        return actionResult('error');
-    }
+		const praesidiumLid = await locals.pb
+			.collection('praesidium_leden')
+			.getFirstListItem(
+				`functie = "${user.id}" && praesidium = "${recentsteAcademiejaar.id}"`
+			);
 
-    return actionResult('success');
+		const lidMetKiescomite = praesidiumLid as typeof praesidiumLid & {
+			kiescomite?: boolean;
+		};
 
+		return lidMetKiescomite.kiescomite === true;
+	} catch {
+		return false;
+	}
 }
+
+export const POST: RequestHandler = async (event) => {
+	if (!(await controleerKiescomite(event.locals))) {
+		return json({ error: 'Geen toegang.' }, { status: 403 });
+	}
+
+	const origineleData = await event.request.clone().formData();
+
+	try {
+		const verkiezing = (await event.locals.pb
+	.collection('verkiezingen')
+	.getOne(event.params.id)) as unknown as Verkiezing;
+
+		const stemmingBestaat = verkiezing.stemmingen.some(
+			(n) => n.id === event.params.stemming_id
+		);
+
+		if (!stemmingBestaat) {
+			return json({ error: 'Stemming niet gevonden.' }, { status: 404 });
+		}
+
+		const stemmingen = verkiezing.stemmingen.map((n) => {
+			if (n.id === event.params.stemming_id) {
+				if (origineleData.get('status')) {
+					return { ...n, status: origineleData.get('status') };
+				}
+
+				return { ...n, naam: origineleData.get('naam') ?? n.naam };
+			}
+
+			return n;
+		});
+
+		await event.locals.pb
+			.collection('verkiezingen')
+			.update(event.params.id, { stemmingen });
+	} catch (err) {
+		console.error('Fout bij aanpassen stemming:', err);
+		return actionResult('error');
+	}
+
+	return actionResult('success');
+};

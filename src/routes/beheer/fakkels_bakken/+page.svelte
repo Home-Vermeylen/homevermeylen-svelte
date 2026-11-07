@@ -6,7 +6,7 @@
 	import { page } from '$app/stores';
 	import { superForm } from 'sveltekit-superforms';
 	import { FakkelsBakkenSchema } from '$lib/schemas';
-	import { zod } from 'sveltekit-superforms/adapters';
+	import { zod4 } from 'sveltekit-superforms/adapters';
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
@@ -19,7 +19,7 @@
 	let { data }: Props = $props();
 
 	const form = superForm(data.fakkels_bakken_form, {
-		validators: zod(FakkelsBakkenSchema),
+		validators: zod4(FakkelsBakkenSchema),
 		async onUpdated() {
 			if ($page.state.fakkels_bakken) {
 				history.back();

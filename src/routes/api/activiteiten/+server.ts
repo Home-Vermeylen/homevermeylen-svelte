@@ -1,7 +1,7 @@
 import { ActiviteitSchema } from '$lib/schemas';
 import { parseDateTime } from '@internationalized/date';
 import { error, fail, json } from '@sveltejs/kit';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { actionResult, superValidate } from 'sveltekit-superforms/server';
 
 export async function GET({ locals, url }) {
@@ -61,9 +61,15 @@ export async function POST(event) {
 		origineleData.delete('banner');
 	}
 
-	origineleData.set('datum', new Date(origineleData.get('datum')).toISOString());
+	const datumWaarde = origineleData.get('datum');
 
-	const form = await superValidate(event, zod(ActiviteitSchema));
+if (typeof datumWaarde !== 'string' || !datumWaarde) {
+	return new Response('Datum is verplicht.', { status: 400 });
+}
+
+origineleData.set('datum', new Date(datumWaarde).toISOString());
+
+	const form = await superValidate(event, zod4(ActiviteitSchema));
 	form.data.banner = undefined;
 
 	if (!form.valid) {

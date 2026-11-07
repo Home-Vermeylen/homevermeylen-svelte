@@ -3,7 +3,7 @@
 	import * as Form from '$lib/components/ui/form';
 	import { AugustjesSchema } from '$lib/schemas';
 	import { fileProxy, superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-	import { zod } from 'sveltekit-superforms/adapters';
+	import { zod4 } from 'sveltekit-superforms/adapters';
 	import { Input } from './ui/input';
 	import { page } from '$app/stores';
 	import { Button } from '$lib/components/ui/button/index.js';
@@ -16,7 +16,7 @@
 	let { data }: Props = $props();
 
 	const form = superForm(data, {
-		validators: zod(AugustjesSchema),
+		validators: zod4(AugustjesSchema),
 		async onUpdated() {
 			if ($page.state.augustje) {
 				history.back();

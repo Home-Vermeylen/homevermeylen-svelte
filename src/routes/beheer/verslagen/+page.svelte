@@ -12,12 +12,12 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { VerwijderVerslagSchema } from '$lib/schemas.js';
 	import { superForm } from 'sveltekit-superforms/client';
-	import { zod } from 'sveltekit-superforms/adapters';
+	import { zod4 } from 'sveltekit-superforms/adapters';
 
 	let { data } = $props();
 
 	const form = superForm(data.verwijder_verslagen_form, {
-		validators: zod(VerwijderVerslagSchema),
+		validators: zod4(VerwijderVerslagSchema),
 		async onUpdated() {
 			if ($page.state.verwijder_verslag) {
 				history.back();

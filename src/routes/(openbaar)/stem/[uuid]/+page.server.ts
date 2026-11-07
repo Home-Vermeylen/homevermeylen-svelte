@@ -1,25 +1,32 @@
 import { StemSchema } from '$lib/schemas';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
+import type { PageServerLoad } from './$types';
 
-export const load = async ({ fetch, params }) => {
-    let verkiezingen = await fetch('/api/verkiezingen').then(
-        a => a.json()
-            .then(
-                b => b.filter(
-                    c => c.toegangscodes.find((d) => d == params.uuid)
-                )
-            )
-    );
+export const load: PageServerLoad = async ({ locals, params }) => {
+	let verkiezingen;
 
-    if (verkiezingen.length == 0) {
-        return error(403, {message: 'Ongeldige toegangscode'})
-    }
+	try {
+		verkiezingen = await locals.pb.collection('verkiezingen').getFullList({
+			filter: `actief = true`
+		});
 
-    return {
-        stemmer_id: params.uuid,
-        verkiezingen,
-        stem_form: await superValidate(zod(StemSchema))
-    }
-}
+		verkiezingen = verkiezingen.filter((verkiezing) =>
+			(verkiezing.toegangscodes ?? []).includes(params.uuid)
+		);
+	} catch (err) {
+		console.error('Fout bij ophalen verkiezingen:', err);
+		return error(500, 'Verkiezingen ophalen mislukt.');
+	}
+
+	if (verkiezingen.length === 0) {
+		return error(403, 'Ongeldige toegangscode.');
+	}
+
+	return {
+		stemmer_id: params.uuid,
+		verkiezingen,
+		stem_form: await superValidate(zod4(StemSchema))
+	};
+};

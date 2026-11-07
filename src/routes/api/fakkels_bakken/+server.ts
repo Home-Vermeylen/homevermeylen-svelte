@@ -1,6 +1,6 @@
 import { FakkelsBakkenSchema } from "$lib/schemas";
 import { json } from "@sveltejs/kit";
-import { zod } from "sveltekit-superforms/adapters";
+import { zod4 } from "sveltekit-superforms/adapters";
 import { actionResult, superValidate } from "sveltekit-superforms/server";
 
 export async function GET({ locals }) {
@@ -17,7 +17,7 @@ export async function GET({ locals }) {
 export async function POST(event) {
 	const origineleData = await event.request.clone().formData();
 
-	const form = await superValidate(event, zod(FakkelsBakkenSchema));
+	const form = await superValidate(event, zod4(FakkelsBakkenSchema));
 
 	if (!form.valid) {
 		return actionResult('failure', { form }, 400);
