@@ -333,20 +333,20 @@
 								placeholder="Aantal"
 							/>
 
-							<div class="flex gap-2">
-								<Button type="submit" class="flex-1">
-									Toevoegen
-								</Button>
+							<div class="flex w-full min-w-0 gap-2">
+	<Button type="submit" class="min-w-0 flex-1 px-2">
+		Toevoegen
+	</Button>
 
-								<Button
-									type="button"
-									variant="outline"
-									class="flex-1"
-									onclick={() => (bulkInvoerVoor = null)}
-								>
-									Annuleren
-								</Button>
-							</div>
+	<Button
+		type="button"
+		variant="outline"
+		class="min-w-0 flex-1 px-2"
+		onclick={() => (bulkInvoerVoor = null)}
+	>
+		Annuleren
+	</Button>
+</div>
 						</form>
 					{/if}
 
