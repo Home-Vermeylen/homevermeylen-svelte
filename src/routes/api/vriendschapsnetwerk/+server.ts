@@ -1,103 +1,140 @@
-import { json } from "@sveltejs/kit";
+import { json } from '@sveltejs/kit';
 
+function kleurVoorClub(club: string) {
+	const naam = club.trim().toLowerCase();
 
-const vis_opties = {
-	nodes: {
-		borderWidth: 0,
-		color: {
-			highlight: {},
-			hover: {}
-		},
-		font: {
-			color: 'white',
-			face: 'Verdana',
-			background: 'black',
-			size: 20
-		},
-		shape: 'dot',
-		size: 30
-	},
-	edges: {
-		selectionWidth: 4,
-		smooth: false,
-		width: 2,
-		arrows: {
-			to: {
-				scaleFactor: 0.75
-			},
-			from: {
-				scaleFactor: 0.75
-			}
-		}
-	},
-	layout: {
-		hierarchical: {
-			enabled: false,
-			levelSeparation: 150,
-			nodeSpacing: 200,
-			treeSpacing: 80,
-			sortMethod: 'directed'
-		}
-	},
-	physics: {
-		enabled: true,
-		hierarchicalRepulsion: {
-			centralGravity: 0.0,
-			springLength: 50,
-			springConstant: 0.0,
-			nodeDistance: 200,
-			damping: 1
-		},
-		minVelocity: 0.75,
-		solver: 'hierarchicalRepulsion'
-	},
-	interaction: {
-		dragView: true,
-		hideEdgesOnDrag: true,
-		hideEdgesOnZoom: true
+	// Vermeylen en Home Vermeylen zijn altijd blauw
+	if (naam === 'vermeylen' || naam === 'home vermeylen') {
+	return 'hsl(221, 83%, 85%)';
+}
+
+	let hash = 0;
+
+	for (let i = 0; i < naam.length; i++) {
+		hash = naam.charCodeAt(i) + ((hash << 5) - hash);
 	}
-};
+
+	const hue = Math.abs(hash) % 360;
+
+	return `hsl(${hue}, 65%, 85%)`;
+}
 
 export async function GET({ locals }) {
-	const netwerk = await locals.pb
-		.collection('vriendschapsnetwerk')
-		.getFirstListItem(`praesidium = "${locals.praesidium?.id}"`);
+	if (!locals.pb.authStore.isValid) {
+		return json({ netwerk: null }, { status: 403 });
+	}
 
-	const { gebruikers, datamap } = netwerk;
+	const praesidiumId = locals.praesidium?.id;
 
-	const data = {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		nodes: gebruikers.map((v) => {
-			return { id: v.id, label: v.naam, group: v.club };
-		}),
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		edges: datamap.map((v, i) => {
-			let color = {};
-			let arrows = '';
+	if (!praesidiumId) {
+		return json({ netwerk: null });
+	}
 
-			if (v.type == 'GEMUILD') {
-				color = { color: '#a3f307', highlight: '#a3f307' };
-			} else if (v.type == 'SEKS') {
-				color = { color: '#05f9e2', highlight: '#05f9e2' };
-				arrows = 'to;from';
-			} else {
-				color = { color: '#ff6f00', highlight: '#ff6f00' };
-			}
+	try {
+		const netwerk = await locals.pb
+			.collection('vriendschapsnetwerk')
+			.getFirstListItem(`praesidium = "${praesidiumId}"`);
+
+		const personen = await locals.pb
+			.collection('vriendschapsnetwerk_personen')
+			.getFullList({
+				filter: `netwerk = "${netwerk.id}"`,
+				sort: 'naam'
+			});
+
+		const connecties = await locals.pb
+			.collection('vriendschapsnetwerk_connecties')
+			.getFullList({
+				filter: `netwerk = "${netwerk.id}"`
+			});
+
+				const nodes = personen.map((persoon) => {
+			const kleur = kleurVoorClub(persoon.club);
+			const kleurRand = kleurVoorClub(persoon.club).replace('85%)', '55%)');
 
 			return {
-				id: i,
-				from: v.id1,
-				to: v.id2,
-				color,
-				arrows,
-				commentaar: v.commentaar,
-				locatie: v.locatie
+				id: persoon.id,
+				label: persoon.naam,
+				title: `${persoon.naam}\n${persoon.club}`,
+				group: persoon.club,
+				color: {
+	background: kleur,
+	border: kleurRand,
+hover: {
+	background: kleur,
+	border: kleurRand
+},
+highlight: {
+	background: kleur,
+	border: kleurRand
+}
+}
 			};
-		})
-	};
+		});
 
-	return json({
-		netwerk_data: data,
-		opties: vis_opties
-	});
+		const legende = [...new Set(personen.map((persoon) => persoon.club))]
+	.sort((a, b) => a.localeCompare(b))
+	.map((club) => ({
+		club,
+		kleur: kleurVoorClub(club)
+	}));
+
+		const edges = connecties.map((connectie) => ({
+			id: connectie.id,
+			from: connectie.persoon1,
+			to: connectie.persoon2,
+			label: connectie.type,
+			title: connectie.extra_info || connectie.type
+		}));
+
+		return json({
+			netwerk,
+			legende,
+			nieuw_academiejaar_nodig: false,
+			netwerk_data: {
+				nodes,
+				edges
+			},
+			opties: {
+				nodes: {
+					shape: 'dot',
+					size: 20,
+					font: {
+						size: 16
+					}
+				},
+				edges: {
+					arrows: {
+						to: {
+							enabled: false
+						}
+					},
+					font: {
+						align: 'middle'
+					}
+				},
+				physics: {
+	enabled: true,
+	repulsion: {
+		nodeDistance: 500,
+		springLength: 500,
+		springConstant: 0.02,
+		damping: 0.09
+	}
+},
+				interaction: {
+					hover: true,
+					zoomView: true,
+					dragView: true
+				}
+			}
+		});
+	} catch (error) {
+		console.error('Fout bij laden vriendschapsnetwerk:', error);
+
+		return json({
+			netwerk: null,
+			nieuw_academiejaar_nodig: true
+		});
+	}
 }

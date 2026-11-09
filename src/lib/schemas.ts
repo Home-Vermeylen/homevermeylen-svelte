@@ -126,11 +126,17 @@ export const FakkelsBakkenSchema = z.object({
 });
 
 export const NieuweConnectieSchema = z.object({
-	id1: z.string(),
-	id2: z.string(),
-	type: z.enum(['GEMUILD', 'SEKS', 'RELATIE']),
-	locatie: z.string().optional(),
-	commentaar: z.string().optional()
+	persoon1_naam: z.string().trim().min(1, 'Naam is verplicht.'),
+	persoon1_club: z.string().trim().min(1, 'Club is verplicht.'),
+	persoon2_naam: z.string().trim().min(1, 'Naam is verplicht.'),
+	persoon2_club: z.string().trim().min(1, 'Club is verplicht.'),
+	type: z
+	.union([z.literal(''), z.enum(['GEMUILD', 'SEKS', 'RELATIE'])])
+	.default('')
+	.refine((value) => value !== '', {
+		message: 'Selecteer een type connectie.'
+	}),
+	extra_info: z.string().optional(),
 });
 
 export const NieuwePersoonSchema = z.object({

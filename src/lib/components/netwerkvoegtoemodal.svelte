@@ -1,297 +1,426 @@
 <script lang="ts">
-	import * as Command from '$lib/components/ui/command';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Form from '$lib/components/ui/form';
-	import * as Popover from '$lib/components/ui/popover';
-	import * as Select from '$lib/components/ui/select';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import { NieuweConnectieSchema, NieuwePersoonSchema } from '$lib/schemas';
-	import { cn } from '$lib/utils.js';
-	import { Check, ChevronsUpDown, LoaderCircle } from 'lucide-svelte';
-	import { tick } from 'svelte';
-	import { type Infer, superForm, type SuperValidated } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { Button, buttonVariants } from './ui/button';
-	import { Input } from './ui/input';
+	import { Input } from '$lib/components/ui/input';
+	import { Textarea } from '$lib/components/ui/textarea';
+	import { Button } from '$lib/components/ui/button';
+	import { NieuweConnectieSchema } from '$lib/schemas';
+	import { superForm } from 'sveltekit-superforms';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
+	import { untrack } from 'svelte';
 
-	interface Props {
-		nieuwe_connectie_data: SuperValidated<Infer<typeof NieuweConnectieSchema>>;
-		nieuwe_persoon_data: SuperValidated<Infer<typeof NieuwePersoonSchema>>;
-		personen: any;
+	let {
+		data,
+		onclose
+	}: {
+		data: any;
+		onclose: () => void;
+	} = $props();
+
+	const form = superForm(untrack(() => data.nieuwe_connectie_form), {
+		validators: zod4Client(NieuweConnectieSchema)
+	});
+
+	const { form: formData, enhance: superformEnhance, message } = form;
+
+	let foutmelding = $state('');
+
+	type PersoonControle = {
+		gevonden: boolean;
+		persoon: {
+			id: string;
+			naam: string;
+			club: string;
+		} | null;
+		suggesties: {
+			id: string;
+			naam: string;
+			club: string;
+		}[];
+	};
+
+	let persoon1_controle = $state<PersoonControle | null>(null);
+	let persoon1_laden = $state(false);
+	let persoon1_suggesties_genegeerd = $state(false);
+
+	let persoon2_controle = $state<PersoonControle | null>(null);
+	let persoon2_laden = $state(false);
+	let persoon2_suggesties_genegeerd = $state(false);
+
+	let zoekTimer1: ReturnType<typeof setTimeout>;
+	let zoekTimer2: ReturnType<typeof setTimeout>;
+
+	function gebruikPersoon1(persoon: PersoonControle['suggesties'][number]) {
+		$formData.persoon1_naam = persoon.naam;
+		$formData.persoon1_club = persoon.club;
+
+		persoon1_suggesties_genegeerd = false;
+
+		persoon1_controle = {
+			gevonden: true,
+			persoon,
+			suggesties: []
+		};
 	}
 
-	let { nieuwe_connectie_data, nieuwe_persoon_data, personen }: Props = $props();
+	function maakNieuwePersoon1() {
+		persoon1_suggesties_genegeerd = true;
+	}
 
-	const nieuwe_connectie_form = superForm(nieuwe_connectie_data, {
-		validators: zodClient(NieuweConnectieSchema),
-		onUpdated: async () => {
-			history.back();
-		},
-		invalidateAll: true
-	});
+	function gebruikPersoon2(persoon: PersoonControle['suggesties'][number]) {
+		$formData.persoon2_naam = persoon.naam;
+		$formData.persoon2_club = persoon.club;
 
-	const nieuwe_persoon_form = superForm(nieuwe_persoon_data, {
-		validators: zodClient(NieuwePersoonSchema),
-		onUpdated: () => {
-			history.back();
-		},
-		invalidateAll: true
-	});
+		persoon2_suggesties_genegeerd = false;
 
-	const {
-		form: nieuwe_connectie_formData,
-		enhance: nieuwe_connectie_enhance,
-		delayed: nieuwe_connectie_delayed,
-		isTainted: nieuwe_connectie_isTainted,
-		tainted: nieuwe_connectie_tainted
-	} = nieuwe_connectie_form;
+		persoon2_controle = {
+			gevonden: true,
+			persoon,
+			suggesties: []
+		};
+	}
 
-	const {
-		form: nieuwe_persoon_formData,
-		enhance: nieuwe_persoon_enhance,
-		delayed: nieuwe_persoon_delayed,
-		isTainted: nieuwe_persoon_isTainted,
-		tainted: nieuwe_persoon_tainted
-	} = nieuwe_persoon_form;
+	function maakNieuwePersoon2() {
+		persoon2_suggesties_genegeerd = true;
+	}
 
-	let id1_open = $state(false);
-	let id2_open = $state(false);
+	async function controleerPersoon1(naam: string, club: string) {
+		clearTimeout(zoekTimer1);
+		persoon1_suggesties_genegeerd = false;
+		persoon1_controle = null;
 
-	let id1_selectedValue = $derived(
-		personen.find((f) => f.id === $nieuwe_connectie_formData.id1)?.label ??
-			'Selecteer een persoon...'
-	);
+		if (!naam.trim() || !club.trim()) return;
 
-	let id2_selectedValue = $derived(
-		personen.find((f) => f.id === $nieuwe_connectie_formData.id2)?.label ??
-			'Selecteer een persoon...'
-	);
+		zoekTimer1 = setTimeout(async () => {
+			persoon1_laden = true;
 
-	let geselecteerd_connectietype = $derived(
-		$nieuwe_connectie_formData.type
-			? {
-					label: $nieuwe_connectie_formData.type,
-					value: $nieuwe_connectie_formData.type
+			try {
+				const netwerkId = data.netwerk.netwerk.id;
+
+				const params = new URLSearchParams({
+					netwerk: netwerkId,
+					naam,
+					club
+				});
+
+				const response = await fetch(
+					`/api/vriendschapsnetwerk/persoon?${params}`
+				);
+
+				if (response.ok) {
+					persoon1_controle = await response.json();
 				}
-			: undefined
-	);
-	let pagina: 'PERSOON' | 'CONNECTIE' = 'CONNECTIE';
+			} catch (error) {
+				console.error('Fout bij controleren persoon 1:', error);
+			} finally {
+				persoon1_laden = false;
+			}
+		}, 400);
+	}
+
+	async function controleerPersoon2(naam: string, club: string) {
+		clearTimeout(zoekTimer2);
+		persoon2_suggesties_genegeerd = false;
+		persoon2_controle = null;
+
+		if (!naam.trim() || !club.trim()) return;
+
+		zoekTimer2 = setTimeout(async () => {
+			persoon2_laden = true;
+
+			try {
+				const netwerkId = data.netwerk.netwerk.id;
+
+				const params = new URLSearchParams({
+					netwerk: netwerkId,
+					naam,
+					club
+				});
+
+				const response = await fetch(
+					`/api/vriendschapsnetwerk/persoon?${params}`
+				);
+
+				if (response.ok) {
+					persoon2_controle = await response.json();
+				}
+			} catch (error) {
+				console.error('Fout bij controleren persoon 2:', error);
+			} finally {
+				persoon2_laden = false;
+			}
+		}, 400);
+	}
+
+	const enhance = (node: HTMLFormElement) =>
+		superformEnhance(node, {
+			onResult: ({ result }) => {
+				if (result.type === 'success') {
+					onclose();
+					return;
+				}
+
+				if (result.type === 'failure') {
+					const data = result.data as {
+						error?: string;
+					};
+
+					foutmelding = data?.error ?? 'Er is iets misgegaan.';
+				}
+			}
+		});
 </script>
 
 <Dialog.Root
 	open={true}
 	onOpenChange={(open) => {
-		if (open == false) {
-			history.back();
+		if (!open) {
+			onclose();
 		}
 	}}
 >
-	<Dialog.Content>
+	<Dialog.Content class="max-h-[90vh] max-w-lg overflow-y-auto">
 		<Dialog.Header>
-			<Dialog.Title>Connectie / persoon toevoegen</Dialog.Title>
+			<Dialog.Title>Nieuwe connectie</Dialog.Title>
+			<Dialog.Description>
+				Voeg een nieuwe connectie toe aan het vriendschapsnetwerk.
+			</Dialog.Description>
 		</Dialog.Header>
-		<Tabs.Root value="connectie" class="flex flex-col">
-			<Tabs.List class="self-center">
-				<Tabs.Trigger value="connectie">Connectie</Tabs.Trigger>
-				<Tabs.Trigger value="persoon">Persoon</Tabs.Trigger>
-			</Tabs.List>
-			<Tabs.Content value="connectie">
-				<form
-					method="POST"
-					action="/api/vriendschapsnetwerk/nieuwe_connectie"
-					class="flex flex-col"
-					use:nieuwe_connectie_enhance
-				>
-					<Form.Field form={nieuwe_connectie_form} name="id1" class="flex flex-col">
-						<Popover.Root bind:open={id1_open}>
-							<Form.Control>
-								{#snippet children({ props })}
-									<Form.Label>Persoon 1</Form.Label>
-									<Popover.Trigger
-										class={cn(
-											buttonVariants({ variant: 'outline' }),
-											'justify-between',
-											!$nieuwe_connectie_formData.id1 && 'text-muted-foreground'
-										)}
-										role="combobox"
-										{...props}
-									>
-										{id1_selectedValue}
-										<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-									</Popover.Trigger>
-									<input hidden value={$nieuwe_connectie_formData.id1} name={props.name} />
-								{/snippet}
-							</Form.Control>
-							<Popover.Content class="p-0">
-								<Command.Root>
-									<Command.Input autofocus placeholder="Selecteer persoon..." class="h-9" />
-									<Command.Empty>Geen personen gevonden...</Command.Empty>
-									<Command.Group>
-										{#each personen as persoon (persoon.id)}
-											<Command.Item
-												value={persoon.label}
-												onSelect={() => {
-													$nieuwe_connectie_formData.id1 = persoon.id;
-													id1_open = false;
-												}}
-											>
-												{persoon.label}
-												<Check
-													class={cn(
-														'ml-auto h-4 w-4',
-														persoon.id !== $nieuwe_connectie_formData.id1 && 'text-transparent'
-													)}
-												/>
-											</Command.Item>
-										{/each}
-									</Command.Group>
-								</Command.Root>
-							</Popover.Content>
-						</Popover.Root>
-						<Form.FieldErrors />
-					</Form.Field>
-					<Form.Field form={nieuwe_connectie_form} name="id2" class="flex flex-col">
-						<Popover.Root bind:open={id2_open}>
-							<Form.Control>
-								{#snippet children({ props })}
-									<Form.Label>Persoon 2</Form.Label>
-									<Popover.Trigger
-										class={cn(
-											buttonVariants({ variant: 'outline' }),
-											'justify-between',
-											!$nieuwe_connectie_formData.id2 && 'text-muted-foreground'
-										)}
-										role="combobox"
-										{...props}
-									>
-										{id2_selectedValue}
-										<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-									</Popover.Trigger>
-									<input hidden bind:value={$nieuwe_connectie_formData.id2} name={props.name} />
-								{/snippet}
-							</Form.Control>
-							<Popover.Content class="p-0">
-								<Command.Root>
-									<Command.Input autofocus placeholder="Selecteer persoon..." class="h-9" />
-									<Command.Empty>Geen personen gevonden...</Command.Empty>
-									<Command.Group>
-										{#each personen as persoon (persoon.id)}
-											<Command.Item
-												value={persoon.label}
-												onSelect={() => {
-													$nieuwe_connectie_formData.id2 = persoon.id;
-													id2_open = false;
-												}}
-											>
-												{persoon.label}
-												<Check
-													class={cn(
-														'ml-auto h-4 w-4',
-														persoon.id !== $nieuwe_connectie_formData.id2 && 'text-transparent'
-													)}
-												/>
-											</Command.Item>
-										{/each}
-									</Command.Group>
-								</Command.Root>
-							</Popover.Content>
-						</Popover.Root>
-						<Form.FieldErrors />
-					</Form.Field>
 
-					<Form.Field form={nieuwe_connectie_form} name="type">
-						<Form.Control>
-							{#snippet children({ props })}
-								<Form.Label>Connectietype</Form.Label>
-								<Select.Root type="single" bind:value={$nieuwe_connectie_formData.type}>
-									<Select.Trigger {...props}>
-										{$nieuwe_connectie_formData.type
-											? $nieuwe_connectie_formData.type
-											: 'Selecteer een connectietype...'}
-									</Select.Trigger>
-									<Select.Content>
-										<Select.Item value="GEMUILD" label="GEMUILD" />
-										<Select.Item value="SEKS" label="SEKS" />
-										<Select.Item value="RELATIE" label="RELATIE" />
-									</Select.Content>
-								</Select.Root>
-								<input hidden bind:value={$nieuwe_connectie_formData.type} name={props.name} />
-							{/snippet}
-						</Form.Control>
-						<Form.Description />
-						<Form.FieldErrors />
-					</Form.Field>
-					<Form.Field form={nieuwe_connectie_form} name="commentaar">
-						<Form.Control>
-							{#snippet children({ props })}
-								<Form.Label>Commentaar</Form.Label>
-								<Input {...props} bind:value={$nieuwe_connectie_formData.commentaar} />
-							{/snippet}
-						</Form.Control>
-						<Form.Description />
-						<Form.FieldErrors />
-					</Form.Field>
-					<Form.Field form={nieuwe_connectie_form} name="locatie">
-						<Form.Control>
-							{#snippet children({ props })}
-								<Form.Label>Locatie</Form.Label>
-								<Input {...props} bind:value={$nieuwe_connectie_formData.locatie} />
-							{/snippet}
-						</Form.Control>
-						<Form.Description />
-						<Form.FieldErrors />
-					</Form.Field>
-					{#if $nieuwe_connectie_delayed}<Button class="self-center" disabled>
-							<LoaderCircle class="animate-spin" />
-							Even geduld
-						</Button>
-					{:else}
-						<Form.Button
-							disabled={!nieuwe_connectie_isTainted($nieuwe_connectie_tainted)}
-							class="self-center">Opslaan</Form.Button
-						>
-					{/if}
-				</form>
-			</Tabs.Content>
-			<Tabs.Content value="persoon">
-				<form
-					method="POST"
-					class="flex flex-col"
-					action="/api/vriendschapsnetwerk/nieuwe_persoon"
-					use:nieuwe_persoon_enhance
+		<form method="POST" action="?/nieuwe_connectie" use:enhance class="space-y-6">
+			<div class="space-y-3">
+				<h3 class="font-semibold">Persoon 1</h3>
+
+				<Form.Field {form} name="persoon1_naam">
+					<Form.Control>
+						{#snippet children({ props })}
+							<Form.Label>
+								Naam <span class="text-destructive">*</span>
+							</Form.Label>
+
+							<Input
+								{...props}
+								autocomplete="off"
+								bind:value={$formData.persoon1_naam}
+								oninput={() =>
+									controleerPersoon1(
+										$formData.persoon1_naam,
+										$formData.persoon1_club
+									)}
+							/>
+
+							{#if persoon1_laden}
+								<p class="text-sm text-muted-foreground">
+									Naam en club controleren...
+								</p>
+							{:else if persoon1_controle?.suggesties.length && !persoon1_suggesties_genegeerd}
+								<div class="space-y-3 rounded-md border p-3">
+									<p class="text-sm font-medium text-amber-600">
+										Mogelijke overeenkomsten:
+									</p>
+
+									{#each persoon1_controle.suggesties as suggestie}
+										<div class="flex items-center justify-between gap-2">
+											<div class="text-sm">
+												<strong>{suggestie.naam}</strong>
+												<span class="text-muted-foreground">
+													– {suggestie.club}
+												</span>
+											</div>
+
+											<Button
+												type="button"
+												size="sm"
+												variant="outline"
+												onclick={() => gebruikPersoon1(suggestie)}
+											>
+												Gebruiken
+											</Button>
+										</div>
+									{/each}
+
+									<Button
+										type="button"
+										size="sm"
+										variant="ghost"
+										onclick={maakNieuwePersoon1}
+									>
+										Nee, nieuwe persoon aanmaken
+									</Button>
+								</div>
+							{:else if persoon1_suggesties_genegeerd}
+								<p class="text-sm text-muted-foreground">
+									Er wordt een nieuwe persoon aangemaakt.
+								</p>
+							{/if}
+						{/snippet}
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+
+				<Form.Field {form} name="persoon1_club">
+					<Form.Control>
+						{#snippet children({ props })}
+							<Form.Label>
+								Club <span class="text-destructive">*</span>
+							</Form.Label>
+
+							<Input
+								{...props}
+								autocomplete="off"
+								bind:value={$formData.persoon1_club}
+								oninput={() =>
+									controleerPersoon1(
+										$formData.persoon1_naam,
+										$formData.persoon1_club
+									)}
+							/>
+						{/snippet}
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+			</div>
+
+			<div class="space-y-3">
+				<h3 class="font-semibold">Persoon 2</h3>
+
+				<Form.Field {form} name="persoon2_naam">
+					<Form.Control>
+						{#snippet children({ props })}
+							<Form.Label>
+								Naam <span class="text-destructive">*</span>
+							</Form.Label>
+
+							<Input
+								{...props}
+								autocomplete="off"
+								bind:value={$formData.persoon2_naam}
+								oninput={() =>
+									controleerPersoon2(
+										$formData.persoon2_naam,
+										$formData.persoon2_club
+									)}
+							/>
+
+							{#if persoon2_laden}
+								<p class="text-sm text-muted-foreground">
+									Naam en club controleren...
+								</p>
+							{:else if persoon2_controle?.suggesties.length && !persoon2_suggesties_genegeerd}
+								<div class="space-y-3 rounded-md border p-3">
+									<p class="text-sm font-medium text-amber-600">
+										Mogelijke overeenkomsten:
+									</p>
+
+									{#each persoon2_controle.suggesties as suggestie}
+										<div class="flex items-center justify-between gap-2">
+											<div class="text-sm">
+												<strong>{suggestie.naam}</strong>
+												<span class="text-muted-foreground">
+													– {suggestie.club}
+												</span>
+											</div>
+
+											<Button
+												type="button"
+												size="sm"
+												variant="outline"
+												onclick={() => gebruikPersoon2(suggestie)}
+											>
+												Gebruiken
+											</Button>
+										</div>
+									{/each}
+
+									<Button
+										type="button"
+										size="sm"
+										variant="ghost"
+										onclick={maakNieuwePersoon2}
+									>
+										Nee, nieuwe persoon aanmaken
+									</Button>
+								</div>
+							{:else if persoon2_suggesties_genegeerd}
+								<p class="text-sm text-muted-foreground">
+									Er wordt een nieuwe persoon aangemaakt.
+								</p>
+							{/if}
+						{/snippet}
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+
+				<Form.Field {form} name="persoon2_club">
+					<Form.Control>
+						{#snippet children({ props })}
+							<Form.Label>
+								Club <span class="text-destructive">*</span>
+							</Form.Label>
+
+							<Input
+								{...props}
+								autocomplete="off"
+								bind:value={$formData.persoon2_club}
+								oninput={() =>
+									controleerPersoon2(
+										$formData.persoon2_naam,
+										$formData.persoon2_club
+									)}
+							/>
+						{/snippet}
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+			</div>
+
+			<div class="space-y-3">
+				<h3 class="font-semibold">Connectie</h3>
+
+				<Form.Field {form} name="type">
+					<Form.Control>
+						{#snippet children({ props })}
+							<Form.Label>
+								Type <span class="text-destructive">*</span>
+							</Form.Label>
+
+							<select
+								{...props}
+								bind:value={$formData.type}
+								class="w-full rounded-md border px-3 py-2"
+							>
+								<option value="">Kies een type</option>
+								<option value="GEMUILD">Gemuild</option>
+								<option value="SEKS">Seks</option>
+								<option value="RELATIE">Relatie</option>
+							</select>
+						{/snippet}
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+
+				<Form.Field {form} name="extra_info">
+					<Form.Control>
+						{#snippet children({ props })}
+							<Form.Label>Extra info</Form.Label>
+							<Textarea {...props} bind:value={$formData.extra_info} />
+						{/snippet}
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+			</div>
+
+			{#if foutmelding}
+				<div
+					class="rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive"
 				>
-					<Form.Field form={nieuwe_persoon_form} name="naam">
-						<Form.Control>
-							{#snippet children({ props })}
-								<Form.Label>Naam</Form.Label>
-								<Input {...props} bind:value={$nieuwe_persoon_formData.naam} />
-							{/snippet}
-						</Form.Control>
-						<Form.Description />
-						<Form.FieldErrors />
-					</Form.Field>
-					<Form.Field form={nieuwe_persoon_form} name="club">
-						<Form.Control>
-							{#snippet children({ props })}
-								<Form.Label>Club</Form.Label>
-								<Input {...props} bind:value={$nieuwe_persoon_formData.club} />
-							{/snippet}
-						</Form.Control>
-						<Form.Description />
-						<Form.FieldErrors />
-					</Form.Field>
-					{#if $nieuwe_persoon_delayed}<Button class="self-center" disabled>
-							<LoaderCircle class="animate-spin" />
-							Even geduld
-						</Button>
-					{:else}
-						<Form.Button
-							disabled={!nieuwe_persoon_isTainted($nieuwe_persoon_tainted)}
-							class="self-center">Opslaan</Form.Button
-						>
-					{/if}
-				</form></Tabs.Content
-			>
-		</Tabs.Root>
+					{foutmelding}
+				</div>
+			{/if}
+
+			<Dialog.Footer>
+				<Button type="submit">Toevoegen</Button>
+			</Dialog.Footer>
+		</form>
 	</Dialog.Content>
 </Dialog.Root>

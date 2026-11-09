@@ -30,6 +30,8 @@ declare global {
 	verwijder_ids?: string[];
 	profiel?: boolean;
 	netwerk_detail_modal?: boolean;
+	netwerk_verwijder_modal?: boolean;
+	netwerk_voeg_toe_modal?: boolean;
 	fakkels_bakken?: any;
 	baravond_modal?: boolean;
 	verkiezing?: any;
