@@ -46,12 +46,11 @@ legende = res.legende ?? [];
 	netwerk = new vis.Network(div, res.netwerk_data, res.opties);
 
 	netwerk.on('selectNode', (t) => {
-		geselecteerde_node = res.netwerk_data.nodes.find(
+	geselecteerde_node =
+		res.netwerk_data.nodes.find(
 			(val: { id: string }) => val.id == t.nodes[0]
-		);
-
-		pushState('', { netwerk_detail_modal: true });
-	});
+		) ?? null;
+});
 }
 
 	onMount(() => {
@@ -135,5 +134,13 @@ legende = res.legende ?? [];
 			verwijder_modal_open = false;
 			laadNetwerk();
 		}}
+	/>
+{/if}
+
+{#if geselecteerde_node}
+	<Netwerkdetailmodal
+		bind:geselecteerde_node
+		personen={personen}
+		connecties={connecties}
 	/>
 {/if}

@@ -32,11 +32,10 @@
 			icon: CupSoda
 		},
 		{
-			title: 'Fakkels & Bakken',
-			url: '/beheer',
-			icon: Flame,
-			isActive: true
-		},
+	title: 'Fakkels & Bakken',
+	url: '/beheer/fakkels_bakken',
+	icon: Flame
+},
 		{
 			title: 'Publieke Gegevens',
 			url: '#',

@@ -131,12 +131,22 @@ export const NieuweConnectieSchema = z.object({
 	persoon2_naam: z.string().trim().min(1, 'Naam is verplicht.'),
 	persoon2_club: z.string().trim().min(1, 'Club is verplicht.'),
 	type: z
-	.union([z.literal(''), z.enum(['GEMUILD', 'SEKS', 'RELATIE'])])
-	.default('')
-	.refine((value) => value !== '', {
-		message: 'Selecteer een type connectie.'
-	}),
-	extra_info: z.string().optional(),
+		.union([
+			z.literal(''),
+			z.enum([
+				'GEMUILD',
+				'SEKS',
+				'RELATIE',
+				'KUSJE',
+				'DATEN',
+				'VOORSPEL'
+			])
+		])
+		.default('')
+		.refine((value) => value !== '', {
+			message: 'Selecteer een type connectie.'
+		}),
+	extra_info: z.string().optional()
 });
 
 export const NieuwePersoonSchema = z.object({

@@ -88,7 +88,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import Loginform from '$lib/components/loginform.svelte';
 	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { LoginGebruikerSchema } from '$lib/schemas';
 	import { toast } from 'svelte-sonner';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
@@ -96,6 +96,8 @@
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Button } from '$lib/components/ui/button';
 	import { goto, pushState } from '$app/navigation';
+	import { untrack } from 'svelte';
+	import { invalidateAll } from '$app/navigation';
 
 	interface Props {
 		data: PageData;
@@ -103,8 +105,9 @@
 	}
 
 	let { data, children }: Props = $props();
-	const login_form = superForm(data.login_data, {
-		validators: zodClient(LoginGebruikerSchema),
+	const login_form = untrack(() =>
+	superForm(data.login_data, {
+		validators: zod4Client(LoginGebruikerSchema),
 		async onUpdated({ form }) {
 			if (form.message) {
 				if (form.message.type == 'error') {
@@ -112,12 +115,18 @@
 				}
 			} else {
 				toast.success('Ingelogd.');
-				history.back();
+				await invalidateAll();
 			}
 		}
-	});
+	})
+);
 
-	let ingelogd_lid = $derived(data.praesidium_leden?.find((v) => v.functie == data.functie_id));
+	let ingelogd_lid = $derived(
+	data.praesidium_leden?.find((v) => v.functie == data.functie_id)
+);
+
+let isTablet = $derived(data.functie_naam === 'tablet');
+let isIngelogd = $derived(!!ingelogd_lid || isTablet);
 </script>
 
 {#if $page.state.profiel}
@@ -183,98 +192,128 @@
 								{/if}
 							{/each}
 						</nav>
-						{#if ingelogd_lid}
+						{#if isIngelogd}
 							<DropdownMenu.Root>
-								<DropdownMenu.Trigger
-									><Avatar.Root>
-										<Avatar.Image
-											class="object-cover"
-											src={ingelogd_lid.avatar}
-											alt={`${ingelogd_lid?.voornaam} ${ingelogd_lid?.familienaam}`}
-										/>
-										<Avatar.Fallback
-											>{ingelogd_lid?.voornaam?.at(0)}{ingelogd_lid?.familienaam?.at(
-												0
-											)}</Avatar.Fallback
-										>
-									</Avatar.Root>
-								</DropdownMenu.Trigger>
+								<DropdownMenu.Trigger>
+	{#if ingelogd_lid}
+		<Avatar.Root>
+			<Avatar.Image
+				class="object-cover"
+				src={ingelogd_lid.avatar}
+				alt={`${ingelogd_lid.voornaam} ${ingelogd_lid.familienaam}`}
+			/>
+			<Avatar.Fallback>
+				{ingelogd_lid.voornaam?.at(0)}{ingelogd_lid.familienaam?.at(0)}
+			</Avatar.Fallback>
+		</Avatar.Root>
+	{:else}
+		<Button variant="ghost">Tablet</Button>
+	{/if}
+</DropdownMenu.Trigger>
 								<DropdownMenu.Content>
-									<DropdownMenu.Group>
-										<DropdownMenu.Label
-											>{ingelogd_lid?.voornaam} {ingelogd_lid?.familienaam}</DropdownMenu.Label
-										>
-										<DropdownMenu.Separator />
-										<DropdownMenu.Item
-											class="flex gap-1 items-center"
-											onSelect={() => goto('/beheer')}
-											><LucideEarthLock class="h-4 w-4" /> Beheerspagina</DropdownMenu.Item
-										>
-										<DropdownMenu.Item
-											class="flex gap-1 items-center"
-											onSelect={() => pushState('', { profiel: true })}
-											><UserCog class="h-4 w-4" /> Profiel</DropdownMenu.Item
-										>
-										<DropdownMenu.Item
-   											class="flex gap-1 items-center"
-   											onSelect={() => goto('/stem')}
-  											><Vote class="h-4 w-4" /> Stemmen</DropdownMenu.Item
-										>
-										<DropdownMenu.Item
-											class="flex gap-1 items-center"
-											onSelect={() => {
-												goto('/logout');
-											}}><LucideLogOut class="h-4 w-4" /> Uitloggen</DropdownMenu.Item
-										>
-									</DropdownMenu.Group>
-								</DropdownMenu.Content>
+	<DropdownMenu.Group>
+		{#if ingelogd_lid}
+			<DropdownMenu.Label>
+				{ingelogd_lid.voornaam} {ingelogd_lid.familienaam}
+			</DropdownMenu.Label>
+			<DropdownMenu.Separator />
+
+			<DropdownMenu.Item
+				class="flex gap-1 items-center"
+				onSelect={() => goto('/beheer')}
+			>
+				<LucideEarthLock class="h-4 w-4" /> Beheerspagina
+			</DropdownMenu.Item>
+
+			<DropdownMenu.Item
+				class="flex gap-1 items-center"
+				onSelect={() => pushState('', { profiel: true })}
+			>
+				<UserCog class="h-4 w-4" /> Profiel
+			</DropdownMenu.Item>
+
+			<DropdownMenu.Item
+				class="flex gap-1 items-center"
+				onSelect={() => goto('/stem')}
+			>
+				<Vote class="h-4 w-4" /> Stemmen
+			</DropdownMenu.Item>
+		{:else if isTablet}
+			<DropdownMenu.Label>Tabletaccount</DropdownMenu.Label>
+		{/if}
+
+		<DropdownMenu.Item
+			class="flex gap-1 items-center"
+			onSelect={() => goto('/logout')}
+		>
+			<LucideLogOut class="h-4 w-4" /> Uitloggen
+		</DropdownMenu.Item>
+	</DropdownMenu.Group>
+</DropdownMenu.Content>
 							</DropdownMenu.Root>{:else}<Button onclick={() => pushState('', { login: true })}
 								>Log In</Button
 							>{/if}
 					</div>
 				</div>
 			</nav>
-			{#if ingelogd_lid}
+			{#if isIngelogd}
 				<DropdownMenu.Root>
-					<DropdownMenu.Trigger class="sm:hidden"
-						><Avatar.Root>
-							<Avatar.Image
-								class="object-cover"
-								src={ingelogd_lid.avatar}
-								alt={`${ingelogd_lid?.voornaam} ${ingelogd_lid?.familienaam}`}
-							/>
-							<Avatar.Fallback
-								>{ingelogd_lid?.voornaam?.at(0)}{ingelogd_lid?.familienaam?.at(0)}</Avatar.Fallback
-							>
-						</Avatar.Root>
-					</DropdownMenu.Trigger>
+					<DropdownMenu.Trigger class="sm:hidden">
+	{#if ingelogd_lid}
+		<Avatar.Root>
+			<Avatar.Image
+				class="object-cover"
+				src={ingelogd_lid.avatar}
+				alt={`${ingelogd_lid.voornaam} ${ingelogd_lid.familienaam}`}
+			/>
+			<Avatar.Fallback>
+				{ingelogd_lid.voornaam?.at(0)}{ingelogd_lid.familienaam?.at(0)}
+			</Avatar.Fallback>
+		</Avatar.Root>
+	{:else}
+		<Button variant="ghost">Tablet</Button>
+	{/if}
+</DropdownMenu.Trigger>
 					<DropdownMenu.Content>
-						<DropdownMenu.Group>
-							<DropdownMenu.Label
-								>{ingelogd_lid?.voornaam} {ingelogd_lid?.familienaam}</DropdownMenu.Label
-							>
-							<DropdownMenu.Separator />
-							<DropdownMenu.Item class="flex gap-1 items-center" onSelect={() => goto('/beheer')}
-								><LucideEarthLock class="h-4 w-4" /> Beheerspagina</DropdownMenu.Item
-							>
-							<DropdownMenu.Item
-								class="flex gap-1 items-center"
-								onSelect={() => pushState('', { profiel: true })}
-								><UserCog class="h-4 w-4" /> Profiel</DropdownMenu.Item
-							>
-							<DropdownMenu.Item
-							    class="flex gap-1 items-center"
-							    onSelect={() => goto('/stem')}
-							    ><Vote class="h-4 w-4" /> Stemmen</DropdownMenu.Item
-							>
-							<DropdownMenu.Item
-								class="flex gap-1 items-center"
-								onSelect={() => {
-									goto('/logout');
-								}}><LucideLogOut class="h-4 w-4" /> Uitloggen</DropdownMenu.Item
-							>
-						</DropdownMenu.Group>
-					</DropdownMenu.Content>
+	<DropdownMenu.Group>
+		{#if ingelogd_lid}
+			<DropdownMenu.Label>
+				{ingelogd_lid.voornaam} {ingelogd_lid.familienaam}
+			</DropdownMenu.Label>
+			<DropdownMenu.Separator />
+
+			<DropdownMenu.Item
+				class="flex gap-1 items-center"
+				onSelect={() => goto('/beheer')}
+			>
+				<LucideEarthLock class="h-4 w-4" /> Beheerspagina
+			</DropdownMenu.Item>
+
+			<DropdownMenu.Item
+				class="flex gap-1 items-center"
+				onSelect={() => pushState('', { profiel: true })}
+			>
+				<UserCog class="h-4 w-4" /> Profiel
+			</DropdownMenu.Item>
+
+			<DropdownMenu.Item
+				class="flex gap-1 items-center"
+				onSelect={() => goto('/stem')}
+			>
+				<Vote class="h-4 w-4" /> Stemmen
+			</DropdownMenu.Item>
+		{:else if isTablet}
+			<DropdownMenu.Label>Tabletaccount</DropdownMenu.Label>
+		{/if}
+
+		<DropdownMenu.Item
+			class="flex gap-1 items-center"
+			onSelect={() => goto('/logout')}
+		>
+			<LucideLogOut class="h-4 w-4" /> Uitloggen
+		</DropdownMenu.Item>
+	</DropdownMenu.Group>
+</DropdownMenu.Content>
 				</DropdownMenu.Root>{:else}<Button
 					class="sm:hidden"
 					onclick={() => pushState('', { login: true })}>Log In</Button

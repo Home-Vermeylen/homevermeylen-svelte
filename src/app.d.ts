@@ -42,6 +42,8 @@ declare global {
 	verwijder_id?: string;
 	stemming?: any;
 	verwijder_verslag?: any;
+	login?: boolean;
+	profiel?: boolean;
 }
 	}
 }

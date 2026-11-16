@@ -390,9 +390,12 @@
 								class="w-full rounded-md border px-3 py-2"
 							>
 								<option value="">Kies een type</option>
-								<option value="GEMUILD">Gemuild</option>
-								<option value="SEKS">Seks</option>
-								<option value="RELATIE">Relatie</option>
+<option value="KUSJE">Kusje</option>
+<option value="GEMUILD">Gemuild</option>
+<option value="VOORSPEL">Voorspel</option>
+<option value="SEKS">Seks</option>
+<option value="DATEN">Daten</option>
+<option value="RELATIE">Relatie</option>
 							</select>
 						{/snippet}
 					</Form.Control>

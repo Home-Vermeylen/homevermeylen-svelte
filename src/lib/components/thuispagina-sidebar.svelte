@@ -1,14 +1,27 @@
 <script lang="ts">
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import { Calendar, ChevronRight, Info, Newspaper, Users } from 'lucide-svelte';
-	import type { ComponentProps } from 'svelte';
+	import { ChevronRight } from 'lucide-svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible';
+	import type { ComponentProps } from 'svelte';
+
+	interface NavItem {
+		title: string;
+		url?: string;
+		icon?: any;
+		items?: {
+			title: string;
+			url: string;
+			icon?: any;
+		}[];
+	}
 
 	let {
 		ref = $bindable(null),
 		nav_items,
 		...restProps
-	}: ComponentProps<typeof Sidebar.Root> = $props();
+	}: ComponentProps<typeof Sidebar.Root> & {
+		nav_items: NavItem[];
+	} = $props();
 </script>
 
 <Sidebar.Root {...restProps} bind:ref>

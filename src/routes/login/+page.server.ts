@@ -16,7 +16,7 @@ export const actions = {
 
 		try {
 			await locals.pb
-				.collection('gebruikers')
+				.collection('functies')
 				.authWithPassword(formData.gebruikersnaam, formData.wachtwoord);
 		} catch (_) {
 			return actionResult("error");

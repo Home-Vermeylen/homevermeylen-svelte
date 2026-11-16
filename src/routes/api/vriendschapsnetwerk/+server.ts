@@ -80,12 +80,13 @@ highlight: {
 	}));
 
 		const edges = connecties.map((connectie) => ({
-			id: connectie.id,
-			from: connectie.persoon1,
-			to: connectie.persoon2,
-			label: connectie.type,
-			title: connectie.extra_info || connectie.type
-		}));
+	id: connectie.id,
+	from: connectie.persoon1,
+	to: connectie.persoon2,
+	label: connectie.type,
+	title: connectie.extra_info || connectie.type,
+	extra_info: connectie.extra_info ?? ''
+}));
 
 		return json({
 			netwerk,

@@ -24,7 +24,11 @@ export const handle = async ({ event, resolve }) => {
 		event.url.pathname === '/api/drankentellingen';
 
 	try {
-		if (event.locals.pb.authStore.isValid && !isDrankentellingApi) {
+		if (
+	event.locals.pb.authStore.isValid &&
+	event.locals.pb.authStore.model?.username !== 'tablet' &&
+	!isDrankentellingApi
+) {
 			await event.locals.pb.collection('functies').authRefresh({
 				expand: 'praesidiumleden_via_functies'
 			});
