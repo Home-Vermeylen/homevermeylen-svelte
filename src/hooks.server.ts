@@ -14,36 +14,86 @@ export const handle = async ({ event, resolve }) => {
 
 	event.locals.pb.autoCancellation(false);
 
-	event.locals.pb.authStore.loadFromCookie(
-		event.request.headers.get('cookie') || ''
-	);
+	// Authenticatiecookie inlezen
+	const authCookie = event.request.headers.get('cookie') || '';
 
-	// Bij telacties is een authRefresh onnodig en zorgt dit
-	// voor een extra PocketBase-request per telactie.
+	console.log('PocketBase cookie:', {
+		aanwezig: authCookie.includes('pb_auth='),
+		lengte: authCookie.length,
+		authStoreValid: event.locals.pb.authStore.isValid
+	});
+
+	event.locals.pb.authStore.loadFromCookie(authCookie);
+
+	console.log('AuthStore na inlezen:', {
+		isValid: event.locals.pb.authStore.isValid,
+		username: event.locals.pb.authStore.model?.username
+	});
+
+	console.log('Authcontrole vóór refresh:', {
+		isValid: event.locals.pb.authStore.isValid,
+		username: event.locals.pb.authStore.model?.username,
+		id: event.locals.pb.authStore.model?.id
+	});
+
+	const username = event.locals.pb.authStore.model?.username;
+	const isTablet = username === 'Tablet';
+
+	// Bij telacties is een authRefresh onnodig.
 	const isDrankentellingApi =
 		event.url.pathname === '/api/drankentellingen';
 
 	try {
 		if (
-	event.locals.pb.authStore.isValid &&
-	event.locals.pb.authStore.model?.username !== 'tablet' &&
-	!isDrankentellingApi
-) {
+			event.locals.pb.authStore.isValid &&
+			!isTablet &&
+			!isDrankentellingApi
+		) {
 			await event.locals.pb.collection('functies').authRefresh({
 				expand: 'praesidiumleden_via_functies'
 			});
 		}
-	} catch (_) {
+	} catch (err) {
+		console.error('Fout bij authRefresh:', err);
 		event.locals.pb.authStore.clear();
 	}
 
+	console.log('Authcontrole na refresh:', {
+		isValid: event.locals.pb.authStore.isValid,
+		username: event.locals.pb.authStore.model?.username,
+		id: event.locals.pb.authStore.model?.id
+	});
+
+	// Beheerpagina's vereisen een geldige login.
 	if (
 		event.url.pathname.startsWith('/beheer') &&
 		!event.locals.pb.authStore.isValid
 	) {
-		redirect(303, '/login');
+		throw redirect(303, '/login');
 	}
 
+	// Beperk de Tablet-account tot de toegestane pagina's.
+if (isTablet) {
+	const isTabletStartpagina =
+		event.url.pathname === '/beheer/tablet';
+
+	const isOpenBaravondPagina =
+		/^\/beheer\/baravonden\/[^/]+$/.test(event.url.pathname);
+
+	const isLogoutPagina = event.url.pathname === '/logout';
+
+const isToegestaneTabletPagina =
+	isTabletStartpagina ||
+	isOpenBaravondPagina ||
+	isLogoutPagina ||
+	isDrankentellingApi;
+
+if (!isToegestaneTabletPagina) {
+	throw redirect(303, '/beheer/tablet');
+}
+}
+
+	// Nieuwste praesidium ophalen met cache
 	const nu = Date.now();
 
 	if (
@@ -59,11 +109,9 @@ export const handle = async ({ event, resolve }) => {
 				.then((r) => r.items[0]);
 
 			laatstePraesidiumUpdate = nu;
-				} catch (err: any) {
+		} catch (err: any) {
 			console.error('Fout bij ophalen nieuwste praesidium:', err);
 
-			// Een tijdelijke PocketHost rate limit mag de volledige app
-			// niet laten crashen.
 			if (err?.status === 429 || err?.response?.status === 429) {
 				console.warn(
 					'PocketHost rate limit bij ophalen praesidium. Bestaande cache behouden.'
@@ -78,6 +126,7 @@ export const handle = async ({ event, resolve }) => {
 
 	const response = await resolve(event);
 
+	// Authenticatiecookie terugsturen
 	response.headers.set(
 		'set-cookie',
 		event.locals.pb.authStore.exportToCookie({

@@ -21,19 +21,20 @@
 	};
 
 	type Telling = {
-		aantal: number;
-		drankje: string;
-		praesidium_lid: string;
-		expand?: {
-			drankje?: {
-				naam: string;
-			};
-			praesidium_lid?: {
-				voornaam: string;
-				familienaam: string;
-			};
+	aantal: number;
+	drankje: string;
+	praesidium_lid: string;
+	isTablet?: boolean;
+	expand?: {
+		drankje?: {
+			naam: string;
+		};
+		praesidium_lid?: {
+			voornaam: string;
+			familienaam: string;
 		};
 	};
+};
 
 	let { data } = $props();
 
@@ -79,8 +80,10 @@
 					resultaat[lidId] = {
 						id: lidId,
 						naam: telling.expand?.praesidium_lid
-							? `${telling.expand.praesidium_lid.voornaam} ${telling.expand.praesidium_lid.familienaam}`
-							: 'Onbekend lid',
+	? `${telling.expand.praesidium_lid.voornaam} ${telling.expand.praesidium_lid.familienaam}`
+	: telling.isTablet
+		? 'Tablet'
+		: 'Onbekend lid',
 						aantal: 0,
 						drankjes: {}
 					};

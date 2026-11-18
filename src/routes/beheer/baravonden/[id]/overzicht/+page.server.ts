@@ -41,7 +41,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			} else {
 				tellingen.set(sleutel, {
 					...actie,
-					aantal: actie.verschil
+					aantal: actie.verschil,
+					isTablet: !actie.praesidium_lid
 				});
 			}
 		}

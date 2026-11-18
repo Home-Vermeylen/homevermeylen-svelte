@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const gebruikersnamen = [
+	'Tablet',
 	'Lustrum2',
 	'Lustrum1',
 	'Scriptor',

@@ -36,7 +36,7 @@
 
 	// Naam van de geselecteerde gebruiker bepalen
 	const geselecteerdeGebruiker = $derived.by(() => {
-		if ($login_formData.gebruikersnaam === 'tablet') {
+		if ($login_formData.gebruikersnaam === 'Tablet') {
 			return 'Tablet';
 		}
 
@@ -59,6 +59,7 @@
 	method="post"
 	action="/"
 	use:login_enhance
+	onsubmit={() => console.log('LOGINFORM: submit-event')}
 >
 	<Form.Field form={login_form} name="gebruikersnaam" class="text-center">
 		<Popover.Root bind:open={combobox_open}>
@@ -125,9 +126,9 @@
 
 						<!-- Tabletaccount -->
 						<Command.Item
-							value="tablet"
+							value="Tablet"
 							onSelect={() => {
-								$login_formData.gebruikersnaam = 'tablet';
+								$login_formData.gebruikersnaam = 'Tablet';
 								combobox_open = false;
 							}}
 						>
@@ -136,7 +137,7 @@
 							<Check
 								class={cn(
 									'ml-auto h-4 w-4',
-									'tablet' !== $login_formData.gebruikersnaam &&
+									'Tablet' !== $login_formData.gebruikersnaam &&
 										'text-transparent'
 								)}
 							/>

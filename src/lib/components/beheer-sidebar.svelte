@@ -94,8 +94,9 @@
 		<BeheerNavMain items={data.navMain} />
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<Sidebar.Menu>
-			<Sidebar.MenuItem>
+	<Sidebar.Menu>
+		<Sidebar.MenuItem>
+			{#if gebruiker}
 				<DropdownMenu.Root>
 					<DropdownMenu.Trigger>
 						{#snippet child({ props })}
@@ -108,16 +109,21 @@
 									<Avatar.Image src={gebruiker.avatar} alt={gebruiker.voornaam} />
 									<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
 								</Avatar.Root>
+
 								<div class="grid flex-1 text-left text-sm leading-tight">
-									<span class="truncate font-semibold"
-										>{gebruiker.voornaam} {gebruiker.familienaam}</span
-									>
-									<span class="truncate text-xs">{gebruiker.expand.functie.username}</span>
+									<span class="truncate font-semibold">
+										{gebruiker.voornaam} {gebruiker.familienaam}
+									</span>
+									<span class="truncate text-xs">
+										{gebruiker.expand.functie.username}
+									</span>
 								</div>
+
 								<ChevronsUpDown class="ml-auto size-4" />
 							</Sidebar.MenuButton>
 						{/snippet}
 					</DropdownMenu.Trigger>
+
 					<DropdownMenu.Content
 						class="w-[--bits-dropdown-menu-anchor-width] min-w-56 rounded-lg"
 						side={sidebar.isMobile ? 'bottom' : 'right'}
@@ -128,16 +134,20 @@
 							<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 								<Avatar.Root class="h-8 w-8 rounded-lg">
 									<Avatar.Image src={gebruiker.avatar} alt={gebruiker.voornaam} />
-									<Avatar.Fallback class="rounded-lg"
-										>{gebruiker.voornaam} {gebruiker.familienaam}</Avatar.Fallback
-									>
+									<Avatar.Fallback class="rounded-lg">
+										{gebruiker.voornaam} {gebruiker.familienaam}
+									</Avatar.Fallback>
 								</Avatar.Root>
+
 								<div class="grid flex-1 text-left text-sm leading-tight">
 									<span class="truncate font-semibold">{gebruiker.voornaam}</span>
-									<span class="truncate text-xs">{gebruiker.expand.functie.username}</span>
+									<span class="truncate text-xs">
+										{gebruiker.expand.functie.username}
+									</span>
 								</div>
 							</div>
 						</DropdownMenu.Label>
+
 						<DropdownMenu.Separator />
 						<DropdownMenu.Item onclick={() => pushState('', { profiel: true })}>
 							<UserCog />
@@ -150,8 +160,49 @@
 						</DropdownMenu.Item>
 					</DropdownMenu.Content>
 				</DropdownMenu.Root>
-			</Sidebar.MenuItem>
-		</Sidebar.Menu>
-	</Sidebar.Footer>
+			{:else}
+	<DropdownMenu.Root>
+		<DropdownMenu.Trigger>
+			{#snippet child({ props })}
+				<Sidebar.MenuButton
+					size="lg"
+					class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+					{...props}
+				>
+					<div class="grid flex-1 text-left text-sm leading-tight">
+						<span class="truncate font-semibold">Tablet</span>
+						<span class="truncate text-xs">Tabletaccount</span>
+					</div>
+
+					<ChevronsUpDown class="ml-auto size-4" />
+				</Sidebar.MenuButton>
+			{/snippet}
+		</DropdownMenu.Trigger>
+
+		<DropdownMenu.Content
+			class="w-[--bits-dropdown-menu-anchor-width] min-w-56 rounded-lg"
+			side={sidebar.isMobile ? 'bottom' : 'right'}
+			align="end"
+			sideOffset={4}
+		>
+			<DropdownMenu.Label class="p-0 font-normal">
+				<div class="px-1 py-1.5 text-left text-sm">
+					<span class="truncate font-semibold">Tablet</span>
+					<span class="truncate text-xs">Tabletaccount</span>
+				</div>
+			</DropdownMenu.Label>
+
+			<DropdownMenu.Separator />
+
+			<DropdownMenu.Item onclick={async () => await goto('/logout')}>
+				<LogOut />
+				Log out
+			</DropdownMenu.Item>
+		</DropdownMenu.Content>
+	</DropdownMenu.Root>
+{/if}
+		</Sidebar.MenuItem>
+	</Sidebar.Menu>
+</Sidebar.Footer>
 	<Sidebar.Rail />
 </Sidebar.Root>

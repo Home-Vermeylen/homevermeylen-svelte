@@ -108,16 +108,30 @@
 	const login_form = untrack(() =>
 	superForm(data.login_data, {
 		validators: zod4Client(LoginGebruikerSchema),
+
+		onSubmit({ formData }) {
+			console.log('SUPERFORM verzendt:', Object.fromEntries(formData));
+		},
+
+		onResult({ result }) {
+	console.log('SUPERFORM RESULTAAT:', result);
+
+	if (result.type === 'redirect') {
+		console.log('LOGIN REDIRECT:', result.location);
+	}
+},
+
 		async onUpdated({ form }) {
-			if (form.message) {
-				if (form.message.type == 'error') {
-					toast.error(form.message.text);
-				}
-			} else {
-				toast.success('Ingelogd.');
-				await invalidateAll();
-			}
+	if (form.message) {
+		if (form.message.type == 'error') {
+			toast.error(form.message.text);
 		}
+	} else {
+		toast.success('Ingelogd.');
+		pushState('', {});
+		await invalidateAll();
+	}
+}
 	})
 );
 
@@ -125,8 +139,17 @@
 	data.praesidium_leden?.find((v) => v.functie == data.functie_id)
 );
 
-let isTablet = $derived(data.functie_naam === 'tablet');
+let isTablet = $derived(data.functie_naam === 'Tablet');
 let isIngelogd = $derived(!!ingelogd_lid || isTablet);
+$effect(() => {
+	console.log('Logincontrole:', {
+		functie_id: data.functie_id,
+		functie_naam: data.functie_naam,
+		ingelogd_lid,
+		isTablet,
+		isIngelogd
+	});
+});
 </script>
 
 {#if $page.state.profiel}

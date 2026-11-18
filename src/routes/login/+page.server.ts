@@ -5,6 +5,7 @@ import { actionResult } from 'sveltekit-superforms';
 
 export const actions = {
 	login: async ({ request, locals }) => {
+	console.log('LOGINACTIE WORDT UITGEVOERD');
 		const { formData, errors } = await valideerData(await request.formData(), LoginGebruikerSchema);
 
 		if (errors) {
@@ -15,9 +16,16 @@ export const actions = {
 		}
 
 		try {
-			await locals.pb
-				.collection('functies')
-				.authWithPassword(formData.gebruikersnaam, formData.wachtwoord);
+			const authData = await locals.pb
+	.collection('functies')
+	.authWithPassword(formData.gebruikersnaam, formData.wachtwoord);
+
+console.log('Loginresultaat:', {
+	isValid: locals.pb.authStore.isValid,
+	username: locals.pb.authStore.model?.username,
+	heeftToken: !!authData.token,
+	tokenLengte: authData.token?.length
+});
 		} catch (_) {
 			return actionResult("error");
 		}

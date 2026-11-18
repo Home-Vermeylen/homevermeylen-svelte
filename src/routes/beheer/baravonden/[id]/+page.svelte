@@ -2,6 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Plus, Minus, RefreshCw } from 'lucide-svelte';
 	import { onMount } from 'svelte';
+	import { untrack } from 'svelte';
 
 	type Drankje = {
 		id: string;
@@ -21,30 +22,31 @@
 		verschil: number;
 	};
 
-	let {
-		data
-	}: {
-		data: {
-			baravond: any;
-			drankjes: Drankje[];
-			tellingen: {
-				drankje: string;
-				aantal: number;
-				praesidium_lid: string;
-			}[];
-			praesidiumLidId: string;
-		};
-	} = $props();
+	let { data }: {
+	data: {
+		baravond: any;
+		drankjes: Drankje[];
+		tellingen: { drankje: string; aantal: number; praesidium_lid: string }[];
+		praesidiumLidId: string | null;
+		isTablet: boolean;
+	};
+} = $props();
 
-	const mijnTellingen = data.tellingen.filter(
-		(telling) => telling.praesidium_lid === data.praesidiumLidId
-	);
+	const mijnTellingen = $derived(data.tellingen);
 
-	const beginAantallen = Object.fromEntries(
-		mijnTellingen.map((telling) => [telling.drankje, telling.aantal])
-	);
+	const beginAantallen = $derived(
+	Object.fromEntries(
+		data.tellingen.map((telling) => [telling.drankje, telling.aantal])
+	)
+);
 
-	let aantallen = $state<Record<string, number>>({ ...beginAantallen });
+	let aantallen = $state<Record<string, number>>(
+	untrack(() =>
+		Object.fromEntries(
+			data.tellingen.map((telling) => [telling.drankje, telling.aantal])
+		)
+	)
+);
 
 	// Eén globale wachtrij voor alle drankjes.
 	// Hierdoor wordt altijd maar één request tegelijk naar PocketHost gestuurd.
@@ -85,10 +87,16 @@
 		};
 
 		// Actie achteraan de globale wachtrij plaatsen.
-		wachtrij = [...wachtrij, actie];
+wachtrij = [...wachtrij, actie];
 
-		// Start de globale verwerking.
-		void verwerkWachtrij();
+console.log('Telactie toegevoegd aan wachtrij:', {
+	isTablet: data.isTablet,
+	actie,
+	wachtrijLengte: wachtrij.length
+});
+
+// Start de globale verwerking.
+void verwerkWachtrij();
 	}
 
 	// Verwerk alle acties één voor één.
@@ -102,21 +110,30 @@
 			while (wachtrij.length > 0) {
 				const actie = wachtrij[0];
 
+				console.log('Wachtrij verwerkt actie:', {
+	isTablet: data.isTablet,
+	actie
+});
 				const response = await fetch('/api/drankentellingen', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify({
-						baravond: data.baravond.id,
-						drankje: actie.drankjeId,
-						praesidium_lid: data.praesidiumLidId,
-						verschil: actie.verschil,
-						actie_id: actie.actie_id
-					})
+	baravond: data.baravond.id,
+	drankje: actie.drankjeId,
+	...(data.isTablet ? {} : { praesidium_lid: data.praesidiumLidId }),
+	verschil: actie.verschil,
+	actie_id: actie.actie_id
+})
 				});
 
 				const resultaat = await response.json().catch(() => ({}));
+				console.log('API-antwoord drankentelling:', {
+	status: response.status,
+	ok: response.ok,
+	resultaat
+});
 
 				if (!response.ok) {
 					console.error('API-fout drankentelling:', {
@@ -303,7 +320,10 @@
 							onpointerup={stopLangIndrukken}
 							onpointerleave={annuleerLangIndrukken}
 							onpointercancel={annuleerLangIndrukken}
-							onclick={() => klikPlus(drankje.id)}
+							onclick={() => {
+	console.log('PLUSKNOP GEKLIKT:', drankje.naam);
+	klikPlus(drankje.id);
+}}
 						>
 							<Plus class="h-5 w-5" />
 						</Button>
